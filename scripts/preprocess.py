@@ -587,31 +587,22 @@ def get_regional_data(telecom_circle):
     backhaul_lut = estimate_backhaul(telecom_circle['region'], '2025')
 
     print('Working on estimating sites')
-    results = estimate_sites(results, iso3, backhaul_lut)
+    results = estimate_sites(results, tc_code, backhaul_lut)
 
     results_df = pd.DataFrame(results)
 
     results_df.to_csv(path_output, index=False)
 
-    print('Completed {}'.format(single_tc.NAME_0.values[0]))
+    print('Completed {}'.format(tc_code))
 
     return print('Completed night lights data querying')
 
 
-def estimate_sites(data, iso3, backhaul_lut):
+def estimate_sites(data, tc_code, backhaul_lut):
     """
 
     """
     output = []
-
-    # existing_site_data_path = os.path.join(DATA_INTERMEDIATE, iso3, 'sites', 'sites.csv')
-
-    # existing_site_data = {}
-    # if os.path.exists(existing_site_data_path):
-    #     site_data = pd.read_csv(existing_site_data_path)
-    #     site_data = site_data.to_dict('records')
-    #     for item in site_data:
-    #         existing_site_data[item['GID_id']] = item['sites']
 
     population = 0
 
@@ -622,17 +613,18 @@ def estimate_sites(data, iso3, backhaul_lut):
 
         population += int(region['population'])
 
-    path = os.path.join(DATA_RAW, 'wb_mobile_coverage', 'wb_population_coverage.csv')
+    path = os.path.join(DATA_RAW, 'telecom_circle_data.csv')
     coverage = pd.read_csv(path)
-    coverage = coverage.loc[coverage['Country ISO3'] == iso3]
-    coverage = coverage['2016'].values[0]
+    coverage = coverage.loc[coverage['tc_code'] == tc_code]
+    coverage = coverage['coverage_pop_percentage'].values[0]
 
     population_covered = population * (coverage / 100)
 
-    path = os.path.join(DATA_RAW, 'real_site_data', 'tower_counts', 'tower_counts.csv')
-    towers = pd.read_csv(path, encoding = "ISO-8859-1")
-    towers = towers.loc[towers['ISO_3digit'] == iso3]
-    towers = towers['count'].values[0]
+    #Use tower counts by telecom circle
+    path = os.path.join(DATA_RAW, 'ind_sites_by_tc.csv')
+    towers = pd.read_csv(path)
+    towers = towers.loc[towers['tc_code'] == tc_code]
+    towers = towers['sites'].values[0]
 
     towers_per_pop = towers / population_covered
 
@@ -644,18 +636,8 @@ def estimate_sites(data, iso3, backhaul_lut):
 
     for region in data:
 
-        # #first try to use actual data
-        # if len(existing_site_data) > 0:
-        #     sites_estimated_total = existing_site_data[region['GID_id']]
-        #     if region['area_km2'] > 0:
-        #         sites_estimated_km2 = sites_estimated_total / region['area_km2']
-        #     else:
-        #         sites_estimated_km2 = 0
-
-        # #or if we don't have data estimate sites per area
-        # else:
         if covered_pop_so_far < population_covered:
-            sites_estimated_total = region['population'] * towers_per_pop
+            sites_estimated_total = int(round(region['population'] * towers_per_pop))
             sites_estimated_km2 = region['population_km2'] * towers_per_pop
 
         else:
@@ -693,8 +675,8 @@ def estimate_sites(data, iso3, backhaul_lut):
                 'coverage_4G_percent': region['coverage_4G_percent'],
                 'sites_estimated_total': sites_estimated_total,
                 'sites_estimated_km2': sites_estimated_km2,
-                'sites_3G': sites_estimated_total * (region['coverage_3G_percent'] /100),
-                'sites_4G': sites_estimated_total * (region['coverage_4G_percent'] /100),
+                'sites_3G': int(round(sites_estimated_total * (region['coverage_3G_percent'] /100))),
+                'sites_4G': int(round(sites_estimated_total * (region['coverage_4G_percent'] /100))),
                 'backhaul_fiber': backhaul_fiber,
                 'backhaul_copper': backhaul_copper,
                 'backhaul_microwave': backhaul_microwave,
@@ -993,36 +975,42 @@ def get_points_inside_country(nodes, iso3):
     return nodes
 
 
-def generate_agglomeration_lut(country):
+def generate_agglomeration_lut(telecom_circle):
     """
     Generate a lookup table of agglomerations.
 
-    """
-    iso3 = country['iso3']
-    regional_level = country['regional_level']
-    GID_level = 'GID_{}'.format(regional_level)
+    Parameters
+    ----------
+    telecom_circle : dict
+        Contains all parameter information for the telecom circle.
 
-    folder = os.path.join(DATA_INTERMEDIATE, iso3, 'agglomerations')
+    """
+    iso3 = telecom_circle['iso3']
+    regional_level = telecom_circle['regional_level']
+    GID_level = 'GID_{}'.format(regional_level)
+    tc_code = telecom_circle['tc_code']
+
+    folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'agglomerations')
     if not os.path.exists(folder):
         os.makedirs(folder)
     path_output = os.path.join(folder, 'agglomerations.shp')
 
-    if os.path.exists(path_output):
-        return print('Agglomeration processing has already completed')
+    # if os.path.exists(path_output):
+    #     return print('Agglomeration processing has already completed')
 
-    print('Working on {} agglomeration lookup table'.format(iso3))
+    print('Working on {} agglomeration lookup table'.format(tc_code))
 
-    filename = 'regions_{}_{}.shp'.format(regional_level, iso3)
-    folder = os.path.join(DATA_INTERMEDIATE, iso3, 'regions')
+    filename = 'regions_{}_{}.shp'.format(regional_level, tc_code)
+    folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'regions')
     path = os.path.join(folder, filename)
     regions = gpd.read_file(path, crs="epsg:4326")
 
-    path_settlements = os.path.join(DATA_INTERMEDIATE, iso3, 'settlements.tif')
+    path_settlements = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'settlements.tif')
     settlements = rasterio.open(path_settlements, 'r+')
     settlements.nodata = 255
     settlements.crs = {"init": "epsg:4326"}
 
-    folder_tifs = os.path.join(DATA_INTERMEDIATE, iso3, 'agglomerations', 'tifs')
+    folder_tifs = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'agglomerations', 'tifs')
     if not os.path.exists(folder_tifs):
         os.makedirs(folder_tifs)
 
@@ -1052,9 +1040,9 @@ def generate_agglomeration_lut(country):
 
     print('Completed settlement.tif regional segmentation')
 
-    nodes, missing_nodes = find_nodes(country, regions)
+    nodes, missing_nodes = find_nodes(telecom_circle, regions)
 
-    missing_nodes = get_missing_nodes(country, regions, missing_nodes, 10, 10)
+    missing_nodes = get_missing_nodes(telecom_circle, regions, missing_nodes, 10, 10)
 
     nodes = nodes + missing_nodes
 
@@ -1110,7 +1098,7 @@ def generate_agglomeration_lut(country):
             crs='epsg:4326'
         )
 
-    folder = os.path.join(DATA_INTERMEDIATE, iso3, 'agglomerations')
+    folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'agglomerations')
     path_output = os.path.join(folder, 'agglomerations' + '.shp')
 
     agglomerations.to_file(path_output)
@@ -1123,40 +1111,50 @@ def generate_agglomeration_lut(country):
     return print('Agglomerations layer complete')
 
 
-def process_existing_fiber(country):
+def process_existing_fiber(telecom_circle):
     """
     Load and process existing fiber data.
 
     """
-    iso3 = country['iso3']
-    iso2 = country['iso2'].lower()
+    iso3 = telecom_circle['iso3']
+    tc_code = telecom_circle['tc_code']
+    regional_level = telecom_circle['regional_level']
+    GID_level = 'GID_{}'.format(regional_level)
 
-    folder = os.path.join(DATA_INTERMEDIATE, iso3, 'network_existing')
+    folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'network_existing')
     if not os.path.exists(folder):
         os.makedirs(folder)
     filename = 'core_edges_existing.shp'
     path_output = os.path.join(folder, filename)
 
-    if os.path.exists(path_output):
-        return print('Existing fiber already processed')
+    # if os.path.exists(path_output):
+    #     return print('Existing fiber already processed')
 
     path = os.path.join(DATA_RAW, 'rail_fiber_routes', 'IND_rails.shp')
     data = gpd.read_file(path, crs='epsg:4326')
     data['source'] = 'existing'
+
+    filename = 'regions_{}_{}.shp'.format(regional_level, tc_code)
+    folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'regions')
+    path = os.path.join(folder, filename)
+    regions = gpd.read_file(path, crs="epsg:4326")
+
+    data = gpd.clip(regions, data)
     data.to_file(path_output, crs='epsg:4326')
 
     return print('Existing fiber processed')
 
 
-def find_nodes_on_existing_infrastructure(country):
+def find_nodes_on_existing_infrastructure(telecom_circle):
     """
     Find those agglomerations which are within a buffered zone of
     existing fiber links.
 
     """
-    iso3 = country['iso3']
+    iso3 = telecom_circle['iso3']
+    tc_code = telecom_circle['tc_code']
 
-    folder = os.path.join(DATA_INTERMEDIATE, iso3, 'network_existing')
+    folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'network_existing')
     filename = 'core_nodes_existing.shp'
     path_output = os.path.join(folder, filename)
 
@@ -1179,7 +1177,7 @@ def find_nodes_on_existing_infrastructure(country):
     # shape_output = os.path.join(DATA_INTERMEDIATE, iso3, 'network', 'core_edges_buffered.shp')
     # existing_infra.to_file(shape_output, crs='epsg:4326')
 
-    path = os.path.join(DATA_INTERMEDIATE, iso3, 'agglomerations', 'agglomerations.shp')
+    path = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'agglomerations', 'agglomerations.shp')
     agglomerations = gpd.read_file(path, crs='epsg:4326')
 
     bool_list = agglomerations.intersects(existing_infra.unary_union)
@@ -1195,19 +1193,20 @@ def find_nodes_on_existing_infrastructure(country):
     return print('Found nodes on existing infrastructure')
 
 
-def find_nodes(country, regions):
+def find_nodes(telecom_circle, regions):
     """
     Find key nodes.
 
     """
-    iso3 = country['iso3']
-    regional_level = country['regional_level']
+    iso3 = telecom_circle['iso3']
+    tc_code = telecom_circle['tc_code']
+    regional_level = telecom_circle['regional_level']
     GID_level = 'GID_{}'.format(regional_level)
 
-    threshold = country['pop_density_km2']
-    settlement_size = country['settlement_size']
+    threshold = telecom_circle['pop_density_km2']
+    settlement_size = telecom_circle['settlement_size']
 
-    folder_tifs = os.path.join(DATA_INTERMEDIATE, iso3, 'agglomerations', 'tifs')
+    folder_tifs = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'agglomerations', 'tifs')
 
     interim = []
     missing_nodes = set()
@@ -1279,16 +1278,17 @@ def find_nodes(country, regions):
     return interim, missing_nodes
 
 
-def get_missing_nodes(country, regions, missing_nodes, threshold, settlement_size):
+def get_missing_nodes(telecom_circle, regions, missing_nodes, threshold, settlement_size):
     """
     Find any missing nodes
 
     """
-    iso3 = country['iso3']
-    regional_level = country['regional_level']
+    iso3 = telecom_circle['iso3']
+    tc_code = telecom_circle['tc_code']
+    regional_level = telecom_circle['regional_level']
     GID_level = 'GID_{}'.format(regional_level)
 
-    folder_tifs = os.path.join(DATA_INTERMEDIATE, iso3, 'agglomerations', 'tifs')
+    folder_tifs = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'agglomerations', 'tifs')
 
     interim = []
 
@@ -1357,15 +1357,16 @@ def get_missing_nodes(country, regions, missing_nodes, threshold, settlement_siz
     return interim
 
 
-def find_regional_nodes(country):
+def find_regional_nodes(telecom_circle):
     """
 
     """
-    iso3 = country['iso3']
-    regional_level = country['regional_level']
+    iso3 = telecom_circle['iso3']
+    regional_level = telecom_circle['regional_level']
     GID_level = 'GID_{}'.format(regional_level)
+    tc_code = telecom_circle['tc_code']
 
-    folder = os.path.join(DATA_INTERMEDIATE, iso3)
+    folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code)
     input_path = os.path.join(folder, 'agglomerations', 'agglomerations.shp')
     existing_nodes_path = os.path.join(folder, 'network_existing', 'core_nodes_existing.shp')
     output_path = os.path.join(folder, 'network', 'core_nodes.shp')
@@ -1553,11 +1554,14 @@ def fit_edges(input_path, output_path):
     return
 
 
-def prepare_edge_fitting(country):
+def prepare_edge_fitting(telecom_circle):
     """
 
     """
-    folder = os.path.join(DATA_INTERMEDIATE, country['iso3'])
+    iso3 = telecom_circle['iso3']
+    tc_code = telecom_circle['tc_code']
+
+    folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code)
     core_edges_path = os.path.join(folder, 'network_existing', 'core_edges_existing.shp')
 
     if not os.path.exists(core_edges_path):
@@ -1619,15 +1623,16 @@ def prepare_edge_fitting(country):
         output.to_file(path, crs='epsg:4326')
 
 
-def fit_regional_edges(country):
+def fit_regional_edges(telecom_circle):
     """
 
     """
-    iso3 = country['iso3']
-    regional_level = country['regional_level']
+    iso3 = telecom_circle['iso3']
+    tc_code = telecom_circle['tc_code']
+    regional_level = telecom_circle['regional_level']
     GID_level = 'GID_{}'.format(regional_level)
 
-    folder = os.path.join(DATA_INTERMEDIATE, iso3, 'network')
+    folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'network')
     path = os.path.join(folder, 'core_nodes.shp')
 
     nodes = gpd.read_file(path, crs="epsg:4326")
@@ -1663,31 +1668,32 @@ def fit_regional_edges(country):
     return print('Regional edge fitting complete')
 
 
-def generate_core_lut(country):
+def generate_core_lut(telecom_circle):
     """
     Generate core lut.
 
     """
-    iso3 = country['iso3']
-    level = country['regional_level']
+    iso3 = telecom_circle['iso3']
+    level = telecom_circle['regional_level']
+    tc_code = telecom_circle['tc_code']
     regional_level = 'GID_{}'.format(level)
 
     filename = 'core_lut.csv'
-    folder = os.path.join(DATA_INTERMEDIATE, iso3)
+    folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code)
     output_path = os.path.join(folder, filename)
 
     # if os.path.exists(output_path):
     #     return print('Core LUT already generated')
 
-    filename = 'regions_{}_{}.shp'.format(level, iso3)
-    folder = os.path.join(DATA_INTERMEDIATE, iso3, 'regions')
+    filename = 'regions_{}_{}.shp'.format(level, tc_code)
+    folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'regions')
     path = os.path.join(folder, filename)
     regions = gpd.read_file(path)
     regions.crs = 'epsg:4326'
 
     output = []
 
-    path = os.path.join(DATA_INTERMEDIATE, iso3, 'network', 'core_edges.shp')
+    path = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'network', 'core_edges.shp')
     core_edges = gpd.read_file(path)
     core_edges.crs = 'epsg:4326'
     core_edges = gpd.GeoDataFrame(
@@ -1720,7 +1726,7 @@ def generate_core_lut(country):
         })
 
 
-    path = os.path.join(DATA_INTERMEDIATE, iso3, 'network', 'regional_edges.shp')
+    path = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'network', 'regional_edges.shp')
     if os.path.exists(path):
         regional_edges = gpd.read_file(path, crs='epsg:4326')
 
@@ -1736,7 +1742,7 @@ def generate_core_lut(country):
                 'source': 'new', #all regional edges are assumed to be new
             })
 
-    path = os.path.join(DATA_INTERMEDIATE, iso3, 'network', 'core_nodes.shp')
+    path = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'network', 'core_nodes.shp')
     nodes = gpd.read_file(path, crs='epsg:4326')
 
     existing_nodes = nodes.loc[nodes['source'] == 'existing']
@@ -1763,7 +1769,7 @@ def generate_core_lut(country):
             'source': 'new',
         })
 
-    path = os.path.join(DATA_INTERMEDIATE, iso3, 'network', 'regional_nodes.shp')
+    path = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'network', 'regional_nodes.shp')
     regional_nodes = gpd.read_file(path, crs='epsg:4326')
 
     existing_nodes = regional_nodes.loc[regional_nodes['source'] == 'existing']
@@ -1797,107 +1803,7 @@ def generate_core_lut(country):
     return print('Completed core lut')
 
 
-def generate_backhaul_lut(country):
-    """
-    Simulate backhaul distance given a 100km^2 area.
-      Simulations show that for every 10x increase in node density,
-      there is a 3.2x decrease in backhaul length.
-
-    node_density_km2	average_distance_km
-    0.000001	606.0	10	 3.2
-    0.00001	189.0	10	 3.8
-    0.0001	50.0	10	 3.1
-    0.001	16.0	10	 3.2
-    0.01	5.0	10	 3.2
-    0.1	1.6	10	 3.2
-    1	0.5
-
-    """
-    filename = 'backhaul_lut.csv'
-    folder = os.path.join(DATA_INTERMEDIATE)
-    path = os.path.join(folder, filename)
-
-    if os.path.exists(path):
-        return print('Backhaul LUT already generated')
-
-    output = []
-
-    number_of_regional_nodes_range = [1, 10, 100, 1000, 10000]
-
-    area_km2 = 1e6
-
-    for number_of_regional_nodes in number_of_regional_nodes_range:
-
-        sites = []
-
-        for i in range(1, int(round(max(number_of_regional_nodes_range) + 1))):
-            x = random.uniform(0, round(math.sqrt(area_km2)))
-            y = random.uniform(0, round(math.sqrt(area_km2)))
-            sites.append({
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': (x, y)
-                },
-                'properties': {
-                    'id': i
-                }
-            })
-
-        regional_nodes = []
-
-        for i in range(1, number_of_regional_nodes + 1):
-            x = random.uniform(0, round(math.sqrt(area_km2)))
-            y = random.uniform(0, round(math.sqrt(area_km2)))
-            regional_nodes.append({
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': (x, y)
-                },
-                'properties': {
-                    'id': i
-                }
-            })
-
-        distances = []
-
-        idx = index.Index()
-
-        for regional_node in regional_nodes:
-            idx.insert(
-                regional_node['properties']['id'],
-                shape(regional_node['geometry']).bounds,
-                regional_node)
-
-        for site in sites:
-
-            geom1 = shape(site['geometry'])
-
-            nearest_regional_node = [i for i in idx.nearest((geom1.bounds))][0]
-
-            for regional_node in regional_nodes:
-                if regional_node['properties']['id'] == nearest_regional_node:
-
-                    x1 = site['geometry']['coordinates'][0]
-                    x2 = regional_node['geometry']['coordinates'][0]
-                    y1 = site['geometry']['coordinates'][1]
-                    y2 = regional_node['geometry']['coordinates'][1]
-
-                    distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
-
-                    distances.append(distance)
-
-        output.append({
-            'node_density_km2': round(number_of_regional_nodes / area_km2, 8),
-            'average_distance_km': int(round(sum(distances) / len(distances))),
-        })
-
-    output = pd.DataFrame(output)
-    output.to_csv(path, index=False)
-
-    return print('Completed backhaul LUT processing')
-
-
-def load_subscription_data(path, iso3):
+def load_subscription_data(path, tc_code):
     """
     Load in itu cell phone subscription data.
 
@@ -1905,10 +1811,8 @@ def load_subscription_data(path, iso3):
     ----------
     path : string
         Location of itu data as .csv.
-    country : string
-        ISO3 digital country code.
-    country_lut : list of dicts
-        Lookup table containing country name to ISO3 digit code.
+    tc_code : string
+        Telecom circle code.
 
     Returns
     -------
@@ -1934,14 +1838,15 @@ def load_subscription_data(path, iso3):
     return output
 
 
-def forecast_subscriptions(country):
+def forecast_subscriptions(telecom_circle):
     """
 
     """
-    iso3 = country['iso3']
+    iso3 = telecom_circle['iso3']
+    tc_code = telecom_circle['tc_code']
 
-    path = os.path.join(DATA_RAW, 'gsma', 'gsma_unique_subscribers.csv')
-    historical_data = load_subscription_data(path, country['iso3'])
+    path = os.path.join(DATA_RAW, 'ind_subscribers.csv')
+    historical_data = load_subscription_data(path, tc_code)
 
     start_point = 2021
     end_point = 2030
@@ -2015,8 +1920,8 @@ if __name__ == '__main__':
     telecom_circles = [
         {'iso3': 'IND', 'iso2': 'IN', 'tc_code': 'DL', 'tc_name': 'Delhi',
         'regional_level': 2, #'regional_nodes_level': 3,
-            'region': 'S&SE Asia', 'pop_density_km2': 1000,
-            'settlement_size': 20000, 'subs_growth': 1,
+            'region': 'S&SE Asia', 'pop_density_km2': 15000,
+            'settlement_size': 50000, 'subs_growth': 1,
         },
         # {'iso3': 'IND', 'iso2': 'IN', 'tc_code': 'MU', 'tc_name': 'Mumbai',
         # 'regional_level': 2, #'regional_nodes_level': 3,
@@ -2035,11 +1940,11 @@ if __name__ == '__main__':
         print('Processing regions')
         process_regions(tc)
 
-        # print('Processing settlement layer')
-        # process_settlement_layer(tc)
+        print('Processing settlement layer')
+        process_settlement_layer(tc)
 
-        # print('Processing night lights')
-        # process_night_lights(tc)
+        print('Processing night lights')
+        process_night_lights(tc)
 
         print('Processing coverage shapes')
         process_coverage_shapes(tc)
@@ -2047,29 +1952,26 @@ if __name__ == '__main__':
         print('Getting regional data')
         get_regional_data(tc)
 
-        # print('Generating agglomeration lookup table')
-        # generate_agglomeration_lut(tc)
+        print('Generating agglomeration lookup table')
+        generate_agglomeration_lut(tc)
 
-        # print('Load existing fiber infrastructure')
-        # process_existing_fiber(tc)
+        print('Load existing fiber infrastructure')
+        process_existing_fiber(tc)
 
-        # print('Estimate existing nodes')
-        # find_nodes_on_existing_infrastructure(tc)
+        print('Estimate existing nodes')
+        find_nodes_on_existing_infrastructure(tc)
 
-        # print('Find regional nodes')
-        # find_regional_nodes(tc)
+        print('Find regional nodes')
+        find_regional_nodes(tc)
 
-        # print('Fit edges')
-        # prepare_edge_fitting(tc)
+        print('Fit edges')
+        prepare_edge_fitting(tc)
 
-        # print('Fit regional edges')
-        # fit_regional_edges(tc)
+        print('Fit regional edges')
+        fit_regional_edges(tc)
 
-        # print('Create core lookup table')
-        # generate_core_lut(tc)
-
-        # print('Create backhaul lookup table')
-        # generate_backhaul_lut(tc)
+        print('Create core lookup table')
+        generate_core_lut(tc)
 
         # print('Create subscription forcast')
         # forecast_subscriptions(tc)
