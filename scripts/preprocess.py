@@ -40,8 +40,8 @@ def process_country_shape(iso3):
 
     Parameters
     ----------
-    country : string
-        Three digit ISO country code.
+    telecom_circle : dict
+        Contains all parameter information for the telecom circle.
 
     """
     print('----')
@@ -108,8 +108,8 @@ def process_regions(telecom_circle):
     folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'regions')
     path_processed = os.path.join(folder, filename)
 
-    if os.path.exists(path_processed):
-        return
+    # if os.path.exists(path_processed):
+    #     return
 
     path_lut = os.path.join(DATA_RAW, 'tc_lut_GID_{}.csv'.format(regional_level))
     lut = pd.read_csv(path_lut)
@@ -137,10 +137,12 @@ def process_regions(telecom_circle):
         regions.to_file(path_processed, driver='ESRI Shapefile')
     except:
         print('Unable to write {}'.format(filename))
-        pass
 
     tc_outline = regions.unary_union
-    tc_outline = gpd.GeoDataFrame({'geometry': tc_outline}, crs='epsg:4326')
+    if tc_outline.geom_type == 'MultiPolygon':
+        tc_outline = gpd.GeoDataFrame({'geometry': tc_outline}, crs='epsg:4326')
+    else:
+        tc_outline = gpd.GeoDataFrame({'geometry': tc_outline}, crs='epsg:4326', index=[0])
     path = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'tc_outline.shp')
     tc_outline.to_file(path)
 
@@ -295,12 +297,6 @@ def process_coverage_shapes(telecom_circle):
     iso3 = telecom_circle['iso3']
     iso2 = telecom_circle['iso2']
     tc_code = telecom_circle['tc_code']
-    gid_level = 'GID_{}'.format(level)
-
-    filename = 'regions_{}_{}.shp'.format(level, tc_code)
-    folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'regions')
-    path = os.path.join(folder, filename)
-    regions = gpd.read_file(path)
 
     technologies = [
         'GSM',
@@ -310,15 +306,12 @@ def process_coverage_shapes(telecom_circle):
 
     for tech in technologies:
 
-        folder_coverage = os.path.join(DATA_INTERMEDIATE, iso3, 'coverage')
+        folder_coverage = os.path.join(DATA_INTERMEDIATE, iso3,  'national_coverage')
         filename = 'coverage_{}.shp'.format(tech)
         path_output = os.path.join(folder_coverage, filename)
 
-        # if os.path.exists(path_output):
-        #     continue
-
         print('----')
-        print('Working on {} in {}'.format(tech, iso3))
+        print('Working on {} in {}'.format(tech, tc_code))
 
         if not os.path.exists(path_output):
 
@@ -382,23 +375,26 @@ def process_coverage_shapes(telecom_circle):
         filename = 'coverage_{}.shp'.format(tech)
         path_output = os.path.join(folder_tc_coverage, filename)
 
-        if os.path.exists(path_output):
-            continue
-
         if not os.path.exists(folder_tc_coverage):
             os.makedirs(folder_tc_coverage)
 
-        folder = os.path.join(DATA_INTERMEDIATE, iso3, 'coverage')
-        path =  os.path.join(folder, 'coverage_{}.shp'.format(tech))
+        # if os.path.exists(path_output):
+        #     continue
 
-        if os.path.exists(path):
+        # folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'coverage')
+        # path =  os.path.join(folder, 'coverage_{}.shp'.format(tech))
 
-            coverage = gpd.read_file(path)
+        if not os.path.exists(path_output):
+
+            filename = 'regions_{}_{}.shp'.format(level, tc_code)
+            folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'regions')
+            path = os.path.join(folder, filename)
+            regions = gpd.read_file(path)
 
             coverage = coverage[['geometry']]
 
             print('Overlaying regions and coverage')
-            coverage = gpd.overlay(regions, coverage, how='intersection')
+            coverage = gpd.overlay(coverage, regions, how='intersection')
 
             coverage.to_file(path_output, driver='ESRI Shapefile')
 
@@ -442,14 +438,14 @@ def process_regional_coverage(telecom_circle):
 
     for tech in technologies:
 
-        folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'coverage')
+        folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'national_coverage')
         path =  os.path.join(folder, 'coverage_{}.shp'.format(tech))
 
         if os.path.exists(path):
 
             coverage = gpd.read_file(path)
 
-            # segments = gpd.overlay(regions, coverage, how='intersection')
+            coverage = gpd.overlay(regions, coverage, how='intersection')
 
             tech_coverage = {}
 
@@ -479,7 +475,7 @@ def get_regional_data(telecom_circle):
     tc_code = telecom_circle['tc_code']
     gid_level = 'GID_{}'.format(level)
 
-    path_output = os.path.join(DATA_INTERMEDIATE, iso3, 'regional_data.csv')
+    path_output = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'regional_data.csv')
 
     # if os.path.exists(path_output):
     #     return print('Regional data already exists')
@@ -487,11 +483,11 @@ def get_regional_data(telecom_circle):
     path_tc = os.path.join(DATA_INTERMEDIATE, iso3, tc_code,
         'tc_outline.shp')
 
-    print('Getting regional coverage')
-    coverage = process_regional_coverage(telecom_circle)
-
     print('Getting telecom circle outline')
     single_tc = gpd.read_file(path_tc)
+
+    print('Getting regional coverage')
+    coverage = process_regional_coverage(telecom_circle)
 
     print('----')
     print('working on {}'.format(iso3))
@@ -1197,6 +1193,8 @@ def find_nodes(telecom_circle, regions):
     """
     Find key nodes.
 
+    Some regions fail because the population threshold is set too high.
+
     """
     iso3 = telecom_circle['iso3']
     tc_code = telecom_circle['tc_code']
@@ -1250,6 +1248,8 @@ def find_nodes(telecom_circle, regions):
             )
 
         if len(shapes_df) == 0:
+            print('WARNING: No possible nodes locations found')
+            print('WARNING: Check the regional population density threshold')
             continue
 
         nodes = gpd.overlay(shapes_df, gpd_region, how='intersection')
@@ -1524,6 +1524,7 @@ def fit_edges(input_path, output_path):
                         'source': 'new',
                     }
                 })
+
     if len(all_possible_edges) == 0:
         return
 
@@ -1639,7 +1640,6 @@ def fit_regional_edges(telecom_circle):
     unique_regions = nodes[GID_level].unique()
 
     for unique_region in unique_regions:
-
         input_path = os.path.join(folder, 'regional_nodes', unique_region + '.shp')
         output_path = os.path.join(folder, 'regional_edges', unique_region + '.shp')
         fit_edges(input_path, output_path)
@@ -1661,9 +1661,12 @@ def fit_regional_edges(telecom_circle):
                     }
                 })
 
-    output = gpd.GeoDataFrame.from_features(output, crs='epsg:4326')
-    path = os.path.join(folder, 'regional_edges.shp')
-    output.to_file(path)
+    if len(output) > 0:
+        output = gpd.GeoDataFrame.from_features(output, crs='epsg:4326')
+        path = os.path.join(folder, 'regional_edges.shp')
+        output.to_file(path)
+    else:
+        print('----WARNING--- No regional edges exist for {}'.format(tc_code))
 
     return print('Regional edge fitting complete')
 
@@ -1805,7 +1808,7 @@ def generate_core_lut(telecom_circle):
 
 def load_subscription_data(path, tc_code):
     """
-    Load in itu cell phone subscription data.
+    Load in cell phone subscription data.
 
     Parameters
     ----------
@@ -1820,20 +1823,21 @@ def load_subscription_data(path, tc_code):
         Time series data of cell phone subscriptions.
 
     """
+
     output = []
 
-    historical_data = pd.read_csv(path, encoding = "ISO-8859-1")
+    historical_data = pd.read_csv(path)
     historical_data = historical_data.to_dict('records')
 
-    for year in range(2010, 2021):
+    for year in range(2008, 2018+1):
         year = str(year)
         for item in historical_data:
-            if item['iso3'] == iso3:
-                output.append({
-                    'country': iso3,
-                    'penetration': float(item[year]) * 100,
-                    'year':  year,
-                })
+            if item['tc_code'] == tc_code:
+                    output.append({
+                        'tc_code': tc_code,
+                        'penetration': float(item[year]),
+                        'year':  year,
+                    })
 
     return output
 
@@ -1845,15 +1849,15 @@ def forecast_subscriptions(telecom_circle):
     iso3 = telecom_circle['iso3']
     tc_code = telecom_circle['tc_code']
 
-    path = os.path.join(DATA_RAW, 'ind_subscribers.csv')
+    path = os.path.join(DATA_RAW, 'ten_year_subsc_data.csv')
     historical_data = load_subscription_data(path, tc_code)
 
-    start_point = 2021
+    start_point = 2019
     end_point = 2030
     horizon = 4
 
     forecast = forecast_linear(
-        country,
+        telecom_circle,
         historical_data,
         start_point,
         end_point,
@@ -1862,7 +1866,7 @@ def forecast_subscriptions(telecom_circle):
 
     forecast_df = pd.DataFrame(historical_data + forecast)
 
-    path = os.path.join(DATA_INTERMEDIATE, iso3, 'subscriptions')
+    path = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'subscriptions')
 
     if not os.path.exists(path):
         os.mkdir(path)
@@ -1875,12 +1879,14 @@ def forecast_subscriptions(telecom_circle):
     return print('Completed subscription forecast')
 
 
-def forecast_linear(country, historical_data, start_point, end_point, horizon):
+def forecast_linear(telecom_circle, historical_data, start_point, end_point, horizon):
     """
     Forcasts subscription adoption rate.
 
     Parameters
     ----------
+    telecom_circle : dict
+        Contains all parameter information for the telecom circle.
     historical_data : list of dicts
         Past penetration data.
     start_point : int
@@ -1893,7 +1899,7 @@ def forecast_linear(country, historical_data, start_point, end_point, horizon):
     """
     output = []
 
-    subs_growth = country['subs_growth']
+    subs_growth = telecom_circle['subs_growth']
 
     year_0 = sorted(historical_data, key = lambda i: i['year'], reverse=True)[0]
 
@@ -1904,10 +1910,13 @@ def forecast_linear(country, historical_data, start_point, end_point, horizon):
         else:
             penetration = penetration * (1 + (subs_growth/100))
 
+        if penetration > 95:
+            penetration = 95
+
         if year not in [item['year'] for item in output]:
 
             output.append({
-                'country': country['iso3'],
+                'tc_code': telecom_circle['tc_code'],
                 'year': year,
                 'penetration': round(penetration, 2),
             })
@@ -1917,25 +1926,55 @@ def forecast_linear(country, historical_data, start_point, end_point, horizon):
 
 if __name__ == '__main__':
 
-    telecom_circles = [
-        {'iso3': 'IND', 'iso2': 'IN', 'tc_code': 'DL', 'tc_name': 'Delhi',
-        'regional_level': 2, #'regional_nodes_level': 3,
-            'region': 'S&SE Asia', 'pop_density_km2': 15000,
-            'settlement_size': 50000, 'subs_growth': 1,
-        },
-        # {'iso3': 'IND', 'iso2': 'IN', 'tc_code': 'MU', 'tc_name': 'Mumbai',
-        # 'regional_level': 2, #'regional_nodes_level': 3,
-        #     'region': 'S&SE Asia', 'pop_density_km2': 1000,
-        #     'settlement_size': 20000, 'subs_growth': 1,
-        # },
+    tc_codes = [
+        'AP','AS', 'BR', 'DL', 'GJ', 'HP', 'HR', 'JK', 'KA', 'KL', 'KO',
+        'MH', 'MP','MU', 'NE', 'OR', 'PB', 'RJ', 'TN', 'UE', 'UW', 'WB',
     ]
+
+    telecom_circles = []
+
+    tc_thresholds = {
+        'AS':{'pop_density_km2': 250,'settlement_size': 2500},
+        'BR':{'pop_density_km2': 250,'settlement_size': 2500},
+        'GJ':{'pop_density_km2': 250,'settlement_size': 2500},
+        'JK':{'pop_density_km2': 250,'settlement_size': 2500},
+        'KA':{'pop_density_km2': 250,'settlement_size': 2500},
+        'KL':{'pop_density_km2': 250,'settlement_size': 2500},
+        'KO':{'pop_density_km2': 250,'settlement_size': 2500},
+        'MH':{'pop_density_km2': 250,'settlement_size': 2500},
+        'MP':{'pop_density_km2': 250,'settlement_size': 2500},
+        'NE':{'pop_density_km2': 250,'settlement_size': 2500},
+        'OR':{'pop_density_km2': 250,'settlement_size': 2500},
+        'PB':{'pop_density_km2': 250,'settlement_size': 2500},
+        'RJ':{'pop_density_km2': 250,'settlement_size': 2500},
+        'TN':{'pop_density_km2': 250,'settlement_size': 2500},
+        'UE':{'pop_density_km2': 250,'settlement_size': 2500},
+        'UW':{'pop_density_km2': 250,'settlement_size': 2500},
+        'WB':{'pop_density_km2': 250,'settlement_size': 2500},
+    }
+
+    for tc_code in tc_codes:
+        if not tc_code in tc_thresholds.keys():
+            telecom_circles.append({
+                'iso3': 'IND', 'iso2': 'IN', 'tc_code': tc_code,
+                'regional_level': 2, 'region': 'S&SE Asia', 'pop_density_km2': 1000,
+                'settlement_size': 20000, 'subs_growth': 1,
+            })
+        else:
+            telecom_circles.append({
+                'iso3': 'IND', 'iso2': 'IN', 'tc_code': tc_code,
+                'regional_level': 2, 'region': 'S&SE Asia',
+                'pop_density_km2': tc_thresholds[tc_code]['pop_density_km2'],
+                'settlement_size': tc_thresholds[tc_code]['settlement_size'],
+                'subs_growth': 1,
+            })
 
     print('Processing country boundary')
     process_country_shape(telecom_circles[0]['iso3'])
 
     for tc in telecom_circles:
 
-        print('Working on {}'.format(tc['tc_name']))
+        print('Working on {}'.format(tc['tc_code']))
 
         print('Processing regions')
         process_regions(tc)
@@ -1973,5 +2012,5 @@ if __name__ == '__main__':
         print('Create core lookup table')
         generate_core_lut(tc)
 
-        # print('Create subscription forcast')
-        # forecast_subscriptions(tc)
+        print('Create subscription forcast')
+        forecast_subscriptions(tc)
