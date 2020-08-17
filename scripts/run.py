@@ -11,10 +11,9 @@ import csv
 import configparser
 import pandas as pd
 import geopandas
-from tqdm import tqdm
 from collections import OrderedDict
 
-from options import OPTIONS, COUNTRY_PARAMETERS
+from options import OPTIONS, TELECOM_CIRCLE_PARAMETERS
 from pytal.demand import estimate_demand
 from pytal.supply import estimate_supply
 from pytal.assess import assess
@@ -28,13 +27,14 @@ DATA_INTERMEDIATE = os.path.join(BASE_PATH, 'intermediate')
 DATA_PROCESSED = os.path.join(BASE_PATH, 'processed')
 
 
-def load_regions(path):
+def load_regions(path, telecom_circle):
     """
     Load country regions.
 
     """
     regions = pd.read_csv(path)
 
+    regions['tc_code'] = telecom_circle['tc_code']
     regions['geotype'] = regions.apply(define_geotype, axis=1)
 
     return regions
@@ -148,18 +148,18 @@ def find_country_list(continent_list):
     return country_list, country_regional_levels
 
 
-def load_cluster(path, iso3):
-    """
-    Load cluster number. You need to make sure the
-    R clustering script (pytal/vis/clustering/clustering.r)
-    has been run first.
+# def load_cluster(path, iso3):
+#     """
+#     Load cluster number. You need to make sure the
+#     R clustering script (pytal/vis/clustering/clustering.r)
+#     has been run first.
 
-    """
-    with open(path, 'r') as source:
-        reader = csv.DictReader(source)
-        for row in reader:
-            if row['ISO_3digit'] == iso3:
-                return row['cluster']
+#     """
+#     with open(path, 'r') as source:
+#         reader = csv.DictReader(source)
+#         for row in reader:
+#             if row['ISO_3digit'] == iso3:
+#                 return row['cluster']
 
 
 def load_penetration(path):
@@ -185,7 +185,6 @@ def load_smartphones(country, path):
     defaults to the mean values across all surveyed countries.
 
     """
-    cluster = country['cluster']
     iso3 = country['iso3']
 
     countries = set()
@@ -204,31 +203,14 @@ def load_smartphones(country, path):
     with open(path, 'r') as source:
         reader = csv.DictReader(source)
         for row in reader:
-            if iso3 in list(countries):
-                if row['iso3'] == iso3:
-                    iso3 = row['iso3']
-                    settlement = row['Settlement'].lower()
-                    output[settlement] = {
-                        'basic': float(row['Basic']) / 100,
-                        'feature': float(row['Feature']) / 100,
-                        'smartphone': float(row['Smartphone']) / 100,
-                    }
-            elif row['cluster'] == cluster:
+            if row['iso3'] == iso3:
+                iso3 = row['iso3']
                 settlement = row['Settlement'].lower()
                 output[settlement] = {
                     'basic': float(row['Basic']) / 100,
                     'feature': float(row['Feature']) / 100,
                     'smartphone': float(row['Smartphone']) / 100,
                 }
-            else:
-                settlement = row['Settlement'].lower()
-                all_data[settlement].append(float(row['Smartphone']) / 100)
-
-    if len(output) == 0:
-        output = {
-            'urban': {'smartphone': sum(all_data['urban']) / len(all_data['urban'])},
-            'rural': {'smartphone': sum(all_data['rural']) / len(all_data['rural'])},
-        }
 
     return output
 
@@ -274,7 +256,7 @@ def define_deciles(regions):
     regions = regions.sort_values(by='population_km2', ascending=True)
 
     regions['decile'] = regions.groupby([
-        'GID_0', 'scenario', 'strategy', 'confidence'], as_index=True).population_km2.apply( #cost_per_sp_user
+        'GID_0', 'tc_code', 'scenario', 'strategy', 'confidence'], as_index=True).population_km2.apply( #cost_per_sp_user
             pd.qcut, q=11, precision=0,
             labels=[100,90,80,70,60,50,40,30,20,10,0], duplicates='drop') #   [0,10,20,30,40,50,60,70,80,90,100]
 
@@ -288,6 +270,8 @@ def write_results(regional_results, folder, metric):
     """
     print('Writing national results')
     national_results = pd.DataFrame(regional_results)
+    # national_results.to_csv(os.path.join(BASE_PATH, '..', 'results', 'test.csv'), index=False)
+
     national_results = national_results[[
         'GID_0', 'scenario', 'strategy', 'confidence', 'population', 'area_km2',
         'population_km2', 'phones_on_network', 'smartphones_on_network',
@@ -323,11 +307,50 @@ def write_results(regional_results, folder, metric):
     path = os.path.join(folder,'national_cost_results_{}.csv'.format(metric))
     national_cost_results.to_csv(path, index=True)
 
-    print('Writing general decile results')
+    print('Writing telecom circle results')
+    tc_results = pd.DataFrame(regional_results)
+    tc_results = tc_results[[
+        'tc_code', 'scenario', 'strategy', 'confidence', 'population', 'area_km2',
+        'population_km2', 'phones_on_network', 'smartphones_on_network',
+        'sites_estimated_total', 'existing_network_sites', 'upgraded_sites', 'new_sites',
+        'total_revenue', 'total_cost', 'cost_per_sp_user',
+    ]]
+
+    tc_results = tc_results.groupby([
+        'tc_code', 'scenario', 'strategy', 'confidence'], as_index=True).sum()
+    tc_results['cost_per_network_user'] = (
+        tc_results['total_cost'] / tc_results['phones_on_network'])
+
+    path = os.path.join(folder,'tc_results_{}.csv'.format(metric))
+    tc_results.to_csv(path, index=True)
+
+    print('Writing telecom circle cost composition results')
+    tc_results_cost_results = pd.DataFrame(regional_results)
+    tc_results_cost_results = tc_results_cost_results[[
+        'tc_code', 'scenario', 'strategy', 'confidence', 'population', 'population_km2',
+        'phones_on_network', 'cost_per_sp_user',
+        'total_revenue', 'ran', 'backhaul_fronthaul', 'civils', 'core_network',
+        'ops_and_acquisition',
+        'spectrum_cost', 'tax', 'profit_margin', 'total_cost',
+        'available_cross_subsidy', 'deficit', 'used_cross_subsidy',
+        'required_state_subsidy',
+    ]]
+
+    tc_results_cost_results = tc_results_cost_results.groupby([
+        'tc_code', 'scenario', 'strategy', 'confidence'], as_index=True).sum()
+    tc_results_cost_results['cost_per_network_user'] = (
+        tc_results_cost_results['total_cost'] / tc_results_cost_results['phones_on_network'])
+
+    path = os.path.join(folder,'tc_results_cost_results_{}.csv'.format(metric))
+    tc_results_cost_results.to_csv(path, index=True)
+
+    print('Writing general telecom circle decile results')
     decile_results = pd.DataFrame(regional_results)
     decile_results = define_deciles(decile_results)
+    # decile_results.to_csv(os.path.join(BASE_PATH, '..', 'results', 'test.csv'), index=False)
+
     decile_results = decile_results[[
-        'GID_0', 'scenario', 'strategy', 'decile', 'confidence',
+        'tc_code', 'scenario', 'strategy', 'decile', 'confidence', #
         'population', 'area_km2', #'population_km2',
         'phones_on_network', #'phone_density_on_network_km2',
         'smartphones_on_network', #'sp_density_on_network_km2',
@@ -335,7 +358,7 @@ def write_results(regional_results, folder, metric):
         'total_revenue', 'total_cost', #'cost_per_sp_user',
     ]]
     decile_results = decile_results.groupby([
-        'GID_0', 'scenario', 'strategy', 'confidence', 'decile'], as_index=True).sum()
+        'tc_code', 'scenario', 'strategy', 'confidence', 'decile'], as_index=True).sum() #'tc_code',
 
     decile_results['population_km2'] = (
         decile_results['population'] / decile_results['area_km2'])
@@ -352,14 +375,14 @@ def write_results(regional_results, folder, metric):
     decile_results['cost_per_sp_user'] = (
         decile_results['total_cost'] / decile_results['smartphones_on_network'])
 
-    path = os.path.join(folder,'decile_results_{}.csv'.format(metric))
+    path = os.path.join(folder,'tc_decile_results_{}.csv'.format(metric))
     decile_results.to_csv(path, index=True)
 
-    print('Writing cost decile results')
+    print('Writing telecom circle cost decile results')
     decile_cost_results = pd.DataFrame(regional_results)
     decile_cost_results = define_deciles(decile_cost_results)
     decile_cost_results = decile_cost_results[[
-        'GID_0', 'scenario', 'strategy', 'decile', 'confidence',
+        'tc_code', 'scenario', 'strategy', 'decile', 'confidence', #'tc_code',
         'population', 'area_km2', #'population_km2',
         'phones_on_network', #'cost_per_sp_user',
         'total_revenue', 'ran', 'backhaul_fronthaul', 'civils', 'core_network',
@@ -369,7 +392,7 @@ def write_results(regional_results, folder, metric):
     ]]
 
     decile_cost_results = decile_cost_results.groupby([
-        'GID_0', 'scenario', 'strategy', 'confidence', 'decile'], as_index=True).sum()
+        'tc_code', 'scenario', 'strategy', 'confidence', 'decile'], as_index=True).sum() #'tc_code',
     decile_cost_results['cost_per_network_user'] = (
         decile_cost_results['total_cost'] / decile_cost_results['phones_on_network'])
 
@@ -380,7 +403,7 @@ def write_results(regional_results, folder, metric):
     regional_results = pd.DataFrame(regional_results)
     regional_results = define_deciles(regional_results)
     regional_results = regional_results[[
-        'GID_0', 'GID_id', 'scenario', 'strategy', 'decile',
+        'tc_code', 'GID_id', 'scenario', 'strategy', 'decile', #'tc_code',
         'confidence', 'population', 'area_km2', #'population_km2',
         'phones_on_network', 'cost_per_sp_user',
         'upgraded_sites','new_sites', 'total_revenue', 'total_cost',
@@ -463,7 +486,7 @@ if __name__ == '__main__':
         'discount_rate': 5,
         'opex_percentage_of_capex': 10,
         'sectorization': 3,
-        'confidence': [5, 50, 95],
+        'confidence': [50],#[5, 50, 95],
         'networks': 3,
         'local_node_spacing_km2': 40,
         'io_n2_n3': 1,
@@ -480,24 +503,29 @@ if __name__ == '__main__':
     path = os.path.join(DATA_RAW, 'pysim5g', 'capacity_lut_by_frequency.csv')
     lookup = read_capacity_lookup(path)
 
-    # countries, country_regional_levels = find_country_list(['Africa', 'South America'])
+    tc_codes = [
+        'AP',
+        'AS',
+        'BR',
+        'DL', 'GJ', 'HP', 'HR', 'JK', 'KA', 'KL', 'KO',
+        'MH', 'MP',
+        # 'MU', #needs more granular lower units
+        'NE', 'OR', 'PB', 'RJ', 'TN', 'UE', 'UW', 'WB',
+    ]
 
-    countries = [
-        {'iso3': 'MWI', 'iso2': 'MW', 'regional_level': 2, 'regional_nodes_level': 2},
-        {'iso3': 'UGA', 'iso2': 'UG', 'regional_level': 2, 'regional_nodes_level': 2},
-        {'iso3': 'SEN', 'iso2': 'SN', 'regional_level': 2, 'regional_nodes_level': 2},
-        {'iso3': 'KEN', 'iso2': 'KE', 'regional_level': 2, 'regional_nodes_level': 1},
-        {'iso3': 'PAK', 'iso2': 'PK', 'regional_level': 3, 'regional_nodes_level': 2},
-        {'iso3': 'ALB', 'iso2': 'AL', 'regional_level': 2, 'regional_nodes_level': 1},
-        {'iso3': 'PER', 'iso2': 'PE', 'regional_level': 2, 'regional_nodes_level': 1},
-        {'iso3': 'MEX', 'iso2': 'MX', 'regional_level': 2, 'regional_nodes_level': 1},
-        ]
+    telecom_circles = []
+
+    for tc_code in tc_codes:
+        telecom_circles.append({
+            'iso3': 'IND', 'iso2': 'IN', 'tc_code': tc_code,
+            'regional_level': 2, 'regional_nodes_level': 2
+        })
 
     decision_options = [
         'technology_options',
-        'business_model_options',
-        'policy_options',
-        'mixed_options',
+        # 'business_model_options',
+        # 'policy_options',
+        # 'mixed_options',
     ]
 
     for decision_option in decision_options:#[:1]:
@@ -507,15 +535,12 @@ if __name__ == '__main__':
         regional_results = []
         regional_cost_structure = []
 
-        for country in countries:#[:1]:
+        for telecom_circle in telecom_circles:#[:1]:
 
-            iso3 = country['iso3']
+            iso3 = telecom_circle['iso3']
+            tc_code = telecom_circle['tc_code']
 
-            country_parameters = COUNTRY_PARAMETERS[iso3]
-
-            folder = os.path.join(BASE_PATH, '..', 'vis', 'clustering', 'results')
-            filename = 'data_clustering_results.csv'
-            country['cluster'] = load_cluster(os.path.join(folder, filename), iso3)
+            tc_parameters = TELECOM_CIRCLE_PARAMETERS[tc_code]
 
             folder = os.path.join(DATA_INTERMEDIATE, iso3, 'subscriptions')
             filename = 'subs_forecast.csv'
@@ -523,14 +548,14 @@ if __name__ == '__main__':
 
             folder = os.path.join(DATA_RAW, 'wb_smartphone_survey')
             filename = 'wb_smartphone_survey.csv'
-            smartphone_lut = load_smartphones(country, os.path.join(folder, filename))
+            smartphone_lut = load_smartphones(telecom_circle, os.path.join(folder, filename))
 
             folder = os.path.join(DATA_INTERMEDIATE, iso3)
             filename = 'core_lut.csv'
             core_lut = load_core_lut(os.path.join(folder, filename))
 
             print('-----')
-            print('Working on {} in {}'.format(decision_option, iso3))
+            print('Working on {} in {}, {}'.format(decision_option, tc_code, iso3))
             print(' ')
 
             for option in options:#[:3]:
@@ -543,8 +568,8 @@ if __name__ == '__main__':
 
                     print('CI: {}'.format(ci))
 
-                    path = os.path.join(DATA_INTERMEDIATE, iso3, 'regional_data.csv')
-                    data = load_regions(path)
+                    path = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'regional_data.csv')
+                    data = load_regions(path, telecom_circle)
 
                     data_initial = data.to_dict('records')
 
@@ -552,30 +577,30 @@ if __name__ == '__main__':
                         data_initial,
                         option,
                         GLOBAL_PARAMETERS,
-                        country_parameters,
+                        tc_parameters,
                         TIMESTEPS,
                         penetration_lut,
                         smartphone_lut
                     )
 
                     data_supply = estimate_supply(
-                        country,
+                        telecom_circle,
                         data_demand,
                         lookup,
                         option,
                         GLOBAL_PARAMETERS,
-                        country_parameters,
+                        tc_parameters,
                         COSTS,
                         core_lut,
                         ci
                     )
 
                     data_assess = assess(
-                        country,
+                        telecom_circle,
                         data_supply,
                         option,
                         GLOBAL_PARAMETERS,
-                        country_parameters,
+                        tc_parameters,
                         COSTS
                     )
 
@@ -584,6 +609,9 @@ if __name__ == '__main__':
                     regional_results = regional_results + final_results
 
         folder = os.path.join(BASE_PATH, '..', 'results')
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
         write_results(regional_results, folder, decision_option)
 
         print('Completed model run')
