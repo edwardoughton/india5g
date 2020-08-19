@@ -270,8 +270,6 @@ def write_results(regional_results, folder, metric):
     """
     print('Writing national results')
     national_results = pd.DataFrame(regional_results)
-    # national_results.to_csv(os.path.join(BASE_PATH, '..', 'results', 'test.csv'), index=False)
-
     national_results = national_results[[
         'GID_0', 'scenario', 'strategy', 'confidence', 'population', 'area_km2',
         'population_km2', 'phones_on_network', 'smartphones_on_network',
@@ -306,6 +304,59 @@ def write_results(regional_results, folder, metric):
 
     path = os.path.join(folder,'national_cost_results_{}.csv'.format(metric))
     national_cost_results.to_csv(path, index=True)
+
+    print('Writing decile results')
+    decile_results = pd.DataFrame(regional_results)
+    decile_results = define_deciles(decile_results)
+    decile_results = decile_results[[ #'tc_code',
+        'scenario', 'strategy', 'decile', 'confidence', #
+        'population', 'area_km2', #'population_km2',
+        'phones_on_network', #'phone_density_on_network_km2',
+        'smartphones_on_network', #'sp_density_on_network_km2',
+        'sites_estimated_total', 'existing_network_sites', 'upgraded_sites', 'new_sites',
+        'total_revenue', 'total_cost', #'cost_per_sp_user',
+    ]]
+    decile_results = decile_results.groupby([ #'tc_code',
+        'scenario', 'strategy', 'confidence', 'decile'], as_index=True).sum() #'tc_code',
+
+    decile_results['population_km2'] = (
+        decile_results['population'] / decile_results['area_km2'])
+    decile_results['phone_density_on_network_km2'] = (
+        decile_results['phones_on_network'] / decile_results['area_km2'])
+    decile_results['sp_density_on_network_km2'] = (
+        decile_results['smartphones_on_network'] / decile_results['area_km2'])
+    decile_results['sites_estimated_total_km2'] = (
+        decile_results['sites_estimated_total'] / decile_results['area_km2'])
+    decile_results['existing_network_sites_km2'] = (
+        decile_results['existing_network_sites'] / decile_results['area_km2'])
+    decile_results['cost_per_network_user'] = (
+        decile_results['total_cost'] / decile_results['phones_on_network'])
+    decile_results['cost_per_sp_user'] = (
+        decile_results['total_cost'] / decile_results['smartphones_on_network'])
+
+    path = os.path.join(folder,'decile_results_{}.csv'.format(metric))
+    decile_results.to_csv(path, index=True)
+
+    print('Writing decile cost results')
+    decile_cost_results = pd.DataFrame(regional_results)
+    decile_cost_results = define_deciles(decile_cost_results)
+    decile_cost_results = decile_cost_results[[
+        'scenario', 'strategy', 'decile', 'confidence', #'tc_code',
+        'population', 'area_km2', #'population_km2',
+        'phones_on_network', #'cost_per_sp_user',
+        'total_revenue', 'ran', 'backhaul_fronthaul', 'civils', 'core_network',
+        'ops_and_acquisition', 'spectrum_cost', 'tax', 'profit_margin', 'total_cost',
+        'available_cross_subsidy', 'deficit', 'used_cross_subsidy',
+        'required_state_subsidy',
+    ]]
+
+    decile_cost_results = decile_cost_results.groupby([
+        'scenario', 'strategy', 'confidence', 'decile'], as_index=True).sum() #'tc_code',
+    decile_cost_results['cost_per_network_user'] = (
+        decile_cost_results['total_cost'] / decile_cost_results['phones_on_network'])
+
+    path = os.path.join(folder,'decile_cost_results_{}.csv'.format(metric))
+    decile_cost_results.to_csv(path, index=True)
 
     print('Writing telecom circle results')
     tc_results = pd.DataFrame(regional_results)
@@ -343,61 +394,6 @@ def write_results(regional_results, folder, metric):
 
     path = os.path.join(folder,'tc_results_cost_results_{}.csv'.format(metric))
     tc_results_cost_results.to_csv(path, index=True)
-
-    print('Writing general telecom circle decile results')
-    decile_results = pd.DataFrame(regional_results)
-    decile_results = define_deciles(decile_results)
-    # decile_results.to_csv(os.path.join(BASE_PATH, '..', 'results', 'test.csv'), index=False)
-
-    decile_results = decile_results[[
-        'tc_code', 'scenario', 'strategy', 'decile', 'confidence', #
-        'population', 'area_km2', #'population_km2',
-        'phones_on_network', #'phone_density_on_network_km2',
-        'smartphones_on_network', #'sp_density_on_network_km2',
-        'sites_estimated_total', 'existing_network_sites', 'upgraded_sites', 'new_sites',
-        'total_revenue', 'total_cost', #'cost_per_sp_user',
-    ]]
-    decile_results = decile_results.groupby([
-        'tc_code', 'scenario', 'strategy', 'confidence', 'decile'], as_index=True).sum() #'tc_code',
-
-    decile_results['population_km2'] = (
-        decile_results['population'] / decile_results['area_km2'])
-    decile_results['phone_density_on_network_km2'] = (
-        decile_results['phones_on_network'] / decile_results['area_km2'])
-    decile_results['sp_density_on_network_km2'] = (
-        decile_results['smartphones_on_network'] / decile_results['area_km2'])
-    decile_results['sites_estimated_total_km2'] = (
-        decile_results['sites_estimated_total'] / decile_results['area_km2'])
-    decile_results['existing_network_sites_km2'] = (
-        decile_results['existing_network_sites'] / decile_results['area_km2'])
-    decile_results['cost_per_network_user'] = (
-        decile_results['total_cost'] / decile_results['phones_on_network'])
-    decile_results['cost_per_sp_user'] = (
-        decile_results['total_cost'] / decile_results['smartphones_on_network'])
-
-    path = os.path.join(folder,'tc_decile_results_{}.csv'.format(metric))
-    decile_results.to_csv(path, index=True)
-
-    print('Writing telecom circle cost decile results')
-    decile_cost_results = pd.DataFrame(regional_results)
-    decile_cost_results = define_deciles(decile_cost_results)
-    decile_cost_results = decile_cost_results[[
-        'tc_code', 'scenario', 'strategy', 'decile', 'confidence', #'tc_code',
-        'population', 'area_km2', #'population_km2',
-        'phones_on_network', #'cost_per_sp_user',
-        'total_revenue', 'ran', 'backhaul_fronthaul', 'civils', 'core_network',
-        'ops_and_acquisition', 'spectrum_cost', 'tax', 'profit_margin', 'total_cost',
-        'available_cross_subsidy', 'deficit', 'used_cross_subsidy',
-        'required_state_subsidy',
-    ]]
-
-    decile_cost_results = decile_cost_results.groupby([
-        'tc_code', 'scenario', 'strategy', 'confidence', 'decile'], as_index=True).sum() #'tc_code',
-    decile_cost_results['cost_per_network_user'] = (
-        decile_cost_results['total_cost'] / decile_cost_results['phones_on_network'])
-
-    path = os.path.join(folder,'decile_cost_results_{}.csv'.format(metric))
-    decile_cost_results.to_csv(path, index=True)
 
     print('Writing regional results')
     regional_results = pd.DataFrame(regional_results)
@@ -486,7 +482,7 @@ if __name__ == '__main__':
         'discount_rate': 5,
         'opex_percentage_of_capex': 10,
         'sectorization': 3,
-        'confidence': [50],#[5, 50, 95],
+        'confidence': [2.5, 50, 97.5], #[50],#
         'networks': 3,
         'local_node_spacing_km2': 40,
         'io_n2_n3': 1,
