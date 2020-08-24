@@ -1,4 +1,4 @@
-5G Assessment for India (india5g)
+5G Assessment for India (India5G)
 ====
 [![Build Status](https://travis-ci.com/edwardoughton/india5g.svg?branch=master)](https://travis-ci.com/edwardoughton/india5g)
 [![Coverage Status](https://coveralls.io/repos/github/edwardoughton/India5G/badge.svg?branch=master)](https://coveralls.io/github/edwardoughton/India5G?branch=master)
@@ -17,19 +17,15 @@ The recommended installation method is to use conda, which handles packages and 
 environments, along with the conda-forge channel which has a host of pre-built libraries and
 packages.
 
-Create a conda environment called india5g:
+Create a conda environment called `India5G`:
 
-    conda create --name india5g python=3.7 gdal
+    conda create --name india5g python=3.6 gdal geopandas
 
 Activate it (run this each time you switch projects):
 
     conda activate india5g
 
-First, install optional packages:
-
-    conda install geopandas
-
-Then install india5g:
+Install `India5G`:
 
     python setup.py install
 
@@ -84,4 +80,4 @@ To obtain model results once all inputs have been generated, simply execute the 
 Thanks for the support
 ======================
 
-**india5G** was written and developed at `GGS, George Mason University <https://science.gmu.edu/academics/departments-units/geography-geoinformation-science>`.
+**India5G** was written and developed at `GGS, George Mason University <https://science.gmu.edu/academics/departments-units/geography-geoinformation-science>`.
