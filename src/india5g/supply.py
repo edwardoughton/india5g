@@ -10,7 +10,7 @@ import math
 from itertools import tee
 from operator import itemgetter
 
-from India5G.costs import find_single_network_cost
+from india5g.costs import find_single_network_cost
 
 
 def estimate_supply(telecom_circle, regions, lookup, option, global_parameters,
