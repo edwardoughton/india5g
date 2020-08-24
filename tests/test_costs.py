@@ -1,6 +1,6 @@
 import pytest
 import math
-from India5G.costs import (
+from india5g.costs import (
     greenfield_4g,
     upgrade_to_4g,
     greenfield_5g_nsa,
