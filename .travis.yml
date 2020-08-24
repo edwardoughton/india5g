@@ -9,7 +9,7 @@ install:
   - pip freeze
 
 script:
-  - python -m pytest --cov=india5g tests
+  - python -m pytest --cov=India5G tests
 
 after_success:
   - if [[ "$TRAVIS_PYTHON_VERSION" == "3.7" ]]; then coveralls || echo "failed"; fi
