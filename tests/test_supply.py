@@ -1,6 +1,6 @@
 import pytest
-from src.India5G.demand import estimate_demand
-from src.India5G.supply import (
+from India5G.demand import estimate_demand
+from India5G.supply import (
     estimate_supply,
     find_site_density,
     estimate_site_upgrades,
