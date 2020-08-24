@@ -1,5 +1,5 @@
 import pytest
-from India5G.assess import (
+from india5g.assess import (
     get_subscriber_aquisition_cost,
     get_spectrum_costs,
     calculate_tax,
