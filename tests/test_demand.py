@@ -13,6 +13,7 @@ def test_estimate_demand(
     setup_penetration_lut
     ):
 
+    #Test for a single network taking one third of total demand (3 MNOs in total)
     answer = estimate_demand(
         setup_region,
         setup_option,
@@ -25,7 +26,7 @@ def test_estimate_demand(
 
     # pop = 10000
     # pen = 50%
-    # = 5000 phones
+    # = 5000 total phones
     assert answer[0]['population_with_phones'] == 5000
 
     # 5000 phones
@@ -53,8 +54,7 @@ def test_estimate_demand(
     # scenario = 30
     # overbooking factor = 100
     # area = 2
-    # demand_mbps_km2 = 125
-
+    # demand_mbps_km2 = 125 (mean demand over the study period)
     assert round(answer[0]['demand_mbps_km2']) == round(
         smartphones_on_network * 50 / 100 / 2
     )
@@ -71,9 +71,9 @@ def test_estimate_demand(
 
     # 1667 phones on network
     # arpu = 15
-    # 40% subsidy
     assert round(answer[0]['total_revenue']) == round(5000 * 15 / 3)
 
+    #Test a shared network to check the demand/revenue calculations are correct
     setup_region[0]['geotype'] = 'rural'
     setup_option['strategy'] = '4G_epc_microwave_baseline_shared_baseline_baseline'
 
@@ -87,55 +87,9 @@ def test_estimate_demand(
         {'rural': {'smartphone': 0.5}}
     )
 
-    # pop = 10000
-    # pen = 50%
-    # = 5000 phones
-    assert answer[0]['population_with_phones'] == 5000
-
-    # 5000 phones
-    # 1 network
-    # = 5000 phones
-    assert round(answer[0]['phones_on_network']) == round(5000)
-
-    # # 5000 phones
-    # # 1 network
-    # # 50% smartphones
-    # # = 833 smartphones
-    # smartphones_on_network = round(5000 * (50 / 100))
-    # assert round(answer[0]['smartphones_on_network']) == smartphones_on_network
-
-    # # 5000 phones
-    # # arpu = 15
-    # assert round(answer[0]['total_revenue']) == round(15 * 5000)
-
-    # # 5000 phones
-    # # arpu = 15
-    # # area = 2
-    # assert round(answer[0]['revenue_km2']) == round((15 * 5000) / 2)
-
-    # # 2500 smartphones
-    # # scenario = 50
-    # # overbooking factor = 100
-    # # area = 2
-    # # demand_mbps_km2 = 125
-
-    # assert round(answer[0]['demand_mbps_km2']) == round(
-    #     (smartphones_on_network * 50 / 100 / 2)
-    # )
-
-    # answer = estimate_demand(
-    #     setup_region_rural,
-    #     setup_option_high,
-    #     setup_global_parameters,
-    #     setup_country_parameters,
-    #     setup_timesteps,
-    #     setup_penetration_lut,
-    #     {'rural': {'smartphone': 0.5}}
-    # )
-
-    # # 5000 phones on network
-    # # arpu = 15
-    # assert round(answer[0]['total_revenue']) == round(5000 * 15)
+    # 5000 phones on single shared network
+    # arpu = 15
+    assert round(answer[0]['total_revenue']) == round(5000 * 15)
 
 
 def test_get_per_user_capacity():

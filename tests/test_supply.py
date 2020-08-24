@@ -1,6 +1,11 @@
 import pytest
 from src.india5g.demand import estimate_demand
-from src.india5g.supply import estimate_supply, find_site_density, estimate_site_upgrades, estimate_backhaul_upgrades
+from src.india5g.supply import (
+    estimate_supply,
+    find_site_density,
+    estimate_site_upgrades,
+    estimate_backhaul_upgrades
+    )
 
 
 def test_find_site_density(
@@ -14,6 +19,7 @@ def test_find_site_density(
     setup_lookup,
     setup_ci
     ):
+
     #test demand being larger than max capacity
     answer = find_site_density(
         {'demand_mbps_km2': 100000,
