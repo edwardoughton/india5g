@@ -3,7 +3,7 @@ Optimize supply
 
 Written by Ed Oughton.
 
-Winter 2020
+Taken from the Python Telecommunication Assessment Library (pytal)
 
 """
 import math

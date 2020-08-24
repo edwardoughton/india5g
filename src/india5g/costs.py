@@ -1,10 +1,9 @@
 """
 Cost module
-Author: Edward Oughton
-Date: April 2019
 
-Based off the repo pysim5g:
-https://github.com/edwardoughton/pysim5g
+Written by Ed Oughton.
+
+Taken from the Python Telecommunication Assessment Library (pytal)
 
 """
 import math
