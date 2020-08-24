@@ -17,16 +17,16 @@ def readme():
 
 
 setup(
-    name='pytal',
+    name='india5g',
     # use_scm_version=True,
     version=0.1,
     license='MIT License',
-    description='Python Telecommunication Assessment Library',
+    description='5G Assessment for India',
     long_description=readme(),
     long_description_content_type="text/markdown",
     author='Ed Oughton',
     author_email='edward.oughton@gmail.com',
-    url='https://github.com/edwardoughton/pytal',
+    url='https://github.com/edwardoughton/india5g',
     packages=find_packages('src'),
     package_dir={'': 'src'},
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
