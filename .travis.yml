@@ -1,7 +1,6 @@
 language: python
 python:
-  - "3.6"
-  # - "3.7" not available on travis as OpenSSL 1.0.2+ is not available on Ubuntu Trusty
+  - "3.7"
 
 install:
   - pip install -r requirements-dev.txt
@@ -10,7 +9,7 @@ install:
   - pip freeze
 
 script:
-  - python -m pytest --cov=India5G tests
+  - python -m pytest --cov=india5g tests
 
 after_success:
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then coveralls || echo "failed"; fi
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.7" ]]; then coveralls || echo "failed"; fi
