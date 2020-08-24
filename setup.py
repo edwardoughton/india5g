@@ -17,7 +17,7 @@ def readme():
 
 
 setup(
-    name='india5g',
+    name='India5G',
     # use_scm_version=True,
     version=0.1,
     license='MIT License',
@@ -26,7 +26,7 @@ setup(
     long_description_content_type="text/markdown",
     author='Ed Oughton',
     author_email='edward.oughton@gmail.com',
-    url='https://github.com/edwardoughton/india5g',
+    url='https://github.com/edwardoughton/India5G',
     packages=find_packages('src'),
     package_dir={'': 'src'},
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
