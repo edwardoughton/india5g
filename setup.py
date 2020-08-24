@@ -19,7 +19,7 @@ def readme():
 
 
 setup(
-    name='India5G',
+    name='india5g',
     # use_scm_version=True,
     version=0.1,
     license='MIT License',
