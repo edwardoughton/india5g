@@ -266,7 +266,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-                    {
+    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -285,8 +285,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 30, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 2.22, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.54, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -344,8 +344,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 1.11, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.32, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -403,8 +403,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 1.19, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.46, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -462,8 +462,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 1.27, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.29, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -521,8 +521,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 1.22, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.89, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -584,8 +584,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 0.67, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.28, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -644,8 +644,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 1.20, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.38, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -703,8 +703,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 0.712, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.137, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -763,8 +763,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 1.077, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.423, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -823,8 +823,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 0.580, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.235, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -882,8 +882,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 0.237, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.007, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -942,8 +942,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 3.92, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 1.43, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -1002,8 +1002,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 0.213, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.055, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -1064,8 +1064,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 0.897, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.251, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -1123,8 +1123,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 0.593, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.133, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -1183,8 +1183,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 0.501, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.091, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -1243,8 +1243,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 0.708, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.131, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -1303,8 +1303,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 0.196, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.052, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -1363,8 +1363,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 0.348, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 0.088, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -1425,8 +1425,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 10.18, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 3.04, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -1484,8 +1484,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 7.39, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 2.29, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
@@ -1543,8 +1543,8 @@ TELECOM_CIRCLE_PARAMETERS = {
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
                 'profit_margin': 10, # what is the profit margin for an MNO?
-                'spectrum_coverage_baseline_usd_mhz_pop': 0.025, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
-                'spectrum_capacity_baseline_usd_mhz_pop': 0.02, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+                'spectrum_coverage_baseline_usd_mhz_pop': 11.76, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
+                'spectrum_capacity_baseline_usd_mhz_pop': 3.09, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,

@@ -14,9 +14,9 @@ import geopandas
 from collections import OrderedDict
 
 from options import OPTIONS, TELECOM_CIRCLE_PARAMETERS
-from pytal.demand import estimate_demand
-from pytal.supply import estimate_supply
-from pytal.assess import assess
+from india5g.demand import estimate_demand
+from india5g.supply import estimate_supply
+from india5g.assess import assess
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read(os.path.join(os.path.dirname(__file__), 'script_config.ini'))
@@ -151,7 +151,7 @@ def find_country_list(continent_list):
 # def load_cluster(path, iso3):
 #     """
 #     Load cluster number. You need to make sure the
-#     R clustering script (pytal/vis/clustering/clustering.r)
+#     R clustering script (india5g/vis/clustering/clustering.r)
 #     has been run first.
 
 #     """

@@ -438,12 +438,14 @@ def process_regional_coverage(telecom_circle):
 
     for tech in technologies:
 
-        folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'national_coverage')
+        folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'coverage')
         path =  os.path.join(folder, 'coverage_{}.shp'.format(tech))
 
         if os.path.exists(path):
 
             coverage = gpd.read_file(path)
+
+            coverage = coverage[['geometry']]
 
             coverage = gpd.overlay(regions, coverage, how='intersection')
 
@@ -479,12 +481,6 @@ def get_regional_data(telecom_circle):
 
     # if os.path.exists(path_output):
     #     return print('Regional data already exists')
-
-    path_tc = os.path.join(DATA_INTERMEDIATE, iso3, tc_code,
-        'tc_outline.shp')
-
-    print('Getting telecom circle outline')
-    single_tc = gpd.read_file(path_tc)
 
     print('Getting regional coverage')
     coverage = process_regional_coverage(telecom_circle)
@@ -544,7 +540,7 @@ def get_regional_data(telecom_circle):
 
         if 'GSM' in [c for c in coverage.keys()]:
             if region[gid_level] in coverage['GSM']:
-                coverage_GSM_km2 = coverage['GSM'][region[gid_level]]
+                 coverage_GSM_km2 = coverage['GSM'][region[gid_level]]
             else:
                 coverage_GSM_km2 = 0
         else:
@@ -1927,30 +1923,34 @@ def forecast_linear(telecom_circle, historical_data, start_point, end_point, hor
 if __name__ == '__main__':
 
     tc_codes = [
-        'AP','AS', 'BR', 'DL', 'GJ', 'HP', 'HR', 'JK', 'KA', 'KL', 'KO',
+        'AP','AS',
+        'BR',
+        'DL', 'GJ', 'HP', 'HR', 'JK', 'KA',
+        'KL',
+        'KO',
         'MH', 'MP','MU', 'NE', 'OR', 'PB', 'RJ', 'TN', 'UE', 'UW', 'WB',
     ]
 
     telecom_circles = []
 
     tc_thresholds = {
-        'AS':{'pop_density_km2': 250,'settlement_size': 2500},
-        'BR':{'pop_density_km2': 250,'settlement_size': 2500},
-        'GJ':{'pop_density_km2': 250,'settlement_size': 2500},
-        'JK':{'pop_density_km2': 250,'settlement_size': 2500},
-        'KA':{'pop_density_km2': 250,'settlement_size': 2500},
-        'KL':{'pop_density_km2': 250,'settlement_size': 2500},
-        'KO':{'pop_density_km2': 250,'settlement_size': 2500},
-        'MH':{'pop_density_km2': 250,'settlement_size': 2500},
-        'MP':{'pop_density_km2': 250,'settlement_size': 2500},
-        'NE':{'pop_density_km2': 250,'settlement_size': 2500},
-        'OR':{'pop_density_km2': 250,'settlement_size': 2500},
-        'PB':{'pop_density_km2': 250,'settlement_size': 2500},
-        'RJ':{'pop_density_km2': 250,'settlement_size': 2500},
-        'TN':{'pop_density_km2': 250,'settlement_size': 2500},
-        'UE':{'pop_density_km2': 250,'settlement_size': 2500},
-        'UW':{'pop_density_km2': 250,'settlement_size': 2500},
-        'WB':{'pop_density_km2': 250,'settlement_size': 2500},
+        # 'AS':{'pop_density_km2': 400,'settlement_size': 2500},
+        # 'BR':{'pop_density_km2': 1000,'settlement_size': 20000},
+        # 'GJ':{'pop_density_km2': 400,'settlement_size': 2500},
+        # 'JK':{'pop_density_km2': 400,'settlement_size': 2500},
+        # 'KA':{'pop_density_km2': 400,'settlement_size': 2500},
+        # 'KL':{'pop_density_km2': 400,'settlement_size': 2500},
+        # 'KO':{'pop_density_km2': 400,'settlement_size': 2500},
+        # 'MH':{'pop_density_km2': 400,'settlement_size': 2500},
+        # 'MP':{'pop_density_km2': 400,'settlement_size': 2500},
+        # 'NE':{'pop_density_km2': 400,'settlement_size': 2500},
+        # 'OR':{'pop_density_km2': 400,'settlement_size': 2500},
+        # 'PB':{'pop_density_km2': 400,'settlement_size': 2500},
+        # 'RJ':{'pop_density_km2': 400,'settlement_size': 2500},
+        # 'TN':{'pop_density_km2': 400,'settlement_size': 2500},
+        # 'UE':{'pop_density_km2': 400,'settlement_size': 2500},
+        # 'UW':{'pop_density_km2': 400,'settlement_size': 2500},
+        # 'WB':{'pop_density_km2': 400,'settlement_size': 2500},
     }
 
     for tc_code in tc_codes:
