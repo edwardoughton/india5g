@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-"""Setup itmlogic package
+"""
+Setup India5G package
+
 """
 from glob import glob
 from os.path import basename, splitext
