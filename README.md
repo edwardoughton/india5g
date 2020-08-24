@@ -1,5 +1,7 @@
 5G Assessment for India (india5g)
 ====
+[![Build Status](https://travis-ci.com/edwardoughton/india5g.svg?branch=master)](https://travis-ci.com/edwardoughton/india5g)
+[![Coverage Status](https://coveralls.io/repos/github/edwardoughton/india5g/badge.svg?branch=master)](https://coveralls.io/github/edwardoughton/india5g?branch=master)
 
 This codebase is an adaptation of the Python Telecommunication Assessment Library (pytal)
 applied to India. The repo enables 5G strategies to be tested with the ultimate aim of
