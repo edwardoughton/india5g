@@ -1,6 +1,6 @@
 import pytest
 import math
-from src.india5g.costs import (greenfield_4g, upgrade_to_4g, greenfield_5g_nsa,
+from src.India5G.costs import (greenfield_4g, upgrade_to_4g, greenfield_5g_nsa,
     upgrade_to_5g_nsa, greenfield_5g_sa, upgrade_to_5g_sa,
     get_fronthaul_costs, get_backhaul_costs, local_net_costs,
     regional_net_costs, core_costs, discount_opex,

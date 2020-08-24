@@ -1,5 +1,5 @@
 import pytest
-from src.india5g.demand import estimate_demand, get_per_user_capacity, estimate_arpu
+from src.India5G.demand import estimate_demand, get_per_user_capacity, estimate_arpu
 
 
 def test_estimate_demand(
