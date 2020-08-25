@@ -12,7 +12,7 @@ before_script:
   - git config --global user.name "Edward Oughton"
 
 script:
-  - python -m pytest --cov=india5g tests
+- pytest --cov india5g --cov-report term-missing
 
 after_success:
   - coveralls
