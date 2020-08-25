@@ -599,62 +599,207 @@ def test_calc_costs(setup_region, setup_global_parameters, setup_country_paramet
     assert answer == 0
 
 
-# def test_find_single_network_cost(setup_region, setup_costs,
-#     setup_global_parameters, setup_country_parameters,
-#     setup_core_lut):
+def test_find_single_network_cost(setup_region, setup_costs,
+    setup_global_parameters, setup_country_parameters,
+    setup_core_lut):
 
-#     setup_region[0]['sites_4G'] = 0
-#     setup_region[0]['new_sites'] = 1
-#     setup_region[0]['upgraded_sites'] = 1
-#     setup_region[0]['sites_estimated_total'] = 1
-#     setup_region[0]['site_density'] = 0.5
-#     setup_region[0]['backhaul_new'] = 0
+    #Test the UPGRADING of a single site to 4G
+    #with wireless backhaul
+    setup_region[0]['sites_4G'] = 0
+    setup_region[0]['new_sites'] = 0
+    setup_region[0]['upgraded_sites'] = 1 #single upgrade
+    setup_region[0]['sites_estimated_total'] = 1
+    setup_region[0]['site_density'] = 0.5
+    setup_region[0]['backhaul_new'] = 1 #single BH upgrade
 
-#     answer = find_single_network_cost(
-#         setup_region[0],
-#         {'strategy': '4G_epc_microwave_baseline_baseline_baseline_baseline'},
-#         setup_costs,
-#         setup_global_parameters,
-#         setup_country_parameters,
-#         setup_core_lut
-#     )
+    answer = find_single_network_cost(
+        setup_region[0],
+        {'strategy': '4G_epc_microwave_baseline_baseline_baseline_baseline'},
+        setup_costs,
+        setup_global_parameters,
+        setup_country_parameters,
+        setup_core_lut
+    )
 
-#     assert answer['network_cost'] == 454427.60000000003
+    assert round(answer['ran']) == 20273
+    assert round(answer['backhaul_fronthaul']) == 26296
+    assert round(answer['core_network']) == 0
+    assert round(answer['network_cost']) == 72686
 
-#     setup_region[0]['sites_4G'] = 0
-#     setup_region[0]['new_sites'] = 1
-#     setup_region[0]['upgraded_sites'] = 1
-#     setup_region[0]['sites_estimated_total'] = 1
-#     setup_region[0]['site_density'] = 0.5
-#     setup_region[0]['backhaul_new'] = 10
+    #Test the UPGRADING of a single site to 5G NSA
+    #with wireless backhaul
+    setup_region[0]['sites_4G'] = 0
+    setup_region[0]['new_sites'] = 0
+    setup_region[0]['upgraded_sites'] = 1 #single upgrade
+    setup_region[0]['sites_estimated_total'] = 1
+    setup_region[0]['site_density'] = 0.5
+    setup_region[0]['backhaul_new'] = 1 #single BH upgrade
 
-#     answer = find_single_network_cost(
-#         setup_region[0],
-#         {'strategy': '4G_epc_microwave_baseline_baseline_baseline_baseline'},
-#         setup_costs,
-#         setup_global_parameters,
-#         setup_country_parameters,
-#         setup_core_lut
-#     )
+    answer = find_single_network_cost(
+        setup_region[0],
+        {'strategy': '5G_nsa_microwave_baseline_baseline_baseline_baseline'},
+        setup_costs,
+        setup_global_parameters,
+        setup_country_parameters,
+        setup_core_lut
+    )
 
-#     assert answer['network_cost'] == 454427.60000000003
+    assert round(answer['ran']) == 20273
+    assert round(answer['backhaul_fronthaul']) == 26296
+    assert round(answer['core_network']) == 140242
+    assert round(answer['network_cost']) == 212928
 
-#     setup_region[0]['sites_4G'] = 0
-#     setup_region[0]['new_sites'] = 1
-#     setup_region[0]['upgraded_sites'] = 1
-#     setup_region[0]['site_density'] = 0.5
-#     setup_region[0]['backhaul_new'] = 2
+    #Test the UPGRADING of a single site to 5G SA
+    #with wireless backhaul
+    setup_region[0]['sites_4G'] = 0
+    setup_region[0]['new_sites'] = 0
+    setup_region[0]['upgraded_sites'] = 1 #single upgrade
+    setup_region[0]['sites_estimated_total'] = 1
+    setup_region[0]['site_density'] = 0.5
+    setup_region[0]['backhaul_new'] = 1 #single BH upgrade
 
-#     answer = find_single_network_cost(
-#         setup_region[0],
-#         {'strategy': '4G_epc_microwave_baseline_baseline_baseline_baseline'},
-#         setup_costs,
-#         setup_global_parameters,
-#         setup_country_parameters,
-#         setup_core_lut
-#     )
+    answer = find_single_network_cost(
+        setup_region[0],
+        {'strategy': '5G_sa_fiber_baseline_baseline_baseline_baseline'},
+        setup_costs,
+        setup_global_parameters,
+        setup_country_parameters,
+        setup_core_lut
+    )
 
-#     assert answer['network_cost'] == 454427.60000000003
+    assert round(answer['ran']) == 18301
+    assert round(answer['backhaul_fronthaul']) == 18593
+    assert round(answer['core_network']) == 367035
+    assert round(answer['network_cost']) == 430046
+
+    #Test the building of a single GREENFIELD 4G site
+    #with wireless backhaul
+    setup_region[0]['sites_4G'] = 0
+    setup_region[0]['new_sites'] = 1 #single new site
+    setup_region[0]['upgraded_sites'] = 0
+    setup_region[0]['sites_estimated_total'] = 1
+    setup_region[0]['site_density'] = 0.5
+    setup_region[0]['backhaul_new'] = 1 #single new BH
+
+    answer = find_single_network_cost(
+        setup_region[0],
+        {'strategy': '4G_epc_microwave_baseline_baseline_baseline_baseline'},
+        setup_costs,
+        setup_global_parameters,
+        setup_country_parameters,
+        setup_core_lut
+    )
+
+    assert round(answer['ran']) == 20273
+    assert round(answer['backhaul_fronthaul']) == 26296
+    assert round(answer['core_network']) == 96417
+    assert round(answer['network_cost']) == 197677
+
+
+    #Test the building of a single GREENFIELD 5G NSA site
+    #with wireless backhaul
+    setup_region[0]['sites_4G'] = 0
+    setup_region[0]['new_sites'] = 1 #single new site
+    setup_region[0]['upgraded_sites'] = 0
+    setup_region[0]['sites_estimated_total'] = 1
+    setup_region[0]['site_density'] = 0.5
+    setup_region[0]['backhaul_new'] = 1 #single new BH
+
+    answer = find_single_network_cost(
+        setup_region[0],
+        {'strategy': '5G_nsa_microwave_baseline_baseline_baseline_baseline'},
+        setup_costs,
+        setup_global_parameters,
+        setup_country_parameters,
+        setup_core_lut
+    )
+
+    assert round(answer['ran']) == 20273
+    assert round(answer['backhaul_fronthaul']) == 26296
+    assert round(answer['core_network']) == 140242
+    assert round(answer['network_cost']) == 241502
+
+    #Test the building of a single GREENFIELD 5G SA site
+    #with fiber backhaul
+    setup_region[0]['sites_4G'] = 0
+    setup_region[0]['new_sites'] = 1 #single new site
+    setup_region[0]['upgraded_sites'] = 0
+    setup_region[0]['sites_estimated_total'] = 1
+    setup_region[0]['site_density'] = 0.5
+    setup_region[0]['backhaul_new'] = 1 #single new BH
+
+    answer = find_single_network_cost(
+        setup_region[0],
+        {'strategy': '5G_sa_microwave_baseline_baseline_baseline_baseline'},
+        setup_costs,
+        setup_global_parameters,
+        setup_country_parameters,
+        setup_core_lut
+    )
+
+    assert round(answer['ran']) == 18301
+    assert round(answer['backhaul_fronthaul']) == 18593
+    assert round(answer['core_network']) == 210362
+    assert round(answer['network_cost']) == 301947
+
+
+    # #Test the building of a single greenfield 4G site
+    # #with fiber backhaul
+    # setup_region[0]['sites_4G'] = 0
+    # setup_region[0]['new_sites'] = 1
+    # setup_region[0]['upgraded_sites'] = 0
+    # setup_region[0]['sites_estimated_total'] = 1
+    # setup_region[0]['site_density'] = 0.5
+    # setup_region[0]['backhaul_new'] = 1
+
+    # answer = find_single_network_cost(
+    #     setup_region[0],
+    #     {'strategy': '4G_epc_fiber_baseline_baseline_baseline_baseline'},
+    #     setup_costs,
+    #     setup_global_parameters,
+    #     setup_country_parameters,
+    #     setup_core_lut
+    # )
+
+    # assert round(answer['ran']) == 20273
+    # assert round(answer['backhaul_fronthaul']) == 26296
+    # assert round(answer['core_network']) == 188450
+    # assert round(answer['network_cost']) == 289709
+
+    # setup_region[0]['sites_4G'] = 0
+    # setup_region[0]['new_sites'] = 1
+    # setup_region[0]['upgraded_sites'] = 1
+    # setup_region[0]['sites_estimated_total'] = 1
+    # setup_region[0]['site_density'] = 0.5
+    # setup_region[0]['backhaul_new'] = 10
+
+    # answer = find_single_network_cost(
+    #     setup_region[0],
+    #     {'strategy': '4G_epc_microwave_baseline_baseline_baseline_baseline'},
+    #     setup_costs,
+    #     setup_global_parameters,
+    #     setup_country_parameters,
+    #     setup_core_lut
+    # )
+
+    # assert round(answer['network_cost']) == 0#454428
+
+    # setup_region[0]['sites_4G'] = 0
+    # setup_region[0]['new_sites'] = 1
+    # setup_region[0]['upgraded_sites'] = 1
+    # setup_region[0]['site_density'] = 0.5
+    # setup_region[0]['backhaul_new'] = 2
+
+    # answer = find_single_network_cost(
+    #     setup_region[0],
+    #     {'strategy': '4G_epc_microwave_baseline_baseline_baseline_baseline'},
+    #     setup_costs,
+    #     setup_global_parameters,
+    #     setup_country_parameters,
+    #     setup_core_lut
+    # )
+
+    # assert answer['network_cost'] == 454427.60000000003
 
     # answer = find_single_network_cost(
     #     setup_region[0],
@@ -662,7 +807,6 @@ def test_calc_costs(setup_region, setup_global_parameters, setup_country_paramet
     #     setup_costs,
     #     setup_global_parameters,
     #     setup_country_parameters,
-    #     setup_backhaul_lut,
     #     setup_core_lut
     # )
 
@@ -679,7 +823,6 @@ def test_calc_costs(setup_region, setup_global_parameters, setup_country_paramet
     #     setup_costs,
     #     setup_global_parameters,
     #     setup_country_parameters,
-    #     setup_backhaul_lut,
     #     setup_core_lut
     # )
 
@@ -696,7 +839,6 @@ def test_calc_costs(setup_region, setup_global_parameters, setup_country_paramet
     #     setup_costs,
     #     setup_global_parameters,
     #     setup_country_parameters,
-    #     setup_backhaul_lut,
     #     setup_core_lut
     # )
 
@@ -713,7 +855,6 @@ def test_calc_costs(setup_region, setup_global_parameters, setup_country_paramet
     #     setup_costs,
     #     setup_global_parameters,
     #     setup_country_parameters,
-    #     setup_backhaul_lut,
     #     setup_core_lut
     # )
 
@@ -730,7 +871,6 @@ def test_calc_costs(setup_region, setup_global_parameters, setup_country_paramet
     #     setup_costs,
     #     setup_global_parameters,
     #     setup_country_parameters,
-    #     setup_backhaul_lut,
     #     setup_core_lut
     # )
 
@@ -747,7 +887,6 @@ def test_calc_costs(setup_region, setup_global_parameters, setup_country_paramet
     #     setup_costs,
     #     setup_global_parameters,
     #     setup_country_parameters,
-    #     setup_backhaul_lut,
     #     setup_core_lut
     # )
 

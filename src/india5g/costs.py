@@ -755,8 +755,25 @@ def discount_opex(opex, global_parameters, tc_parameters):
     return discounted_cost
 
 
-def calc_costs(region, cost_structure, backhaul_quantity, backhaul, global_parameters, tc_parameters):
+def calc_costs(region, cost_structure, backhaul, backhaul_quantity,
+    global_parameters, tc_parameters):
     """
+    Calculate the costs for each asset.
+
+    Parameters
+    ----------
+    region : dict
+        The region being assessed and all associated parameters.
+    cost_structure : dict
+        Asset cost structure, subject to the strategy definition being tested.
+    backhaul : string
+        Type of backhaul to build.
+    backhaul_quantity : int
+        Indicator for whether a backhaul needs to be built/upgraded or not.
+    global_parameters : dict
+        Contains all global_parameters.
+    tc_parameters : dict
+        All telecom circle specific parameters.
 
     """
     all_sites = region['upgraded_sites'] + region['new_sites']
