@@ -8,7 +8,7 @@ install:
   - pip freeze
 
 before_script:
-  - git config --global user.email "edward.oughton@ouce.ox.ac.uk"
+  - git config --global user.email "edward.oughton@gmail.com"
   - git config --global user.name "Edward Oughton"
 
 script:
@@ -19,10 +19,3 @@ after_success:
 
 notifications:
   email: false
-
-deploy:
-  provider: pypi
-  user: edwardoughton
-  on:
-    tags: true
-    branch: master
