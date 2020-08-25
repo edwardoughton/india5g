@@ -596,7 +596,7 @@ def test_calc_costs(setup_region, setup_global_parameters, setup_country_paramet
         'backhaul': 100,
         }, 0, 'fiber', setup_global_parameters, setup_country_parameters)
 
-    assert answer == 0
+    assert answer == 132
 
 
 def test_find_single_network_cost(setup_region, setup_costs,
