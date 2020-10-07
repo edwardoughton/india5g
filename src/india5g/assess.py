@@ -7,7 +7,7 @@ Taken from the Python Telecommunication Assessment Library (pytal)
 
 """
 
-def assess(country, regions, option, global_parameters, country_parameters, costs):
+def assess(country, regions, option, global_parameters, country_parameters, costs, timesteps):
     """
     For each region, assess the viability level.
 
@@ -41,8 +41,8 @@ def assess(country, regions, option, global_parameters, country_parameters, cost
     for region in regions:
 
         # add customer acquition cost
-        region = get_subscriber_aquisition_cost(region,
-            country_parameters)
+        region = get_administration_cost(region, country_parameters,
+        global_parameters, timesteps)
 
         # npv spectrum cost
         region['spectrum_cost'] = get_spectrum_costs(region, option['strategy'],
@@ -68,9 +68,6 @@ def assess(country, regions, option, global_parameters, country_parameters, cost
         else:
             region['cost_per_sp_user'] = 0
 
-        #revenue cost ratio = expenses / revenue
-        region['bcr'] = calculate_benefit_cost_ratio(region, country_parameters)
-
         region = allocate_available_excess(region)
         available_for_cross_subsidy += region['available_cross_subsidy']
 
@@ -90,15 +87,36 @@ def assess(country, regions, option, global_parameters, country_parameters, cost
     return output
 
 
-def get_subscriber_aquisition_cost(region, country_parameters):
+def get_administration_cost(region, country_parameters, global_parameters, timesteps):
     """
-    There is an acquistion cost to obtaining and retaining subscribers
-    which includes marketing and retail sales.
+    There is an annual administration cost to deploying and operating all assets.
+    Parameters
+    ----------
+    regions : list of dicts
+        Data for all regions (one dict per region).
+    country_parameters : dict
+        All country specific parameters.
+    Returns
+    -------
+    region : dict
+        Contains all regional data.
+    """
+    annual_cost = (
+        region['network_cost'] *
+        (country_parameters['financials']['administration_percentage_of_network_cost'] /
+        100))
 
-    """
-    region['ops_and_acquisition'] = (
-        region['phones_on_network'] *
-        country_parameters['financials']['ops_and_acquisition_per_subscriber'])
+    costs = []
+
+    for timestep in timesteps:
+
+        timestep = timestep - 2020
+
+        discounted_cost = discount_admin_cost(annual_cost, timestep, global_parameters)
+
+        costs.append(discounted_cost)
+
+    region['ops_and_acquisition'] = sum(costs)
 
     return region
 
@@ -134,7 +152,7 @@ def get_spectrum_costs(region, strategy, global_parameters, country_parameters):
 
     coverage_spectrum_cost = 'spectrum_coverage_baseline_usd_mhz_pop'
     capacity_spectrum_cost = 'spectrum_capacity_baseline_usd_mhz_pop'
-
+    #0.05
     coverage_cost_usd_mhz_pop = country_parameters['financials'][coverage_spectrum_cost]
     capacity_cost_usd_mhz_pop = country_parameters['financials'][capacity_spectrum_cost]
 
@@ -251,20 +269,25 @@ def estimate_subsidies(region, available_for_cross_subsidy):
     return region, available_for_cross_subsidy
 
 
-def calculate_benefit_cost_ratio(region, country_parameters):
+def discount_admin_cost(cost, timestep, global_parameters):
     """
-    Calculate the benefit cost ratio.
-
+    Discount admin cost based on return period.
+    192,744 = 23,773 / (1 + 0.05) ** (0:9)
+    Parameters
+    ----------
+    cost : float
+        Annual admin network running cost.
+    timestep : int
+        Time period (year) to discount against.
+    global_parameters : dict
+        All global model parameters.
+    Returns
+    -------
+    discounted_cost : float
+        The discounted admin cost over the desired time period.
     """
-    cost = (
-        region['network_cost'] +
-        region['spectrum_cost'] +
-        region['tax'] +
-        region['profit_margin']
-    )
+    discount_rate = global_parameters['discount_rate'] / 100
 
-    revenue = region['total_revenue']
+    discounted_cost = cost / (1 + discount_rate) ** timestep
 
-    bcr = revenue / cost
-
-    return bcr
+    return discounted_cost

@@ -266,7 +266,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -293,6 +293,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
     'GJ': {
@@ -325,7 +326,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -352,6 +353,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
     'KA': {
@@ -384,7 +386,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -411,6 +413,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
     'MH': {
@@ -443,7 +446,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -470,6 +473,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
     'TN': {
@@ -502,7 +506,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -529,6 +533,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
 
@@ -565,7 +570,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -592,6 +597,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
 
@@ -625,7 +631,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -652,6 +658,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
     'MP': {
@@ -684,7 +691,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -711,6 +718,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
 
@@ -744,7 +752,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -771,6 +779,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
 
@@ -804,7 +813,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -831,6 +840,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
     'UE': {
@@ -863,7 +873,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -890,6 +900,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
 
@@ -923,7 +934,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -950,6 +961,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 30, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
 
@@ -983,7 +995,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -1010,6 +1022,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
 
@@ -1045,7 +1058,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -1072,6 +1085,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
     'JK': {
@@ -1104,7 +1118,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -1131,6 +1145,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
 
@@ -1164,7 +1179,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -1191,6 +1206,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
 
@@ -1224,7 +1240,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -1251,6 +1267,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
 
@@ -1284,7 +1301,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -1311,6 +1328,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
 
@@ -1344,7 +1362,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -1371,6 +1389,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
 
@@ -1406,7 +1425,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -1433,6 +1452,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
     'MU': {
@@ -1465,7 +1485,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -1492,6 +1512,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
     'KO': {
@@ -1524,7 +1545,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                         'frequency': 2300,
                         'bandwidth': '2x10',
                     },
-    {
+                    {
                         'frequency': 2500,
                         'bandwidth': '2x10',
                     },
@@ -1551,6 +1572,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
+                'administration_percentage_of_network_cost': 10
                 },
             },
     }

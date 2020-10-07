@@ -1,27 +1,122 @@
 import pytest
 from india5g.assess import (
-    get_subscriber_aquisition_cost,
+    get_administration_cost,
     get_spectrum_costs,
     calculate_tax,
     calculate_profit,
-    calculate_benefit_cost_ratio,
     assess,
     estimate_subsidies,
     allocate_available_excess
 )
 
 
-def test_get_subscriber_aquisition_cost(setup_region, setup_country_parameters):
+def test_assess(setup_option, setup_global_parameters, setup_country_parameters,
+    setup_costs, setup_timesteps):
+    """
+    Integration test for main function.
 
-    setup_region[0]['phones_on_network'] = 10
+    """
+    regions = [
+        {
+            'GID_id': 'a',
+            # 'GID_0': 'MEX',
+            # 'scenario': 'test',
+            # 'strategy': 'test',
+            # 'confidence': 50,
+            'geotype': 'rural 1',
+            'population': 1000,
+            'population_km2': 500,
+            'total_revenue': 20000,
+            'network_cost': 5000,
+            'smartphones_on_network': 250,
+            'phones_on_network': 500,
+        },
+        {
+            'GID_id': 'b',
+            # 'GID_0': 'MEX',
+            # 'scenario': 'test',
+            # 'strategy': 'test',
+            # 'confidence': 50,
+            'geotype': 'rural 1',
+            'population': 500,
+            'population_km2': 250,
+            'total_revenue': 12000,
+            'network_cost': 8000,
+            'smartphones_on_network': 250,
+            'phones_on_network': 500,
+        },
+    ]
 
-    answer = get_subscriber_aquisition_cost(setup_region[0], setup_country_parameters)
+    setup_country_parameters['financials']['spectrum_coverage_baseline_usd_mhz_pop'] = 0.125
+    setup_country_parameters['financials']['spectrum_capacity_baseline_usd_mhz_pop'] = 0.025
 
-    answer['ops_and_acquisition'] = (
-        setup_region[0]['phones_on_network'] * setup_country_parameters['financials']['ops_and_acquisition_per_subscriber'])
+    answer = assess('MWI', regions, setup_option, setup_global_parameters,
+        setup_country_parameters, setup_costs, setup_timesteps)
 
-    # answer['ops_and_admin'] = (
-    #     setup_region[0]['phones_on_network'] * setup_country_parameters['financials']['ops_and_admin_per_subscriber'])
+    assert answer[0]['total_revenue'] == 20000
+    assert answer[0]['network_cost'] == 5000
+    assert answer[0]['spectrum_cost'] == 3000
+    assert answer[0]['tax'] == 1250
+    assert answer[0]['profit_margin'] == 1850.0
+    assert answer[0]['total_cost'] == 12100.0
+    assert answer[0]['available_cross_subsidy'] == 7900.0
+    assert answer[0]['used_cross_subsidy'] == 0
+    assert answer[0]['required_state_subsidy'] == 0
+
+    assert answer[1]['total_revenue'] == 12000
+    assert answer[1]['network_cost'] == 8000
+    assert answer[1]['spectrum_cost'] == 1500
+    assert answer[1]['tax'] == 2000
+    assert answer[1]['profit_margin'] == 2300.0
+    assert answer[1]['total_cost'] == 15400.0
+    assert answer[1]['available_cross_subsidy'] == 0
+    assert answer[1]['used_cross_subsidy'] == 3400.0
+    assert answer[1]['required_state_subsidy'] == 0
+
+    regions = [
+        {
+            'GID_id': 'a',
+            'population': 1000,
+            'population_km2': 500,
+            'total_revenue': 20000,
+            'network_cost': 5200,
+            'smartphones_on_network': 250,
+            'phones_on_network': 500,
+        },
+        {
+            'GID_id': 'b',
+            'population': 1000,
+            'population_km2': 500,
+            'total_revenue': 2500,
+            'network_cost': 5200,
+            'smartphones_on_network': 250,
+            'phones_on_network': 500,
+        },
+    ]
+
+    answer = assess('MWI', regions, setup_option, setup_global_parameters,
+        setup_country_parameters, setup_costs, setup_timesteps)
+
+    assert answer[0]['available_cross_subsidy'] == 7560.0
+    assert answer[0]['used_cross_subsidy'] == 0
+    assert answer[0]['required_state_subsidy'] == 0
+    assert answer[1]['available_cross_subsidy'] == 0
+    assert answer[1]['used_cross_subsidy'] == 7560.0
+    assert answer[1]['required_state_subsidy'] == 2380
+
+
+def test_get_administration_cost(setup_region, setup_country_parameters,
+    setup_global_parameters, setup_timesteps):
+    """
+    Unit test.
+    """
+    setup_region[0]['network_cost'] = 100
+    setup_timesteps = list(range(2020, 2030 + 1))
+
+    answer = get_administration_cost(setup_region[0], setup_country_parameters,
+        setup_global_parameters, setup_timesteps)
+
+    assert round(answer['ops_and_acquisition']) == 174
 
 
 def test_get_spectrum_costs(setup_region, setup_option, setup_global_parameters, setup_country_parameters):
@@ -85,22 +180,6 @@ def test_calculate_profit(setup_region, setup_country_parameters):
     assert calculate_profit(setup_region[0], setup_country_parameters) == 265e3
 
 
-def test_calculate_benefit_cost_ratio(setup_region, setup_country_parameters):
-
-    setup_region[0]['network_cost'] = 1e6
-    setup_region[0]['spectrum_cost'] = 6e4
-    setup_region[0]['tax'] = 265e3
-    setup_region[0]['profit_margin'] = 265e3
-    setup_region[0]['total_revenue'] = 159e4
-    setup_region[0]['used_cross_subsidy'] = 0
-
-    assert calculate_benefit_cost_ratio(setup_region[0], setup_country_parameters) == 1
-
-    setup_region[0]['used_cross_subsidy'] = 159e4
-
-    assert calculate_benefit_cost_ratio(setup_region[0], setup_country_parameters) == 1
-
-
 def test_estimate_subsidies():
 
     region = {
@@ -162,91 +241,6 @@ def test_estimate_subsidies():
     assert answer['used_cross_subsidy'] == 2500
     assert answer['required_state_subsidy'] == 2500
     assert available_cross_subsidy == 0
-
-
-def test_assess(setup_option, setup_global_parameters, setup_country_parameters, setup_costs):
-
-    regions = [
-        {
-            'GID_id': 'a',
-            'population': 1000,
-            'population_km2': 500,
-            'total_revenue': 20000,
-            'network_cost': 5000,
-            'smartphones_on_network': 250,
-            'phones_on_network': 500,
-        },
-        {
-            'GID_id': 'b',
-            'population': 500,
-            'population_km2': 250,
-            'total_revenue': 12000,
-            'network_cost': 8000,
-            'smartphones_on_network': 250,
-            'phones_on_network': 500,
-        },
-    ]
-
-    setup_country_parameters['financials']['spectrum_coverage_baseline_usd_mhz_pop'] = 0.125
-    setup_country_parameters['financials']['spectrum_capacity_baseline_usd_mhz_pop'] = 0.025
-
-    answer = assess('MWI', regions, setup_option, setup_global_parameters,
-        setup_country_parameters, setup_costs)
-
-    assert answer[0]['total_revenue'] == 20000
-    assert answer[0]['network_cost'] == 5000
-    assert answer[0]['ops_and_acquisition'] == 500
-    assert answer[0]['ops_and_acquisition'] == 500
-    assert answer[0]['spectrum_cost'] == 3000
-    assert answer[0]['tax'] == 1250
-    assert answer[0]['profit_margin'] == 1850
-    assert answer[0]['total_cost'] == 11600.0
-    assert answer[0]['available_cross_subsidy'] == 8400.0
-    assert answer[0]['used_cross_subsidy'] == 0
-    assert answer[0]['bcr'] == 1.8018018018018018
-    assert answer[0]['required_state_subsidy'] == 0
-
-    assert answer[1]['total_revenue'] == 12000
-    assert answer[1]['network_cost'] == 8000
-    assert answer[1]['spectrum_cost'] == 1500
-    assert answer[1]['tax'] == 2000
-    assert answer[1]['profit_margin'] == 2300
-    assert answer[1]['total_cost'] == 14300
-    assert answer[1]['available_cross_subsidy'] == 0
-    assert answer[1]['used_cross_subsidy'] == 2300.0
-    assert answer[1]['bcr'] == 0.8695652173913043
-    assert answer[1]['required_state_subsidy'] == 0
-
-    regions = [
-        {
-            'GID_id': 'a',
-            'population': 1000,
-            'population_km2': 500,
-            'total_revenue': 20000,
-            'network_cost': 5200,
-            'smartphones_on_network': 250,
-            'phones_on_network': 500,
-        },
-        {
-            'GID_id': 'b',
-            'population': 1000,
-            'population_km2': 500,
-            'total_revenue': 2500,
-            'network_cost': 5200,
-            'smartphones_on_network': 250,
-            'phones_on_network': 500,
-        },
-    ]
-
-    answer = assess('MWI', regions, setup_option, setup_global_parameters,
-        setup_country_parameters, setup_costs)
-
-    assert answer[0]['available_cross_subsidy'] == 8100
-    assert answer[0]['used_cross_subsidy'] == 0
-    assert answer[0]['required_state_subsidy'] == 0
-    assert answer[1]['available_cross_subsidy'] == 0
-    assert answer[1]['used_cross_subsidy'] == 8100
-    assert answer[1]['required_state_subsidy'] == 1300
 
 
 def test_allocate_available_excess():

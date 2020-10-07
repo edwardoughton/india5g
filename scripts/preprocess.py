@@ -17,10 +17,10 @@ from shapely.geometry import Polygon, MultiPolygon, mapping, shape, MultiLineStr
 from shapely.ops import transform, unary_union, nearest_points
 import fiona
 import fiona.crs
-import rasterio
-from rasterio.mask import mask
-from rasterstats import zonal_stats
-import networkx as nx
+# import rasterio
+# from rasterio.mask import mask
+# from rasterstats import zonal_stats
+# import networkx as nx
 from rtree import index
 import numpy as np
 import random
@@ -1920,6 +1920,154 @@ def forecast_linear(telecom_circle, historical_data, start_point, end_point, hor
     return output
 
 
+def forecast_subscriptions_linear(country, historical_data, start_point, end_point, horizon):
+    """
+    Forcasts subscription adoption rate.
+    Parameters
+    ----------
+    historical_data : list of dicts
+        Past penetration data.
+    start_point : int
+        Starting year of forecast period.
+    end_point : int
+        Final year of forecast period.
+    horizon : int
+        Number of years to use to estimate mean growth rate.
+    """
+    output = []
+
+    subs_growth = country['subs_growth']
+
+    year_0 = sorted(historical_data, key = lambda i: i['year'], reverse=True)[0]
+
+    for year in range(start_point, end_point + 1):
+        if year == start_point:
+
+            penetration = year_0['penetration'] * (1 + (subs_growth/100))
+        else:
+            penetration = penetration * (1 + (subs_growth/100))
+
+        if year not in [item['year'] for item in output]:
+
+            output.append({
+                'country': country['iso3'],
+                'year': year,
+                'penetration': round(penetration, 2),
+            })
+
+    return output
+
+
+def forecast_smartphones(country):
+    """
+    Forecast smartphone adoption.
+    Parameters
+    ----------
+    historical_data : list of dicts
+        Past penetration data.
+    """
+    iso3 = country['iso3']
+
+    path = os.path.join(DATA_RAW, 'wb_smartphone_survey', 'wb_smartphone_survey.csv')
+    survey_data = load_smartphone_data(path, country)
+
+    start_point = 2020
+    end_point = 2030
+
+    forecast = forecast_smartphones_linear(
+        survey_data,
+        country,
+        start_point,
+        end_point
+    )
+
+    forecast_df = pd.DataFrame(forecast)
+
+    path = os.path.join(DATA_INTERMEDIATE, iso3, 'smartphones')
+
+    if not os.path.exists(path):
+        os.mkdir(path)
+
+    forecast_df.to_csv(os.path.join(path, 'smartphone_forecast.csv'), index=False)
+
+    path = os.path.join(BASE_PATH, '..', 'vis', 'smartphones', 'data_inputs')
+    if not os.path.exists(path):
+        os.mkdir(path)
+    forecast_df.to_csv(os.path.join(path, '{}.csv'.format(iso3)), index=False)
+
+    return print('Completed subscription forecast')
+
+
+def load_smartphone_data(path, country):
+    """
+    Load smartphone adoption survey data.
+    Parameters
+    ----------
+    path : string
+        Location of data as .csv.
+    country : string
+        ISO3 digital country code.
+    """
+    survey_data = pd.read_csv(path)
+
+    survey_data = survey_data.to_dict('records')
+
+    countries_with_data = [i['iso3'] for i in survey_data]
+
+    output = []
+
+    if country['iso3']  in countries_with_data:
+        for item in survey_data:
+                if item['iso3'] == country['iso3']:
+                    output.append({
+                        'country': item['iso3'],
+                        'cluster': item['cluster'],
+                        'settlement_type': item['Settlement'],
+                        'smartphone_penetration': item['Smartphone']
+                    })
+
+    else:
+        for item in survey_data:
+            if item['cluster'] == country['cluster']:
+                output.append({
+                    'country': country['iso3'],
+                    'cluster': item['cluster'],
+                    'settlement_type': item['Settlement'],
+                    'smartphone_penetration': item['Smartphone']
+                })
+
+    return output
+
+
+def forecast_smartphones_linear(data, country, start_point, end_point):
+    """
+    Forecast smartphone adoption.
+    """
+    output = []
+
+    smartphone_growth = country['smartphone_growth']
+
+    for item in data:
+
+        for year in range(start_point, end_point + 1):
+
+            if year == start_point:
+
+                penetration = item['smartphone_penetration']
+
+            else:
+                penetration = penetration * (1 + (smartphone_growth/100))
+
+            output.append({
+                'country': item['country'],
+                'settlement_type': item['settlement_type'].lower(),
+                'year': year,
+                'penetration': round(penetration, 2),
+            })
+
+    return output
+
+
 if __name__ == '__main__':
 
     tc_codes = [
@@ -1958,7 +2106,7 @@ if __name__ == '__main__':
             telecom_circles.append({
                 'iso3': 'IND', 'iso2': 'IN', 'tc_code': tc_code,
                 'regional_level': 2, 'region': 'S&SE Asia', 'pop_density_km2': 1000,
-                'settlement_size': 20000, 'subs_growth': 1,
+                'settlement_size': 20000, 'subs_growth': 1, 'smartphone_growth': 1,
             })
         else:
             telecom_circles.append({
@@ -2014,3 +2162,6 @@ if __name__ == '__main__':
 
         print('Create subscription forcast')
         forecast_subscriptions(tc)
+
+        print('Forecasting smartphones')
+        forecast_smartphones(tc)

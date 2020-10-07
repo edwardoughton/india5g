@@ -147,21 +147,6 @@ def find_country_list(continent_list):
 
     return country_list, country_regional_levels
 
-
-# def load_cluster(path, iso3):
-#     """
-#     Load cluster number. You need to make sure the
-#     R clustering script (india5g/vis/clustering/clustering.r)
-#     has been run first.
-
-#     """
-#     with open(path, 'r') as source:
-#         reader = csv.DictReader(source)
-#         for row in reader:
-#             if row['ISO_3digit'] == iso3:
-#                 return row['cluster']
-
-
 def load_penetration(path):
     """
     Load penetration forecast.
@@ -183,34 +168,20 @@ def load_smartphones(country, path):
     for the country being modeled, or data from another country in the same
     cluster. If no data are present for the country of the cluster, it
     defaults to the mean values across all surveyed countries.
-
     """
-    iso3 = country['iso3']
-
-    countries = set()
-
-    with open(path, 'r') as source:
-        reader = csv.DictReader(source)
-        for row in reader:
-            countries.add(row['iso3'])
-
     output = {}
-    all_data = {
-        'urban': [],
-        'rural': []
-    }
+    settlement_types = [
+        'urban',
+        'rural']
 
-    with open(path, 'r') as source:
-        reader = csv.DictReader(source)
-        for row in reader:
-            if row['iso3'] == iso3:
-                iso3 = row['iso3']
-                settlement = row['Settlement'].lower()
-                output[settlement] = {
-                    'basic': float(row['Basic']) / 100,
-                    'feature': float(row['Feature']) / 100,
-                    'smartphone': float(row['Smartphone']) / 100,
-                }
+    for settlement_type in settlement_types:
+        with open(path, 'r') as source:
+            reader = csv.DictReader(source)
+            intermediate = {}
+            for row in reader:
+                if settlement_type == row['settlement_type']:
+                    intermediate[int(row['year'])] = float(row['penetration'])
+            output[settlement_type] = intermediate
 
     return output
 
@@ -343,7 +314,7 @@ def write_results(regional_results, folder, metric):
     decile_cost_results = decile_cost_results[[
         'scenario', 'strategy', 'decile', 'confidence', #'tc_code',
         'population', 'area_km2', #'population_km2',
-        'phones_on_network', #'cost_per_sp_user',
+        'phones_on_network', 'smartphones_on_network',#'cost_per_sp_user',
         'total_revenue', 'ran', 'backhaul_fronthaul', 'civils', 'core_network',
         'ops_and_acquisition', 'spectrum_cost', 'tax', 'profit_margin', 'total_cost',
         'available_cross_subsidy', 'deficit', 'used_cross_subsidy',
@@ -354,6 +325,8 @@ def write_results(regional_results, folder, metric):
         'scenario', 'strategy', 'confidence', 'decile'], as_index=True).sum() #'tc_code',
     decile_cost_results['cost_per_network_user'] = (
         decile_cost_results['total_cost'] / decile_cost_results['phones_on_network'])
+    decile_cost_results['cost_per_sp_user'] = (
+        decile_cost_results['total_cost'] / decile_cost_results['smartphones_on_network'])
 
     path = os.path.join(folder,'decile_cost_results_{}.csv'.format(metric))
     decile_cost_results.to_csv(path, index=True)
@@ -477,12 +450,12 @@ if __name__ == '__main__':
     }
 
     GLOBAL_PARAMETERS = {
-        'overbooking_factor': 50,
+        'overbooking_factor': 30,
         'return_period': 10,
         'discount_rate': 5,
         'opex_percentage_of_capex': 10,
         'sectorization': 3,
-        'confidence': [2.5, 50, 97.5], #[50],#
+        'confidence': [50],#[2.5, 50, 97.5], #
         'networks': 3,
         'local_node_spacing_km2': 40,
         'io_n2_n3': 1,
@@ -531,7 +504,7 @@ if __name__ == '__main__':
         regional_results = []
         regional_cost_structure = []
 
-        for telecom_circle in telecom_circles:#[:1]:
+        for telecom_circle in telecom_circles: #[:1]:
 
             iso3 = telecom_circle['iso3']
             tc_code = telecom_circle['tc_code']
@@ -542,8 +515,8 @@ if __name__ == '__main__':
             filename = 'subs_forecast.csv'
             penetration_lut = load_penetration(os.path.join(folder, filename))
 
-            folder = os.path.join(DATA_RAW, 'wb_smartphone_survey')
-            filename = 'wb_smartphone_survey.csv'
+            folder = os.path.join(DATA_INTERMEDIATE, iso3, 'smartphones')
+            filename = 'smartphone_forecast.csv'
             smartphone_lut = load_smartphones(telecom_circle, os.path.join(folder, filename))
 
             folder = os.path.join(DATA_INTERMEDIATE, iso3)
@@ -554,7 +527,7 @@ if __name__ == '__main__':
             print('Working on {} in {}, {}'.format(decision_option, tc_code, iso3))
             print(' ')
 
-            for option in options:#[:3]:
+            for option in options:#[:1]:
 
                 print('Working on {} and {}'.format(option['scenario'], option['strategy']))
 
@@ -568,6 +541,9 @@ if __name__ == '__main__':
                     data = load_regions(path, telecom_circle)
 
                     data_initial = data.to_dict('records')
+
+                    # for region in data_initial:
+                    #     total_sites += region['sites_4G']
 
                     data_demand = estimate_demand(
                         data_initial,
@@ -597,7 +573,8 @@ if __name__ == '__main__':
                         option,
                         GLOBAL_PARAMETERS,
                         tc_parameters,
-                        COSTS
+                        COSTS,
+                        TIMESTEPS
                     )
 
                     final_results = allocate_deciles(data_assess)
