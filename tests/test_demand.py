@@ -21,7 +21,7 @@ def test_estimate_demand(
         setup_country_parameters,
         setup_timesteps,
         setup_penetration_lut,
-        {'urban': {'smartphone': 0.5}}
+        {'urban': {2020: 50}}
     )
 
     # pop = 10000
@@ -66,7 +66,7 @@ def test_estimate_demand(
         setup_country_parameters,
         setup_timesteps,
         setup_penetration_lut,
-        {'rural': {'smartphone': 0.5}}
+        {'rural': {2020: 50}}
     )
 
     # 1667 phones on network
@@ -84,7 +84,7 @@ def test_estimate_demand(
         setup_country_parameters,
         setup_timesteps,
         setup_penetration_lut,
-        {'rural': {'smartphone': 0.5}}
+        {'rural': {2020: 50}}
     )
 
     # 5000 phones on single shared network

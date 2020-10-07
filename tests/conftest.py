@@ -130,6 +130,7 @@ def setup_country_parameters():
             'tax_baseline': 25,
             'tax_high': 40,
             'ops_and_acquisition_per_subscriber': 1,
+            'administration_percentage_of_network_cost': 20,
             },
         }
 
