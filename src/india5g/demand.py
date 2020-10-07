@@ -10,30 +10,36 @@ Taken from the Python Telecommunication Assessment Library (pytal)
 def estimate_demand(regions, option, global_parameters,
     tc_parameters, timesteps, penetration_lut, smartphone_lut):
     """
-    Estimate the total revenue based on current demand.
+    Estimate demand metrics including:
+        - Total number of basic phone and smartphone users
+        - Total data demand (in Mbps per square kilometer)
+        - Total revenue (net present value over the assessment period in USD)
 
     Parameters
     ----------
-    regions : dataframe
-        Geopandas dataframe of all regions.
+    regions : list of dicts
+        Data for all regions (one dict per region).
     option : dict
         Contains the scenario and strategy. The strategy string controls
-        the strategy variants being testes in the model and is defined based
-        on the type of technology generation, core and backhaul, and the level
-        of sharing, subsidy, spectrum and tax.
+        the strategy variants being tested in the model and is defined based
+        on the type of technology generation, core and backhaul, and the
+        strategy for infrastructure sharing, the number of networks in each
+        geotype, spectrum and taxation.
     global_parameters : dict
         All global model parameters.
-    tc_parameters : dict
-        All telecom circle specific parameters.
+    country_parameters : dict
+        All country specific parameters.
     timesteps : list
         All years for the assessment period.
     penetration_lut : list of dicts
-        Contains annual penetration values.
+        Contains annual cell phone penetration values.
+    smartphone_lut : list of dicts
+        Contains annual penetration values for smartphones.
 
     Returns
     -------
-    regions : dataframe
-        Geopandas dataframe of all regions.
+    regions : list of dicts
+        Data for all regions (one dict per region).
 
     """
     output = []
@@ -56,7 +62,6 @@ def estimate_demand(regions, option, global_parameters,
             geotype_sps = 'urban'
         else:
             geotype_sps = geotype
-        smartphones = smartphone_lut[geotype_sps]
 
         revenue = []
         demand_mbps_km2 = []
@@ -65,19 +70,24 @@ def estimate_demand(regions, option, global_parameters,
 
         for timestep in timesteps:
 
-            region['arpu'] = estimate_arpu(
+            region['arpu_discounted'] = estimate_arpu(
                 region,
                 timestep,
                 global_parameters,
                 tc_parameters
             )
 
-            penetration = penetration_lut[timestep]
+            region['penetration'] = penetration_lut[timestep]
 
             #cell_penetration : float
             #Number of cell phones per member of the population.
             region['population_with_phones'] = (
-                region['population'] * (penetration / 100))
+                region['population'] * (region['penetration'] / 100))
+
+            #cell_penetration : float
+            #Number of cell phones per member of the population.
+            region['population_with_phones'] = (
+                region['population'] * (region['penetration'] / 100))
 
             #phones : int
             #Total number of phones on the network being modeled.
@@ -90,10 +100,15 @@ def estimate_demand(regions, option, global_parameters,
                 region['phones_on_network'] / region['area_km2']
             )
 
+            #add regional smartphone penetration
+            region['smartphone_penetration'] = smartphone_lut[geotype_sps][timestep]
+
             #phones : int
             #Total number of smartphones on the network being modeled.
             region['smartphones_on_network'] = (
-                region['phones_on_network'] * smartphones['smartphone'])
+                region['phones_on_network'] *
+                (region['smartphone_penetration'] / 100)
+            )
 
             #get smartphone density
             region['sp_density_on_network_km2'] = (
@@ -109,11 +124,13 @@ def estimate_demand(regions, option, global_parameters,
                 region['area_km2']
                 ))
 
-            revenue.append(region['arpu'] * region['phones_on_network'])
+            annual_revenue = region['arpu_discounted'] * region['phones_on_network']
 
-        region['total_revenue'] = round(sum(revenue))# * subsidy_factor)
-        region['revenue_km2'] = round(sum(revenue) / region['area_km2']) #* subsidy_factor / region['area_km2'])
-        region['demand_mbps_km2'] = round(sum(demand_mbps_km2) / len(demand_mbps_km2))
+            revenue.append(annual_revenue)
+
+        region['demand_mbps_km2'] = max(demand_mbps_km2)
+        region['total_revenue'] = round(sum(revenue))
+        region['revenue_km2'] = round(sum(revenue) / region['area_km2'])
 
         output.append(region)
 
