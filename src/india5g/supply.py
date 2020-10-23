@@ -249,12 +249,12 @@ def estimate_site_upgrades(region, strategy, total_sites_required, tc_parameters
     region['existing_network_sites'] = (
         region['sites_estimated_total'] *
         (tc_parameters['proportion_of_sites'] / 100)
-    )
+    ) #/ 3
 
     existing_4G_sites = math.ceil(
         region['sites_4G'] *
         (tc_parameters['proportion_of_sites'] / 100)
-    )
+    ) #/ 3
 
     if total_sites_required > region['existing_network_sites']:
 

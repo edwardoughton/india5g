@@ -17,10 +17,10 @@ from shapely.geometry import Polygon, MultiPolygon, mapping, shape, MultiLineStr
 from shapely.ops import transform, unary_union, nearest_points
 import fiona
 import fiona.crs
-# import rasterio
-# from rasterio.mask import mask
-# from rasterstats import zonal_stats
-# import networkx as nx
+import rasterio
+from rasterio.mask import mask
+from rasterstats import zonal_stats
+import networkx as nx
 from rtree import index
 import numpy as np
 import random
@@ -610,7 +610,7 @@ def estimate_sites(data, tc_code, backhaul_lut):
     coverage = coverage.loc[coverage['tc_code'] == tc_code]
     coverage = coverage['coverage_pop_percentage'].values[0]
 
-    population_covered = population * (coverage / 100)
+    population_covered = int(population) * (float(coverage) / 100)
 
     #Use tower counts by telecom circle
     path = os.path.join(DATA_RAW, 'ind_sites_by_tc.csv')
@@ -2071,50 +2071,63 @@ def forecast_smartphones_linear(data, country, start_point, end_point):
 if __name__ == '__main__':
 
     tc_codes = [
-        'AP','AS',
-        'BR',
-        'DL', 'GJ', 'HP', 'HR', 'JK', 'KA',
+        'AP',
+        'AS', 'BR',
+        'DL',
+        'GJ',
+        'HP',
+        'HR',
+        'JK', 'KA',
         'KL',
         'KO',
-        'MH', 'MP','MU', 'NE', 'OR', 'PB', 'RJ', 'TN', 'UE', 'UW', 'WB',
+        'MH', 'MP',
+        'MU',
+        'NE', 'OR', 'PB', 'RJ', 'TN', 'UE', 'UW', 'WB',
     ]
 
     telecom_circles = []
 
     tc_thresholds = {
-        # 'AS':{'pop_density_km2': 400,'settlement_size': 2500},
-        # 'BR':{'pop_density_km2': 1000,'settlement_size': 20000},
-        # 'GJ':{'pop_density_km2': 400,'settlement_size': 2500},
-        # 'JK':{'pop_density_km2': 400,'settlement_size': 2500},
-        # 'KA':{'pop_density_km2': 400,'settlement_size': 2500},
-        # 'KL':{'pop_density_km2': 400,'settlement_size': 2500},
-        # 'KO':{'pop_density_km2': 400,'settlement_size': 2500},
-        # 'MH':{'pop_density_km2': 400,'settlement_size': 2500},
-        # 'MP':{'pop_density_km2': 400,'settlement_size': 2500},
-        # 'NE':{'pop_density_km2': 400,'settlement_size': 2500},
-        # 'OR':{'pop_density_km2': 400,'settlement_size': 2500},
-        # 'PB':{'pop_density_km2': 400,'settlement_size': 2500},
-        # 'RJ':{'pop_density_km2': 400,'settlement_size': 2500},
-        # 'TN':{'pop_density_km2': 400,'settlement_size': 2500},
-        # 'UE':{'pop_density_km2': 400,'settlement_size': 2500},
-        # 'UW':{'pop_density_km2': 400,'settlement_size': 2500},
-        # 'WB':{'pop_density_km2': 400,'settlement_size': 2500},
+        'AP':{'regional_level': 2, 'pop_density_km2': 1000,'settlement_size': 20000},
+        'AS':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'BR':{'regional_level': 2, 'pop_density_km2': 1000,'settlement_size': 20000},
+        'DL':{'regional_level': 3, 'pop_density_km2': 1000,'settlement_size': 20000},
+        'GJ':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'HP':{'regional_level': 3, 'pop_density_km2': 1000,'settlement_size': 20000},
+        'HR':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'JK':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'KA':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'KL':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'KO':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'MH':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'MP':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'MU':{'regional_level': 3, 'pop_density_km2': 1000,'settlement_size': 20000},
+        'NE':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'OR':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'PB':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'RJ':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'TN':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'UE':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'UW':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'WB':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
     }
 
     for tc_code in tc_codes:
+
         if not tc_code in tc_thresholds.keys():
             telecom_circles.append({
                 'iso3': 'IND', 'iso2': 'IN', 'tc_code': tc_code,
-                'regional_level': 2, 'region': 'S&SE Asia', 'pop_density_km2': 1000,
+                'regional_level': 3, 'region': 'S&SE Asia', 'pop_density_km2': 1000,
                 'settlement_size': 20000, 'subs_growth': 1, 'smartphone_growth': 1,
             })
         else:
             telecom_circles.append({
                 'iso3': 'IND', 'iso2': 'IN', 'tc_code': tc_code,
-                'regional_level': 2, 'region': 'S&SE Asia',
+                'regional_level': tc_thresholds[tc_code]['regional_level'],
+                'region': 'S&SE Asia',
                 'pop_density_km2': tc_thresholds[tc_code]['pop_density_km2'],
                 'settlement_size': tc_thresholds[tc_code]['settlement_size'],
-                'subs_growth': 1,
+                'subs_growth': 1, 'smartphone_growth': 1,
             })
 
     print('Processing country boundary')
