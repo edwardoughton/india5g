@@ -287,13 +287,14 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'profit_margin': 30, # what is the profit margin for an MNO?
                 'spectrum_coverage_baseline_usd_mhz_pop': 2.22, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
                 'spectrum_capacity_baseline_usd_mhz_pop': 0.54, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
+		        'spectrum_baseline_usd_mhz': 'XXXX',
                 'spectrum_cost_low': 50,
                 'spectrum_cost_high': 50,
                 'tax_low': 10,
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
     'GJ': {
@@ -353,7 +354,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
     'KA': {
@@ -413,7 +414,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
     'MH': {
@@ -473,7 +474,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
     'TN': {
@@ -533,13 +534,11 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
 
     # Category B Telecom Circles
-
-
     'HR': {
             'luminosity': {
                 'high': 3,
@@ -597,7 +596,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
 
@@ -658,7 +657,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
     'MP': {
@@ -718,7 +717,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
 
@@ -779,7 +778,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
 
@@ -840,7 +839,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
     'UE': {
@@ -900,7 +899,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
 
@@ -961,7 +960,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 30, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
 
@@ -1022,7 +1021,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
 
@@ -1085,7 +1084,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
     'JK': {
@@ -1145,7 +1144,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
 
@@ -1206,7 +1205,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
 
@@ -1267,7 +1266,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
 
@@ -1328,7 +1327,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
 
@@ -1389,7 +1388,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
 
@@ -1452,7 +1451,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
     'MU': {
@@ -1512,7 +1511,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
     'KO': {
@@ -1572,7 +1571,7 @@ TELECOM_CIRCLE_PARAMETERS = {
                 'tax_baseline': 22, #what is the baseline corporate tax rate in india?
                 'tax_high': 40,
                 'ops_and_acquisition_per_subscriber': 2, # what is the subscriber acquisition cost in India? Might be easier to just use 30% of the RAN annually for total operations costs?
-                'administration_percentage_of_network_cost': 10
+                'administration_percentage_of_network_cost': 20
                 },
             },
     }
