@@ -124,7 +124,7 @@ def estimate_demand(regions, option, global_parameters,
                 region['area_km2']
                 ))
 
-            annual_revenue = region['arpu_discounted'] * region['phones_on_network']
+            annual_revenue = region['arpu_discounted'] * 12 * region['phones_on_network']
 
             revenue.append(annual_revenue)
 
