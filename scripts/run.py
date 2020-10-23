@@ -224,12 +224,27 @@ def load_core_lut(path):
 
 def define_deciles(regions):
 
-    regions = regions.sort_values(by='population_km2', ascending=True)
+    mumbai = []
 
-    regions['decile'] = regions.groupby([
-        'GID_0', 'tc_code', 'scenario', 'strategy', 'confidence'], as_index=True).population_km2.apply( #cost_per_sp_user
-            pd.qcut, q=11, precision=0,
-            labels=[100,90,80,70,60,50,40,30,20,10,0], duplicates='drop') #   [0,10,20,30,40,50,60,70,80,90,100]
+    if 'MU' in regions['tc_code'].unique():
+
+        mumbai = regions.loc[regions['tc_code'] == 'MU']
+
+        mumbai['decile'] = 0
+
+    else:
+
+        regions = regions.drop(regions[regions['tc_code'] == 'MU'].index)
+
+        regions = regions.sort_values(by='population_km2', ascending=True)
+
+        regions['decile'] = regions.groupby([
+            'GID_0', 'tc_code', 'scenario', 'strategy', 'confidence'], as_index=True).population_km2.apply( #cost_per_sp_user
+                pd.qcut, q=11, precision=0,
+                labels=[100,90,80,70,60,50,40,30,20,10,0], duplicates='drop') #   [0,10,20,30,40,50,60,70,80,90,100]
+
+    if len(mumbai) > 0:
+        regions = regions.append(mumbai)
 
     return regions
 
@@ -450,7 +465,7 @@ if __name__ == '__main__':
     }
 
     GLOBAL_PARAMETERS = {
-        'overbooking_factor': 30,
+        'overbooking_factor': 20,
         'return_period': 10,
         'discount_rate': 5,
         'opex_percentage_of_capex': 10,
@@ -478,7 +493,7 @@ if __name__ == '__main__':
         'BR',
         'DL', 'GJ', 'HP', 'HR', 'JK', 'KA', 'KL', 'KO',
         'MH', 'MP',
-        # 'MU', #needs more granular lower units
+        'MU', #needs more granular lower units
         'NE', 'OR', 'PB', 'RJ', 'TN', 'UE', 'UW', 'WB',
     ]
 
