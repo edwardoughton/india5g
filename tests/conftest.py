@@ -6,6 +6,7 @@ def setup_region():
     return [{
     'GID_0': 'MWI',
     'GID_id': 'MWI.1.1.1_1',
+    'tc_code': 'TEST',
     'mean_luminosity_km2': 26.736407691655717,
     'population': 10000,
     'area_km2': 2,
@@ -22,6 +23,7 @@ def setup_region_rural():
     return [{
     'GID_0': 'MWI',
     'GID_id': 'MWI.1.1.1_1',
+    'tc_code': 'TEST',
     'mean_luminosity_km2': 26.736407691655717,
     'population': 10000,
     'area_km2': 2,
@@ -52,6 +54,7 @@ def setup_global_parameters():
     return {
         'overbooking_factor': 100,
         'return_period': 2,
+        'return_period_spectrum': 10,
         'discount_rate': 5,
         'opex_percentage_of_capex': 10,
         'sectorization': 3,
@@ -124,6 +127,8 @@ def setup_country_parameters():
             'profit_margin': 20,
             'spectrum_coverage_baseline_usd_mhz_pop': 1,
             'spectrum_capacity_baseline_usd_mhz_pop': 1,
+            'spectrum_baseline_cov_usd_mhz': 1000000,
+            'spectrum_baseline_cap_usd_mhz': 1000000,
             'spectrum_cost_low': 50,
             'spectrum_cost_high': 50,
             'tax_low': 10,
