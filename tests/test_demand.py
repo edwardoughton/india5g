@@ -14,41 +14,42 @@ def test_estimate_demand(
     ):
 
     #Test for a single network taking one third of total demand (3 MNOs in total)
-    answer = estimate_demand(
+    answer, annual_demand = estimate_demand(
         setup_region,
         setup_option,
         setup_global_parameters,
         setup_country_parameters,
         setup_timesteps,
         setup_penetration_lut,
-        {'urban': {2020: 50}}
+        {'urban': {2020: 50}},
+        'A'
     )
-
+    print(answer)
     # pop = 10000
     # pen = 50%
     # = 5000 total phones
-    assert answer[0]['population_with_phones'] == 5000
+    assert answer[0]['total_population_with_phones'] == 5000
 
     # 5000 phones
     # 3 networks
     # = 1667 phones
-    assert round(answer[0]['phones_on_network']) == round(5000 / 3)
+    assert round(answer[0]['mno_phones_on_network']) == round(5000 / 3)
 
     # 5000 phones
     # 3 networks
     # 50% smartphones
     # = 833 smartphones
     smartphones_on_network = round(5000 / 3 * (50 / 100))
-    assert round(answer[0]['smartphones_on_network']) == smartphones_on_network
+    assert round(answer[0]['mno_smartphones_on_network']) == smartphones_on_network
 
     # 1667 phones
     # arpu = 15
-    assert round(answer[0]['total_revenue']) == round(15 * 5000 / 3)
+    assert round(answer[0]['total_revenue']) == round(15 * 12 * 5000 / 3)
 
     # 1667 phones
     # arpu = 15
     # area = 2
-    assert round(answer[0]['revenue_km2']) == round((15 * 5000 / 3) / 2)
+    assert round(answer[0]['revenue_km2']) == round((15 * 12 * 5000 / 3) / 2)
 
     # 833 smartphones
     # scenario = 30
@@ -59,37 +60,39 @@ def test_estimate_demand(
         smartphones_on_network * 50 / 100 / 2
     )
 
-    answer = estimate_demand(
+    answer, annual_demand = estimate_demand(
         setup_region_rural,
         setup_option_high,
         setup_global_parameters,
         setup_country_parameters,
         setup_timesteps,
         setup_penetration_lut,
-        {'rural': {2020: 50}}
+        {'rural': {2020: 50}},
+        'A'
     )
 
     # 1667 phones on network
     # arpu = 15
-    assert round(answer[0]['total_revenue']) == round(5000 * 15 / 3)
+    assert round(answer[0]['total_revenue']) == round(5000 * 12 * 15 / 3)
 
     #Test a shared network to check the demand/revenue calculations are correct
     setup_region[0]['geotype'] = 'rural'
     setup_option['strategy'] = '4G_epc_microwave_baseline_shared_baseline_baseline'
 
-    answer = estimate_demand(
+    answer, annual_output = estimate_demand(
         setup_region,
         setup_option,
         setup_global_parameters,
         setup_country_parameters,
         setup_timesteps,
         setup_penetration_lut,
-        {'rural': {2020: 50}}
+        {'rural': {2020: 50}},
+        'A'
     )
 
     # 5000 phones on single shared network
     # arpu = 15
-    assert round(answer[0]['total_revenue']) == round(5000 * 15)
+    assert round(answer[0]['total_revenue']) == round(5000 * 12 * 15)
 
 
 def test_get_per_user_capacity():

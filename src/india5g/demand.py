@@ -8,7 +8,7 @@ Taken from the Python Telecommunication Assessment Library (pytal)
 """
 
 def estimate_demand(regions, option, global_parameters,
-    tc_parameters, timesteps, penetration_lut, smartphone_lut):
+    tc_parameters, timesteps, penetration_lut, smartphone_lut, category):
     """
     Estimate demand metrics including:
         - Total number of basic phone and smartphone users
@@ -43,6 +43,7 @@ def estimate_demand(regions, option, global_parameters,
 
     """
     output = []
+    annual_output = []
 
     # generation_core_backhaul_sharing_networks_spectrum_tax
     network_strategy = option['strategy'].split('_')[4]
@@ -70,7 +71,7 @@ def estimate_demand(regions, option, global_parameters,
 
         for timestep in timesteps:
 
-            region['arpu_discounted'] = estimate_arpu(
+            region['arpu_discounted_monthly'] = estimate_arpu(
                 region,
                 timestep,
                 global_parameters,
@@ -81,23 +82,23 @@ def estimate_demand(regions, option, global_parameters,
 
             #cell_penetration : float
             #Number of cell phones per member of the population.
-            region['population_with_phones'] = (
+            region['total_population_with_phones'] = (
                 region['population'] * (region['penetration'] / 100))
 
-            #cell_penetration : float
-            #Number of cell phones per member of the population.
-            region['population_with_phones'] = (
-                region['population'] * (region['penetration'] / 100))
+            #get phone density
+            region['total_phone_density_km2'] = (
+                region['total_population_with_phones'] / region['area_km2']
+            )
 
             #phones : int
             #Total number of phones on the network being modeled.
-            region['phones_on_network'] = (
-                region['population_with_phones'] /
+            region['mno_phones_on_network'] = (
+                region['total_population_with_phones'] /
                 networks)
 
             #get phone density
-            region['phone_density_on_network_km2'] = (
-                region['phones_on_network'] / region['area_km2']
+            region['mno_phone_density_on_network_km2'] = (
+                region['mno_phones_on_network'] / region['area_km2']
             )
 
             #add regional smartphone penetration
@@ -105,28 +106,71 @@ def estimate_demand(regions, option, global_parameters,
 
             #phones : int
             #Total number of smartphones on the network being modeled.
-            region['smartphones_on_network'] = (
-                region['phones_on_network'] *
+            region['total_population_with_smartphones'] = (
+                region['total_population_with_phones'] *
                 (region['smartphone_penetration'] / 100)
             )
 
             #get smartphone density
-            region['sp_density_on_network_km2'] = (
-                region['smartphones_on_network'] / region['area_km2']
+            region['total_sp_density_km2'] = (
+                region['total_population_with_smartphones'] / region['area_km2']
+            )
+
+            #phones : int
+            #Total number of smartphones on the network being modeled.
+            region['mno_smartphones_on_network'] = (
+                region['mno_phones_on_network'] *
+                (region['smartphone_penetration'] / 100)
+            )
+
+            #get smartphone density
+            region['mno_sp_density_on_network_km2'] = (
+                region['mno_smartphones_on_network'] / region['area_km2']
             )
 
             # demand_mbps_km2 : float
             # Total demand in mbps / km^2.
             demand_mbps_km2.append(
-                (region['smartphones_on_network'] *
+                (region['mno_smartphones_on_network'] *
                 scenario_per_user_capacity / #User demand in Mbps
                 global_parameters['overbooking_factor'] /
                 region['area_km2']
                 ))
 
-            annual_revenue = region['arpu_discounted'] * region['phones_on_network']
+            annual_revenue = (
+                region['arpu_discounted_monthly'] *
+                region['mno_phones_on_network'] *
+                12
+            )
 
             revenue.append(annual_revenue)
+
+            annual_output.append({
+                'GID_0': region['GID_0'],
+                'GID_id': region['GID_id'],
+                'tc_code': region['tc_code'],
+                'category': category,
+                'scenario': option['scenario'],
+                'strategy': option['strategy'],
+                'confidence': global_parameters['confidence'][0],
+                'year': timestep,
+                'population': region['population'],
+                'area_km2': region['area_km2'],
+                'population_km2': region['population_km2'],
+                'geotype': region['geotype'].split(' ')[0],
+                'arpu_discounted_monthly': region['arpu_discounted_monthly'],
+                'penetration': region['penetration'],
+                'total_population_with_phones': region['total_population_with_phones'],
+                'total_phone_density_km2': region['total_phone_density_km2'],
+                'mno_phones_on_network': region['mno_phones_on_network'],
+                'mno_phone_density_on_network_km2': region['mno_phone_density_on_network_km2'],
+                'smartphone_penetration': region['smartphone_penetration'],
+                'total_population_with_smartphones': region['total_population_with_smartphones'],
+                'total_sp_density_km2': region['total_sp_density_km2'],
+                'mno_smartphones_on_network': region['mno_smartphones_on_network'],
+                'mno_sp_density_on_network_km2': region['mno_sp_density_on_network_km2'],
+                'revenue': annual_revenue,
+            })
 
         region['demand_mbps_km2'] = max(demand_mbps_km2)
         region['total_revenue'] = round(sum(revenue))
@@ -134,7 +178,7 @@ def estimate_demand(regions, option, global_parameters,
 
         output.append(region)
 
-    return output
+    return output, annual_output
 
 
 def get_per_user_capacity(geotype, option):
