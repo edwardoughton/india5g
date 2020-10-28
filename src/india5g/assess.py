@@ -38,6 +38,8 @@ def assess(country, regions, option, global_parameters, country_parameters, cost
     strategy = option['strategy']
     available_for_cross_subsidy = 0
 
+    total_tc_population = round(sum([p['population'] for p in regions]))
+
     for region in regions:
 
         # add customer acquition cost
@@ -46,7 +48,7 @@ def assess(country, regions, option, global_parameters, country_parameters, cost
 
         # npv spectrum cost
         region['spectrum_cost'] = get_spectrum_costs(region, option['strategy'],
-            global_parameters, country_parameters)
+            global_parameters, country_parameters, timesteps, total_tc_population)
 
         #tax on investment
         region['tax'] = calculate_tax(region, strategy, country_parameters)
@@ -63,8 +65,8 @@ def assess(country, regions, option, global_parameters, country_parameters, cost
         )
 
         #avoid zero division
-        if region['total_cost'] > 0 and region['smartphones_on_network'] > 0:
-            region['cost_per_sp_user'] = region['total_cost'] / region['smartphones_on_network']
+        if region['total_cost'] > 0 and region['mno_smartphones_on_network'] > 0:
+            region['cost_per_sp_user'] = region['total_cost'] / region['mno_smartphones_on_network']
         else:
             region['cost_per_sp_user'] = 0
 
@@ -112,7 +114,7 @@ def get_administration_cost(region, country_parameters, global_parameters, times
 
         timestep = timestep - 2020
 
-        discounted_cost = discount_admin_cost(annual_cost, timestep, global_parameters)
+        discounted_cost = discount_cost(annual_cost, timestep, global_parameters)
 
         costs.append(discounted_cost)
 
@@ -138,34 +140,54 @@ def allocate_available_excess(region):
     return region
 
 
-def get_spectrum_costs(region, strategy, global_parameters, country_parameters):
+def get_spectrum_costs(region, strategy, global_parameters, country_parameters,
+    timesteps, total_tc_population):
     """
     Calculate spectrum costs.
 
     """
-    population = int(round(region['population']))
+    population_share = int(round(region['population'])) / total_tc_population
     frequencies = country_parameters['frequencies']
     generation = strategy.split('_')[0]
     frequencies = frequencies[generation]
 
     spectrum_cost = strategy.split('_')[5]
 
-    coverage_spectrum_cost = 'spectrum_coverage_baseline_usd_mhz_pop'
-    capacity_spectrum_cost = 'spectrum_capacity_baseline_usd_mhz_pop'
-    #0.05
-    coverage_cost_usd_mhz_pop = country_parameters['financials'][coverage_spectrum_cost]
-    capacity_cost_usd_mhz_pop = country_parameters['financials'][capacity_spectrum_cost]
+    coverage_spectrum_cost = 'spectrum_baseline_cov_usd_mhz'
+    capacity_spectrum_cost = 'spectrum_baseline_cap_usd_mhz'
+    # #0.05
+    coverage_cost_usd_mhz = country_parameters['financials'][coverage_spectrum_cost]
+    capacity_cost_usd_mhz = country_parameters['financials'][capacity_spectrum_cost]
 
     if spectrum_cost == 'low':
-        coverage_cost_usd_mhz_pop = coverage_cost_usd_mhz_pop * (country_parameters['financials']['spectrum_cost_low'] /100)
-        capacity_cost_usd_mhz_pop = capacity_cost_usd_mhz_pop * (country_parameters['financials']['spectrum_cost_low'] /100)
+        coverage_cost_usd_mhz = coverage_cost_usd_mhz * (country_parameters['financials']['spectrum_cost_low'] /100)
+        capacity_cost_usd_mhz = capacity_cost_usd_mhz * (country_parameters['financials']['spectrum_cost_low'] /100)
 
     if spectrum_cost == 'high':
-        coverage_cost_usd_mhz_pop = coverage_cost_usd_mhz_pop * (country_parameters['financials']['spectrum_cost_high'] / 100)
-        capacity_cost_usd_mhz_pop = capacity_cost_usd_mhz_pop * (country_parameters['financials']['spectrum_cost_high'] / 100)
+        coverage_cost_usd_mhz = coverage_cost_usd_mhz * (country_parameters['financials']['spectrum_cost_high'] / 100)
+        capacity_cost_usd_mhz = capacity_cost_usd_mhz * (country_parameters['financials']['spectrum_cost_high'] / 100)
+
+    annual_cov_cost_usd_mhz = coverage_cost_usd_mhz / global_parameters['return_period_spectrum']
+    annual_cap_cost_usd_mhz = capacity_cost_usd_mhz / global_parameters['return_period_spectrum']
+
+    annual_cov_costs = []
+    annual_cap_costs = []
+
+    for timestep in timesteps:
+
+        timestep = timestep - 2020
+
+        discounted_cov_cost = discount_cost(annual_cov_cost_usd_mhz, timestep, global_parameters)
+        discounted_cap_cost = discount_cost(annual_cap_cost_usd_mhz, timestep, global_parameters)
+
+        annual_cov_costs.append(discounted_cov_cost)
+        annual_cap_costs.append(discounted_cap_cost)
+
+    coverage_cost_usd_mhz_npv = sum(annual_cov_costs)
+    capacity_cost_usd_mhz_npv = sum(annual_cap_costs)
 
     all_costs = []
-
+    undiscounted_costs = []
     for frequency in frequencies:
 
         channel_number = int(frequency['bandwidth'].split('x')[0])
@@ -173,17 +195,15 @@ def get_spectrum_costs(region, strategy, global_parameters, country_parameters):
         bandwidth_total = channel_number * channel_bandwidth
 
         if frequency['frequency'] < 1000:
-            cost = (
-                coverage_cost_usd_mhz_pop * bandwidth_total *
-                population)
+            cost = (coverage_cost_usd_mhz_npv * bandwidth_total)
             all_costs.append(cost)
+            undiscounted_costs.append(coverage_cost_usd_mhz * bandwidth_total)
         else:
-            cost = (
-                capacity_cost_usd_mhz_pop * bandwidth_total *
-                population)
+            cost = (capacity_cost_usd_mhz_npv * bandwidth_total)
             all_costs.append(cost)
+            undiscounted_costs.append(capacity_cost_usd_mhz * bandwidth_total)
 
-    return sum(all_costs)
+    return sum(all_costs) * population_share
 
 
 def calculate_tax(region, strategy, country_parameters):
@@ -191,8 +211,6 @@ def calculate_tax(region, strategy, country_parameters):
     Calculate tax.
 
     """
-    # if region['total_revenue'] > (region['network_cost'] + region['spectrum_cost']):
-
     tax_rate = strategy.split('_')[6]
     tax_rate = 'tax_{}'.format(tax_rate)
 
@@ -269,14 +287,14 @@ def estimate_subsidies(region, available_for_cross_subsidy):
     return region, available_for_cross_subsidy
 
 
-def discount_admin_cost(cost, timestep, global_parameters):
+def discount_cost(cost, timestep, global_parameters):
     """
-    Discount admin cost based on return period.
+    Discount cost based on return period.
     192,744 = 23,773 / (1 + 0.05) ** (0:9)
     Parameters
     ----------
     cost : float
-        Annual admin network running cost.
+        Annual cost.
     timestep : int
         Time period (year) to discount against.
     global_parameters : dict
