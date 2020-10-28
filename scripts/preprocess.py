@@ -1802,7 +1802,7 @@ def generate_core_lut(telecom_circle):
     return print('Completed core lut')
 
 
-def load_subscription_data(path, tc_code):
+def load_subscription_data(path, telecom_circle):
     """
     Load in cell phone subscription data.
 
@@ -1810,8 +1810,8 @@ def load_subscription_data(path, tc_code):
     ----------
     path : string
         Location of itu data as .csv.
-    tc_code : string
-        Telecom circle code.
+    telecom_circle : string
+        Telecom circle data.
 
     Returns
     -------
@@ -1819,7 +1819,6 @@ def load_subscription_data(path, tc_code):
         Time series data of cell phone subscriptions.
 
     """
-
     output = []
 
     historical_data = pd.read_csv(path)
@@ -1828,12 +1827,19 @@ def load_subscription_data(path, tc_code):
     for year in range(2008, 2018+1):
         year = str(year)
         for item in historical_data:
-            if item['tc_code'] == tc_code:
-                    output.append({
-                        'tc_code': tc_code,
-                        'penetration': float(item[year]),
-                        'year':  year,
-                    })
+            if item['tc_code'] == telecom_circle['tc_code']:
+
+                penetration = float(item[year])
+
+                if telecom_circle['tc_code'] in ['UE', 'UW']:
+                    penetration = penetration / 2
+
+                output.append({
+                    'tc_code': telecom_circle['tc_code'],
+                    'category': telecom_circle['category'],
+                    'penetration': penetration,
+                    'year': year,
+                })
 
     return output
 
@@ -1846,7 +1852,7 @@ def forecast_subscriptions(telecom_circle):
     tc_code = telecom_circle['tc_code']
 
     path = os.path.join(DATA_RAW, 'ten_year_subsc_data.csv')
-    historical_data = load_subscription_data(path, tc_code)
+    historical_data = load_subscription_data(path, telecom_circle)
 
     start_point = 2019
     end_point = 2030
@@ -1870,7 +1876,7 @@ def forecast_subscriptions(telecom_circle):
     forecast_df.to_csv(os.path.join(path, 'subs_forecast.csv'), index=False)
 
     path = os.path.join(BASE_PATH, '..', 'vis', 'subscriptions', 'data_inputs')
-    forecast_df.to_csv(os.path.join(path, '{}.csv'.format(iso3)), index=False)
+    forecast_df.to_csv(os.path.join(path, '{}.csv'.format(tc_code)), index=False)
 
     return print('Completed subscription forecast')
 
@@ -1913,6 +1919,7 @@ def forecast_linear(telecom_circle, historical_data, start_point, end_point, hor
 
             output.append({
                 'tc_code': telecom_circle['tc_code'],
+                'category': telecom_circle['category'],
                 'year': year,
                 'penetration': round(penetration, 2),
             })
@@ -1920,70 +1927,34 @@ def forecast_linear(telecom_circle, historical_data, start_point, end_point, hor
     return output
 
 
-def forecast_subscriptions_linear(country, historical_data, start_point, end_point, horizon):
-    """
-    Forcasts subscription adoption rate.
-    Parameters
-    ----------
-    historical_data : list of dicts
-        Past penetration data.
-    start_point : int
-        Starting year of forecast period.
-    end_point : int
-        Final year of forecast period.
-    horizon : int
-        Number of years to use to estimate mean growth rate.
-    """
-    output = []
-
-    subs_growth = country['subs_growth']
-
-    year_0 = sorted(historical_data, key = lambda i: i['year'], reverse=True)[0]
-
-    for year in range(start_point, end_point + 1):
-        if year == start_point:
-
-            penetration = year_0['penetration'] * (1 + (subs_growth/100))
-        else:
-            penetration = penetration * (1 + (subs_growth/100))
-
-        if year not in [item['year'] for item in output]:
-
-            output.append({
-                'country': country['iso3'],
-                'year': year,
-                'penetration': round(penetration, 2),
-            })
-
-    return output
-
-
-def forecast_smartphones(country):
+def forecast_smartphones(telecom_circle):
     """
     Forecast smartphone adoption.
     Parameters
     ----------
     historical_data : list of dicts
         Past penetration data.
+
     """
-    iso3 = country['iso3']
+    iso3 = telecom_circle['iso3']
+    tc_code = telecom_circle['tc_code']
 
     path = os.path.join(DATA_RAW, 'wb_smartphone_survey', 'wb_smartphone_survey.csv')
-    survey_data = load_smartphone_data(path, country)
+    survey_data = load_smartphone_data(path, telecom_circle)
 
     start_point = 2020
     end_point = 2030
 
     forecast = forecast_smartphones_linear(
         survey_data,
-        country,
+        telecom_circle,
         start_point,
         end_point
     )
 
     forecast_df = pd.DataFrame(forecast)
 
-    path = os.path.join(DATA_INTERMEDIATE, iso3, 'smartphones')
+    path = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'smartphones')
 
     if not os.path.exists(path):
         os.mkdir(path)
@@ -1993,20 +1964,20 @@ def forecast_smartphones(country):
     path = os.path.join(BASE_PATH, '..', 'vis', 'smartphones', 'data_inputs')
     if not os.path.exists(path):
         os.mkdir(path)
-    forecast_df.to_csv(os.path.join(path, '{}.csv'.format(iso3)), index=False)
+    forecast_df.to_csv(os.path.join(path, '{}.csv'.format(tc_code)), index=False)
 
     return print('Completed subscription forecast')
 
 
-def load_smartphone_data(path, country):
+def load_smartphone_data(path, telecom_circle):
     """
     Load smartphone adoption survey data.
     Parameters
     ----------
     path : string
         Location of data as .csv.
-    country : string
-        ISO3 digital country code.
+    telecom_circle : string
+        telecom_circle data.
     """
     survey_data = pd.read_csv(path)
 
@@ -2016,11 +1987,12 @@ def load_smartphone_data(path, country):
 
     output = []
 
-    if country['iso3']  in countries_with_data:
+    if telecom_circle['iso3']  in countries_with_data:
         for item in survey_data:
-                if item['iso3'] == country['iso3']:
+                if item['iso3'] == telecom_circle['iso3']:
                     output.append({
-                        'country': item['iso3'],
+                        'tc_code': telecom_circle['tc_code'],
+                        'category': telecom_circle['category'],
                         'cluster': item['cluster'],
                         'settlement_type': item['Settlement'],
                         'smartphone_penetration': item['Smartphone']
@@ -2028,9 +2000,10 @@ def load_smartphone_data(path, country):
 
     else:
         for item in survey_data:
-            if item['cluster'] == country['cluster']:
+            if item['cluster'] == telecom_circle['cluster']:
                 output.append({
-                    'country': country['iso3'],
+                    'tc_code': telecom_circle['tc_code'],
+                    'category': telecom_circle['category'],
                     'cluster': item['cluster'],
                     'settlement_type': item['Settlement'],
                     'smartphone_penetration': item['Smartphone']
@@ -2039,13 +2012,13 @@ def load_smartphone_data(path, country):
     return output
 
 
-def forecast_smartphones_linear(data, country, start_point, end_point):
+def forecast_smartphones_linear(data, telecom_circle, start_point, end_point):
     """
     Forecast smartphone adoption.
     """
     output = []
 
-    smartphone_growth = country['smartphone_growth']
+    smartphone_growth = telecom_circle['sp_growth']
 
     for item in data:
 
@@ -2058,8 +2031,12 @@ def forecast_smartphones_linear(data, country, start_point, end_point):
             else:
                 penetration = penetration * (1 + (smartphone_growth/100))
 
+            if penetration > 90:
+                penetration = 90
+
             output.append({
-                'country': item['country'],
+                'tc_code': item['tc_code'],
+                'category': telecom_circle['category'],
                 'settlement_type': item['settlement_type'].lower(),
                 'year': year,
                 'penetration': round(penetration, 2),
@@ -2069,6 +2046,31 @@ def forecast_smartphones_linear(data, country, start_point, end_point):
 
 
 if __name__ == '__main__':
+
+    tc_lut = {
+        'AP':'A',
+        'AS':'C',
+        'BR':'C',
+        'DL':'Metro',
+        'GJ':'A',
+        'HP':'C',
+        'HR':'B',
+        'JK':'C',
+        'KA':'A',
+        'KL':'B',
+        'KO':'Metro',
+        'MH':'A',
+        'MP':'B',
+        'MU':'Metro',
+        'NE':'C',
+        'OR':'C',
+        'PB':'B',
+        'RJ':'B',
+        'TN':'A',
+        'UE':'B',
+        'UW':'B',
+        'WB':'C',
+    }
 
     tc_codes = [
         'AP',
@@ -2088,46 +2090,49 @@ if __name__ == '__main__':
     telecom_circles = []
 
     tc_thresholds = {
-        'AP':{'regional_level': 2, 'pop_density_km2': 1000,'settlement_size': 20000},
-        'AS':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'BR':{'regional_level': 2, 'pop_density_km2': 1000,'settlement_size': 20000},
-        'DL':{'regional_level': 3, 'pop_density_km2': 1000,'settlement_size': 20000},
-        'GJ':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'HP':{'regional_level': 3, 'pop_density_km2': 1000,'settlement_size': 20000},
-        'HR':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'JK':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'KA':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'KL':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'KO':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'MH':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'MP':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'MU':{'regional_level': 3, 'pop_density_km2': 1000,'settlement_size': 20000},
-        'NE':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'OR':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'PB':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'RJ':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'TN':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'UE':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'UW':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'WB':{'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'AP':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 1000,'settlement_size': 20000},
+        'AS':{'subs_growth': 4, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'BR':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 1000,'settlement_size': 20000},
+        'DL':{'subs_growth': 2.5, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 1000,'settlement_size': 20000},
+        'GJ':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'HP':{'subs_growth': 3, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 1000,'settlement_size': 20000},
+        'HR':{'subs_growth': 7, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'JK':{'subs_growth': 5, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'KA':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'KL':{'subs_growth': 3, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'KO':{'subs_growth': 3.5, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'MH':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'MP':{'subs_growth': 0.5, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'MU':{'subs_growth': 3.5, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 1000,'settlement_size': 20000},
+        'NE':{'subs_growth': 5, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'OR':{'subs_growth': 3, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'PB':{'subs_growth': 3, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'RJ':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'TN':{'subs_growth': 0.5, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'UE':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'UW':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'WB':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
     }
 
     for tc_code in tc_codes:
 
         if not tc_code in tc_thresholds.keys():
             telecom_circles.append({
-                'iso3': 'IND', 'iso2': 'IN', 'tc_code': tc_code,
+                'iso3': 'IND', 'iso2': 'IN', 'tc_code': tc_code, 'category': tc_lut[tc_code],
                 'regional_level': 3, 'region': 'S&SE Asia', 'pop_density_km2': 1000,
-                'settlement_size': 20000, 'subs_growth': 1, 'smartphone_growth': 1,
+                'settlement_size': 20000,
+                'subs_growth': tc_thresholds[tc_code]['subs_growth'],
+                'sp_growth': tc_thresholds[tc_code]['sp_growth'],
             })
         else:
             telecom_circles.append({
-                'iso3': 'IND', 'iso2': 'IN', 'tc_code': tc_code,
+                'iso3': 'IND', 'iso2': 'IN', 'tc_code': tc_code, 'category': tc_lut[tc_code],
                 'regional_level': tc_thresholds[tc_code]['regional_level'],
                 'region': 'S&SE Asia',
                 'pop_density_km2': tc_thresholds[tc_code]['pop_density_km2'],
                 'settlement_size': tc_thresholds[tc_code]['settlement_size'],
-                'subs_growth': 1, 'smartphone_growth': 1,
+                'subs_growth': tc_thresholds[tc_code]['subs_growth'],
+                'sp_growth': tc_thresholds[tc_code]['sp_growth'],
             })
 
     print('Processing country boundary')
@@ -2137,44 +2142,44 @@ if __name__ == '__main__':
 
         print('Working on {}'.format(tc['tc_code']))
 
-        print('Processing regions')
-        process_regions(tc)
+        # print('Processing regions')
+        # process_regions(tc)
 
-        print('Processing settlement layer')
-        process_settlement_layer(tc)
+        # print('Processing settlement layer')
+        # process_settlement_layer(tc)
 
-        print('Processing night lights')
-        process_night_lights(tc)
+        # print('Processing night lights')
+        # process_night_lights(tc)
 
-        print('Processing coverage shapes')
-        process_coverage_shapes(tc)
+        # print('Processing coverage shapes')
+        # process_coverage_shapes(tc)
 
-        print('Getting regional data')
-        get_regional_data(tc)
+        # print('Getting regional data')
+        # get_regional_data(tc)
 
-        print('Generating agglomeration lookup table')
-        generate_agglomeration_lut(tc)
+        # print('Generating agglomeration lookup table')
+        # generate_agglomeration_lut(tc)
 
-        print('Load existing fiber infrastructure')
-        process_existing_fiber(tc)
+        # print('Load existing fiber infrastructure')
+        # process_existing_fiber(tc)
 
-        print('Estimate existing nodes')
-        find_nodes_on_existing_infrastructure(tc)
+        # print('Estimate existing nodes')
+        # find_nodes_on_existing_infrastructure(tc)
 
-        print('Find regional nodes')
-        find_regional_nodes(tc)
+        # print('Find regional nodes')
+        # find_regional_nodes(tc)
 
-        print('Fit edges')
-        prepare_edge_fitting(tc)
+        # print('Fit edges')
+        # prepare_edge_fitting(tc)
 
-        print('Fit regional edges')
-        fit_regional_edges(tc)
+        # print('Fit regional edges')
+        # fit_regional_edges(tc)
 
-        print('Create core lookup table')
-        generate_core_lut(tc)
+        # print('Create core lookup table')
+        # generate_core_lut(tc)
 
-        print('Create subscription forcast')
-        forecast_subscriptions(tc)
+        # print('Create subscription forcast')
+        # forecast_subscriptions(tc)
 
         print('Forecasting smartphones')
         forecast_smartphones(tc)
