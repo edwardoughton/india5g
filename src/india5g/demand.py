@@ -6,6 +6,7 @@ Written by Ed Oughton.
 Taken from the Python Telecommunication Assessment Library (pytal)
 
 """
+import math
 
 def estimate_demand(regions, option, global_parameters,
     tc_parameters, timesteps, penetration_lut, smartphone_lut, category):
@@ -143,7 +144,8 @@ def estimate_demand(regions, option, global_parameters,
                 12
             )
 
-            revenue.append(annual_revenue)
+            if not math.isnan(annual_revenue):
+                revenue.append(annual_revenue)
 
             annual_output.append({
                 'GID_0': region['GID_0'],
