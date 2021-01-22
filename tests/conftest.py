@@ -37,7 +37,7 @@ def setup_region_rural():
 def setup_option():
     return { #generation_core_backhaul_sharing_networks_spectrum_tax
         'scenario': 'S1_50_50_50',
-        'strategy': '4G_epc_microwave_baseline_baseline_baseline_baseline'
+        'strategy': '4G_epc_wireless_baseline_baseline_baseline_baseline'
     }
 
 
@@ -45,7 +45,7 @@ def setup_option():
 def setup_option_high():
     return { #generation_core_backhaul_sharing_networks_spectrum_tax
         'scenario': 'S1_50_5_1',
-        'strategy': '4G_epc_microwave_baseline_baseline_high_high_high'
+        'strategy': '4G_epc_wireless_baseline_baseline_high_high_high'
     }
 
 
@@ -192,9 +192,9 @@ def setup_costs():
         'site_rental_suburban': 4000,
         'site_rental_rural': 2000,
         'router': 2000,
-        'microwave_small': 20000,
-        'microwave_medium': 30000,
-        'microwave_large': 40000,
+        'wireless_small': 20000,
+        'wireless_medium': 30000,
+        'wireless_large': 40000,
         'fiber_urban_m': 10,
         'fiber_suburban_m': 5,
         'fiber_rural_m': 2,

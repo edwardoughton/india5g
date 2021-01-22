@@ -77,7 +77,7 @@ def test_estimate_demand(
 
     #Test a shared network to check the demand/revenue calculations are correct
     setup_region[0]['geotype'] = 'rural'
-    setup_option['strategy'] = '4G_epc_microwave_baseline_shared_baseline_baseline'
+    setup_option['strategy'] = '4G_epc_wireless_baseline_shared_baseline_baseline'
 
     answer, annual_output = estimate_demand(
         setup_region,
