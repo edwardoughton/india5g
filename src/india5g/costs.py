@@ -488,7 +488,7 @@ def get_backhaul_costs(region, backhaul, costs, core_lut):
     """
     Calculate backhaul costs.
 
-    # backhaul_fiber backhaul_copper backhaul_microwave	backhaul_satellite
+    # backhaul_fiber backhaul_copper backhaul_wireless	backhaul_satellite
 
     """
     backhaul_tech = backhaul.split('_')[0]
@@ -498,14 +498,15 @@ def get_backhaul_costs(region, backhaul, costs, core_lut):
     for asset_type in ['core_node', 'regional_node']:
         for age in ['new', 'existing']:
             combined_key = '{}_{}'.format(region['GID_id'], age)
-            nodes += core_lut[asset_type][combined_key]
+            if combined_key in core_lut[asset_type]:
+                nodes += core_lut[asset_type][combined_key]
     node_density_km2 = nodes / region['area_km2']
     if node_density_km2 > 0:
         ave_distance_to_a_node_m = (math.sqrt(1/node_density_km2) / 2) * 1000
     else:
         ave_distance_to_a_node_m = math.sqrt(region['area_km2']) * 1000
 
-    if backhaul_tech == 'microwave':
+    if backhaul_tech == 'wireless':
         if ave_distance_to_a_node_m < 15000:
             tech = '{}_{}'.format(backhaul_tech, 'small')
             cost = costs[tech]
@@ -668,7 +669,10 @@ def core_costs(region, asset_type, costs, core_lut, strategy, tc_parameters):
             #only grab the new nodes that need to be built
             combined_key = '{}_{}'.format(region['GID_id'], 'new')
 
-            nodes = core_lut[asset_type][combined_key]
+            if combined_key in core_lut[asset_type]:
+                nodes = core_lut[asset_type][combined_key]
+            else:
+                nodes = 0
 
             cost = int(nodes * costs['core_node_{}'.format(core)])
             total_cost.append(cost)
@@ -789,10 +793,10 @@ def calc_costs(region, cost_structure, backhaul, backhaul_quantity,
                 if asset_name1 == 'backhaul' and backhaul_quantity == 0:
                     continue
 
-                if asset_name1 == 'regional_node' and backhaul == 'microwave':
+                if asset_name1 == 'regional_node' and backhaul == 'wireless':
                     continue
 
-                if asset_name1 == 'regional_edge' and backhaul == 'microwave':
+                if asset_name1 == 'regional_edge' and backhaul == 'wireless':
                     continue
 
                 if type_of_cost == 'capex_and_opex':
