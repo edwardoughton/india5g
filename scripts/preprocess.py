@@ -94,7 +94,6 @@ def process_regions(telecom_circle):
 
     tc_code = telecom_circle['tc_code']
     iso3 = telecom_circle['iso3']
-    level = telecom_circle['regional_level']
 
     path = os.path.join(DATA_INTERMEDIATE, iso3, tc_code)
 
@@ -102,51 +101,63 @@ def process_regions(telecom_circle):
         print('Creating directory {}'.format(path))
         os.makedirs(path)
 
-    regional_level = level
+    regional_levels = [2, 3]
 
-    filename = 'regions_{}_{}.shp'.format(regional_level, tc_code)
-    folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'regions')
-    path_processed = os.path.join(folder, filename)
+    for regional_level in regional_levels:
 
-    # if os.path.exists(path_processed):
-    #     return
+        filename = 'regions_{}_{}.shp'.format(regional_level, tc_code)
+        folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'regions')
+        path_processed = os.path.join(folder, filename)
 
-    path_lut = os.path.join(DATA_RAW, 'tc_lut_GID_{}.csv'.format(regional_level))
-    lut = pd.read_csv(path_lut)
-    lut = lut[lut['tc_code'] == tc_code]
-    lut = lut['GID_2'].tolist()
+        if os.path.exists(path_processed):
+            return
 
-    print('----')
-    print('Working on {} level {}'.format(tc_code, regional_level))
+        path_lut = os.path.join(DATA_RAW, 'tc_lut_GID_2.csv')
+        lut = pd.read_csv(path_lut)
+        lut = lut[lut['tc_code'] == tc_code]
+        lut = lut['GID_2'].tolist()
 
-    if not os.path.exists(folder):
-        os.mkdir(folder)
+        print('----')
+        print('Working on {} level {}'.format(tc_code, regional_level))
 
-    filename = 'gadm36_{}.shp'.format(regional_level)
-    path_regions = os.path.join(DATA_RAW, 'gadm36_levels_shp', filename)
-    regions = gpd.read_file(path_regions)
+        if not os.path.exists(folder):
+            os.mkdir(folder)
 
-    print('Subsetting {} level {}'.format(tc_code, regional_level))
-    regions = regions[regions['GID_2'].isin(lut)]
+        filename = 'gadm36_{}.shp'.format(regional_level)
+        path_regions = os.path.join(DATA_RAW, 'gadm36_levels_shp', filename)
+        regions = gpd.read_file(path_regions, crs='epsg:4326')
 
-    print('Excluding small shapes')
-    regions['geometry'] = regions.apply(exclude_small_shapes, axis=1)
+        print('Subsetting {} level {}'.format(tc_code, regional_level))
+        regions = regions[regions['GID_2'].isin(lut)]
 
-    try:
-        print('Writing global_regions.shp to file')
-        regions.to_file(path_processed, driver='ESRI Shapefile')
-    except:
-        print('Unable to write {}'.format(filename))
+        print('Excluding small shapes')
+        regions['geometry'] = regions.apply(exclude_small_shapes, axis=1)
 
-    tc_outline = regions.unary_union
-    if tc_outline.geom_type == 'MultiPolygon':
-        tc_outline = gpd.GeoDataFrame({'geometry': tc_outline}, crs='epsg:4326')
-    else:
-        tc_outline = gpd.GeoDataFrame({'geometry': tc_outline}, crs='epsg:4326', index=[0])
-    path = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'tc_outline.shp')
-    tc_outline.to_file(path)
+        try:
+            print('Writing global_regions.shp to file')
+            regions.to_file(path_processed, driver='ESRI Shapefile')
+        except:
+            print('Unable to write {}'.format(filename))
 
-    print('Completed processing of regional shapes level {}'.format(level))
+        tc_outline = regions.unary_union
+
+        if tc_outline.geom_type == 'MultiPolygon':
+            tc_outline = gpd.GeoDataFrame(
+                {'geometry': tc_outline},
+                crs='epsg:4326'
+            )
+
+        else:
+            tc_outline = gpd.GeoDataFrame(
+                {'geometry': tc_outline},
+                crs='epsg:4326',
+                index=[0]
+            )
+
+        path = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'tc_outline.shp')
+        tc_outline.to_file(path)
+
+        print('Completed processing of regional shapes level {}'.format(regional_level))
 
     return print('complete')
 
@@ -171,7 +182,7 @@ def process_settlement_layer(telecom_circle):
 
     settlements = rasterio.open(path_settlements, 'r+')
     settlements.nodata = 255
-    settlements.crs = {"init": "epsg:4326"}
+    settlements.crs = {"epsg:4326"}
 
     path_tc_outline = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'tc_outline.shp')
 
@@ -306,28 +317,33 @@ def process_coverage_shapes(telecom_circle):
 
     for tech in technologies:
 
-        folder_coverage = os.path.join(DATA_INTERMEDIATE, iso3,  'national_coverage')
+        folder_coverage = os.path.join(DATA_INTERMEDIATE, iso3, 'national_coverage')
         filename = 'coverage_{}.shp'.format(tech)
         path_output = os.path.join(folder_coverage, filename)
 
-        print('----')
         print('Working on {} in {}'.format(tech, tc_code))
 
         if not os.path.exists(path_output):
 
             filename = 'Inclusions_201812_{}.shp'.format(tech)
-            folder = os.path.join(DATA_RAW, 'mobile_coverage_explorer_2019',
-                'Data_MCE')
+            folder = os.path.join(DATA_RAW, 'mobile_coverage_explorer_2019', 'Data_MCE')
             inclusions = gpd.read_file(os.path.join(folder, filename))
 
             if iso2 in inclusions['CNTRY_ISO2']:
 
                 filename = 'MCE_201812_{}.shp'.format(tech)
-                folder = os.path.join(DATA_RAW, 'mobile_coverage_explorer_2019',
-                    'Data_MCE')
+                folder = os.path.join(DATA_RAW, 'mobile_coverage_explorer_2019', 'Data_MCE')
                 coverage = gpd.read_file(os.path.join(folder, filename))
 
                 coverage = coverage.loc[coverage['CNTRY_ISO3'] == iso3]
+
+                print('Simplifying geometries')
+                coverage['geometry'] = coverage.simplify(
+                    tolerance = 1000,
+                    preserve_topology=True).buffer(0.0001).simplify(
+                    tolerance = 1000,
+                    preserve_topology=True
+                )
 
             else:
 
@@ -343,8 +359,7 @@ def process_coverage_shapes(telecom_circle):
                     print('Dissolving polygons')
                     coverage['dissolve'] = 1
                     coverage = coverage.dissolve(by='dissolve', aggfunc='sum')
-
-                    coverage = coverage.to_crs({'init': 'epsg:3857'})
+                    coverage = coverage.to_crs('epsg:3857')
 
                     print('Excluding small shapes')
                     coverage['geometry'] = coverage.apply(clean_coverage,axis=1)
@@ -355,13 +370,13 @@ def process_coverage_shapes(telecom_circle):
 
                     print('Simplifying geometries')
                     coverage['geometry'] = coverage.simplify(
-                        tolerance = 0.005,
-                        preserve_topology=True).buffer(0.0001).simplify(
-                        tolerance = 0.005,
-                        preserve_topology=True
+                        tolerance = 1000,
+                        preserve_topology=False).buffer(0.001).simplify(
+                        tolerance = 1000,
+                        preserve_topology=False
                     )
 
-                    coverage = coverage.to_crs({'init': 'epsg:4326'})
+                    coverage = coverage.to_crs('epsg:4326')
 
                     if not os.path.exists(folder_coverage):
                         os.makedirs(folder_coverage)
@@ -378,20 +393,20 @@ def process_coverage_shapes(telecom_circle):
         if not os.path.exists(folder_tc_coverage):
             os.makedirs(folder_tc_coverage)
 
-        # if os.path.exists(path_output):
-        #     continue
-
-        # folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'coverage')
-        # path =  os.path.join(folder, 'coverage_{}.shp'.format(tech))
-
         if not os.path.exists(path_output):
+
+            path = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'tc_outline.shp')
+            tc_outline = gpd.read_file(path)
+
+            coverage = coverage[['geometry']]
+
+            print('Overlaying tc_outline and coverage')
+            coverage = gpd.overlay(coverage, tc_outline, how='intersection')
 
             filename = 'regions_{}_{}.shp'.format(level, tc_code)
             folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'regions')
             path = os.path.join(folder, filename)
             regions = gpd.read_file(path)
-
-            coverage = coverage[['geometry']]
 
             print('Overlaying regions and coverage')
             coverage = gpd.overlay(coverage, regions, how='intersection')
@@ -488,9 +503,9 @@ def get_regional_data(telecom_circle):
     print('----')
     print('working on {}'.format(iso3))
 
-    path_night_lights = os.path.join(DATA_INTERMEDIATE, iso3,
+    path_night_lights = os.path.join(DATA_INTERMEDIATE, iso3, tc_code,
         'night_lights.tif')
-    path_settlements = os.path.join(DATA_INTERMEDIATE, iso3,
+    path_settlements = os.path.join(DATA_INTERMEDIATE, iso3, tc_code,
         'settlements.tif')
 
     filename = 'regions_{}_{}.shp'.format(level, tc_code)
@@ -513,6 +528,7 @@ def get_regional_data(telecom_circle):
                 region['geometry'],
                 array,
                 stats=['sum'],
+                nodata=0,
                 affine=affine)][0]
 
         with rasterio.open(path_settlements) as src:
@@ -522,7 +538,11 @@ def get_regional_data(telecom_circle):
             array[array <= 0] = 0
 
             population_summation = [d['sum'] for d in zonal_stats(
-                region['geometry'], array, stats=['sum'], affine=affine)][0]
+                region['geometry'],
+                array,
+                stats=['sum'],
+                nodata=0,
+                affine=affine)][0]
 
         area_km2 = round(area_of_polygon(region['geometry']) / 1e6)
 
@@ -638,7 +658,7 @@ def estimate_sites(data, tc_code, backhaul_lut):
 
         backhaul_fiber = 0
         backhaul_copper = 0
-        backhaul_microwave = 0
+        backhaul_wireless = 0
         backhaul_satellite = 0
 
         for i in range(1, int(round(sites_estimated_total)) + 1):
@@ -649,9 +669,9 @@ def estimate_sites(data, tc_code, backhaul_lut):
                 backhaul_fiber += 1
             elif tower_backhaul_lut['fiber'] < num <= tower_backhaul_lut['copper']:
                 backhaul_copper += 1
-            elif tower_backhaul_lut['copper'] < num <= tower_backhaul_lut['microwave']:
-                backhaul_microwave += 1
-            elif tower_backhaul_lut['microwave'] < num:
+            elif tower_backhaul_lut['copper'] < num <= tower_backhaul_lut['wireless']:
+                backhaul_wireless += 1
+            elif tower_backhaul_lut['wireless'] < num:
                 backhaul_satellite += 1
 
         output.append({
@@ -671,7 +691,7 @@ def estimate_sites(data, tc_code, backhaul_lut):
                 'sites_4G': int(round(sites_estimated_total * (region['coverage_4G_percent'] /100))),
                 'backhaul_fiber': backhaul_fiber,
                 'backhaul_copper': backhaul_copper,
-                'backhaul_microwave': backhaul_microwave,
+                'backhaul_wireless': backhaul_wireless,
                 'backhaul_satellite': backhaul_satellite,
             })
 
@@ -713,7 +733,7 @@ def estimate_backhaul_type(backhaul_lut):
     preference = [
         'fiber',
         'copper',
-        'microwave',
+        'wireless',
         'satellite'
     ]
 
@@ -1000,7 +1020,7 @@ def generate_agglomeration_lut(telecom_circle):
     path_settlements = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'settlements.tif')
     settlements = rasterio.open(path_settlements, 'r+')
     settlements.nodata = 255
-    settlements.crs = {"init": "epsg:4326"}
+    settlements.crs = {"epsg:4326"}
 
     folder_tifs = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'agglomerations', 'tifs')
     if not os.path.exists(folder_tifs):
@@ -1048,7 +1068,22 @@ def generate_agglomeration_lut(telecom_circle):
 
     print('Identifying agglomerations')
     for idx1, region in regions.iterrows():
+
+        if 'GID_1' in region:
+            GID_1 = region['GID_1']
+        else:
+            GID_1 = ''
+        if 'GID_2' in region:
+            GID_2 = region['GID_2']
+        else:
+            GID_2 = ''
+        if 'GID_3' in region:
+            GID_3 = region['GID_3']
+        else:
+            GID_3 = ''
+
         seen = set()
+
         for idx2, node in nodes.iterrows():
             if node['geometry'].intersects(region['geometry']):
                 agglomerations.append({
@@ -1057,7 +1092,10 @@ def generate_agglomeration_lut(telecom_circle):
                     'properties': {
                         'id': idx1,
                         'GID_0': region['GID_0'],
-                        GID_level: region[GID_level],
+                        'GID_1': GID_1,
+                        'GID_2': GID_2,
+                        'GID_3': GID_3,
+                        # GID_level: region[GID_level],
                         'population': node['sum'],
                     }
                 })
@@ -1069,7 +1107,10 @@ def generate_agglomeration_lut(telecom_circle):
                     'properties': {
                         'id': 'regional_node',
                         'GID_0': region['GID_0'],
-                        GID_level: region[GID_level],
+                        'GID_1': GID_1,
+                        'GID_2': GID_2,
+                        'GID_3': GID_3,
+                        # GID_level: region[GID_level],
                         'population': 1,
                     }
                 })
@@ -1080,8 +1121,11 @@ def generate_agglomeration_lut(telecom_circle):
                     'geometry': item['geometry'],
                     'properties': {
                         'id': item['properties']['id'],
-                        'GID_0':item['properties']['GID_0'],
-                        GID_level: item['properties'][GID_level],
+                        'GID_0': item['properties']['GID_0'],
+                        'GID_1': item['properties']['GID_1'],
+                        'GID_2': item['properties']['GID_2'],
+                        'GID_3': item['properties']['GID_3'],
+                        # GID_level: item['properties'][GID_level],
                         'population': item['properties']['population'],
                     }
                 }
@@ -1111,7 +1155,6 @@ def process_existing_fiber(telecom_circle):
     iso3 = telecom_circle['iso3']
     tc_code = telecom_circle['tc_code']
     regional_level = telecom_circle['regional_level']
-    GID_level = 'GID_{}'.format(regional_level)
 
     folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'network_existing')
     if not os.path.exists(folder):
@@ -1150,11 +1193,11 @@ def find_nodes_on_existing_infrastructure(telecom_circle):
     filename = 'core_nodes_existing.shp'
     path_output = os.path.join(folder, filename)
 
-    if os.path.exists(path_output):
-        return print('Already found nodes on existing infrastructure')
-    else:
-        if not os.path.dirname(path_output):
-            os.makedirs(os.path.dirname(path_output))
+    # if os.path.exists(path_output):
+    #     return print('Already found nodes on existing infrastructure')
+    # else:
+    #     if not os.path.dirname(path_output):
+    #         os.makedirs(os.path.dirname(path_output))
 
     path = os.path.join(folder, 'core_edges_existing.shp')
     if not os.path.exists(path):
@@ -1166,10 +1209,8 @@ def find_nodes_on_existing_infrastructure(telecom_circle):
     existing_infra['geometry'] = existing_infra['geometry'].buffer(5000)
     existing_infra = existing_infra.to_crs(epsg=4326)
 
-    # shape_output = os.path.join(DATA_INTERMEDIATE, iso3, 'network', 'core_edges_buffered.shp')
-    # existing_infra.to_file(shape_output, crs='epsg:4326')
-
-    path = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'agglomerations', 'agglomerations.shp')
+    filename = 'agglomerations.shp'
+    path = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'agglomerations', filename)
     agglomerations = gpd.read_file(path, crs='epsg:4326')
 
     bool_list = agglomerations.intersects(existing_infra.unary_union)
@@ -1245,7 +1286,7 @@ def find_nodes(telecom_circle, regions):
 
         if len(shapes_df) == 0:
             print('WARNING: No possible nodes locations found')
-            print('WARNING: Check the regional population density threshold')
+            print('WARNING: May need to check the regional population density threshold')
             continue
 
         nodes = gpd.overlay(shapes_df, gpd_region, how='intersection')
@@ -1359,7 +1400,8 @@ def find_regional_nodes(telecom_circle):
     """
     iso3 = telecom_circle['iso3']
     regional_level = telecom_circle['regional_level']
-    GID_level = 'GID_{}'.format(regional_level)
+    # GID_level = 'GID_{}'.format(regional_level)
+    GID_level = 'GID_{}'.format(2)
     tc_code = telecom_circle['tc_code']
 
     folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code)
@@ -1369,10 +1411,11 @@ def find_regional_nodes(telecom_circle):
     regional_output_path = os.path.join(folder, 'network', 'regional_nodes')
 
     regions = gpd.read_file(input_path, crs="epsg:4326")
+
     unique_regions = regions[GID_level].unique()
 
-    if os.path.exists(output_path):
-        return print('Regional nodes layer already generated')
+    # if os.path.exists(output_path):
+    #     return print('Regional nodes layer already generated')
 
     folder = os.path.dirname(output_path)
     if not os.path.exists(folder):
@@ -1627,7 +1670,7 @@ def fit_regional_edges(telecom_circle):
     iso3 = telecom_circle['iso3']
     tc_code = telecom_circle['tc_code']
     regional_level = telecom_circle['regional_level']
-    GID_level = 'GID_{}'.format(regional_level)
+    GID_level = 'GID_{}'.format(2)
 
     folder = os.path.join(DATA_INTERMEDIATE, iso3, tc_code, 'network')
     path = os.path.join(folder, 'core_nodes.shp')
@@ -2074,44 +2117,54 @@ if __name__ == '__main__':
 
     tc_codes = [
         'AP',
-        'AS', 'BR',
+        'AS',
+        'BR',
         'DL',
         'GJ',
         'HP',
         'HR',
-        'JK', 'KA',
+        'JK',
+        'KA',
         'KL',
         'KO',
-        'MH', 'MP',
+        'MH',
+        'MP',
         'MU',
-        'NE', 'OR', 'PB', 'RJ', 'TN', 'UE', 'UW', 'WB',
+        'NE',
+        'OR',
+        'PB',
+        'RJ',
+        'TN',
+        'UE',
+        'UW',
+        'WB',
     ]
 
     telecom_circles = []
 
     tc_thresholds = {
-        'AP':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 1000,'settlement_size': 20000},
-        'AS':{'subs_growth': 4, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'BR':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 1000,'settlement_size': 20000},
+        'AP':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
+        'AS':{'subs_growth': 4, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
+        'BR':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 1000,'settlement_size': 20000},
         'DL':{'subs_growth': 2.5, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 1000,'settlement_size': 20000},
-        'GJ':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'GJ':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
         'HP':{'subs_growth': 3, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 1000,'settlement_size': 20000},
-        'HR':{'subs_growth': 7, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'JK':{'subs_growth': 5, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'KA':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'KL':{'subs_growth': 3, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'KO':{'subs_growth': 3.5, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'MH':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'MP':{'subs_growth': 0.5, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'HR':{'subs_growth': 7, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
+        'JK':{'subs_growth': 5, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
+        'KA':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
+        'KL':{'subs_growth': 3, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
+        'KO':{'subs_growth': 3.5, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
+        'MH':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
+        'MP':{'subs_growth': 0.5, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
         'MU':{'subs_growth': 3.5, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 1000,'settlement_size': 20000},
-        'NE':{'subs_growth': 5, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'OR':{'subs_growth': 3, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'PB':{'subs_growth': 3, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'RJ':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'TN':{'subs_growth': 0.5, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'UE':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'UW':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
-        'WB':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 2, 'pop_density_km2': 400,'settlement_size': 2500},
+        'NE':{'subs_growth': 5, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
+        'OR':{'subs_growth': 3, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
+        'PB':{'subs_growth': 3, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
+        'RJ':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
+        'TN':{'subs_growth': 0.5, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
+        'UE':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
+        'UW':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
+        'WB':{'subs_growth': 2, 'sp_growth': 10, 'regional_level': 3, 'pop_density_km2': 500,'settlement_size': 1000},
     }
 
     for tc_code in tc_codes:
@@ -2142,44 +2195,44 @@ if __name__ == '__main__':
 
         print('Working on {}'.format(tc['tc_code']))
 
-        # print('Processing regions')
-        # process_regions(tc)
+        print('--Processing regions')
+        process_regions(tc)
 
-        # print('Processing settlement layer')
-        # process_settlement_layer(tc)
+        print('--Processing settlement layer')
+        process_settlement_layer(tc)
 
-        # print('Processing night lights')
-        # process_night_lights(tc)
+        print('--Processing night lights')
+        process_night_lights(tc)
 
-        # print('Processing coverage shapes')
-        # process_coverage_shapes(tc)
+        print('--Processing coverage shapes')
+        process_coverage_shapes(tc)
 
-        # print('Getting regional data')
-        # get_regional_data(tc)
+        print('--Getting regional data')
+        get_regional_data(tc)
 
-        # print('Generating agglomeration lookup table')
-        # generate_agglomeration_lut(tc)
+        print('--Generating agglomeration lookup table')
+        generate_agglomeration_lut(tc)
 
-        # print('Load existing fiber infrastructure')
-        # process_existing_fiber(tc)
+        print('--Load existing fiber infrastructure')
+        process_existing_fiber(tc)
 
-        # print('Estimate existing nodes')
-        # find_nodes_on_existing_infrastructure(tc)
+        print('--Estimate existing nodes')
+        find_nodes_on_existing_infrastructure(tc)
 
-        # print('Find regional nodes')
-        # find_regional_nodes(tc)
+        print('--Find regional nodes')
+        find_regional_nodes(tc)
 
-        # print('Fit edges')
-        # prepare_edge_fitting(tc)
+        print('--Fit edges')
+        prepare_edge_fitting(tc)
 
-        # print('Fit regional edges')
-        # fit_regional_edges(tc)
+        print('--Fit regional edges')
+        fit_regional_edges(tc)
 
-        # print('Create core lookup table')
-        # generate_core_lut(tc)
+        print('--Create core lookup table')
+        generate_core_lut(tc)
 
-        # print('Create subscription forcast')
-        # forecast_subscriptions(tc)
+        print('--Create subscription forcast')
+        forecast_subscriptions(tc)
 
-        print('Forecasting smartphones')
+        print('--Forecasting smartphones')
         forecast_smartphones(tc)
