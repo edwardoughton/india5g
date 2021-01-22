@@ -37,6 +37,8 @@ def load_regions(path, telecom_circle):
     regions['tc_code'] = telecom_circle['tc_code']
     regions['geotype'] = regions.apply(define_geotype, axis=1)
 
+    regions.rename(columns = {'backhaul_microwave':'backhaul_wireless'}, inplace = True)
+
     return regions
 
 
@@ -463,9 +465,9 @@ if __name__ == '__main__':
         'site_rental_suburban': 5000,
         'site_rental_rural': 1000,
         'router': 2000,
-        'microwave_small': 20000,
-        'microwave_medium': 30000,
-        'microwave_large': 60000,
+        'wireless_small': 20000,
+        'wireless_medium': 30000,
+        'wireless_large': 60000,
         'fiber_urban_m': 20,
         'fiber_suburban_m': 10,
         'fiber_rural_m': 5,
@@ -553,6 +555,8 @@ if __name__ == '__main__':
         regional_annual_demand = []
         regional_results = []
         regional_cost_structure = []
+
+        frequencies = set()
 
         for telecom_circle in telecom_circles: #[:1]:
 

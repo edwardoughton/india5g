@@ -18,87 +18,63 @@ data <-
 
 metro <- data[(data$category == "Metro"),]
 
-metro = ggplot(metro, aes(x=year, y=penetration, group=tc_code)) +
-  geom_point(aes(shape=tc_code, color=tc_code), size=2.5) +
+metro_ph = ggplot(metro, aes(x=year, y=penetration, group=tc_code)) +
+  geom_point(aes(shape=tc_code, color=tc_code), size=1.5) +
   geom_line(aes(color=tc_code)) +
   scale_shape_manual(values=c(0, 1, 2)) +
   geom_vline(xintercept=2020, linetype="dashed", color = "grey", size=.5) +
-  annotate("text", x = 2018, y = 5, label = "Historical", angle = 0) +
-  annotate("text", x = 2022, y = 5, label = "Forecast", angle = 0) +
   scale_x_continuous(expand = c(0, 0), limits = c(2010,2030), breaks = seq(2010,2030,2)) +
   scale_y_continuous(expand = c(0, 0), limits = c(0,100)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), plot.title = element_text(size=12),
         legend.position = "bottom", legend.title=element_blank()) +
   labs(title = "(A) Subscriptions by Telecom Circle - Metro", 
-       subtitle = "Historical: 2010-2020. Forecast: 2020-2030 ",
        x = NULL, y = "Unique Subscribers (%)") +
-  guides(colour=guide_legend(ncol=3), shape=guide_legend(ncol=3)) +
-  facet_grid(~category)
+  guides(colour=guide_legend(ncol=3), shape=guide_legend(ncol=3)) 
 
-a <- data[(data$category == "A"),]
+a_ph <- data[(data$category == "A"),]
 
-a = ggplot(a, aes(x=year, y=penetration, group=tc_code)) +
-  geom_point(aes(shape=tc_code, color=tc_code), size=2.5) +
+a_ph = ggplot(a_ph, aes(x=year, y=penetration, group=tc_code)) +
+  geom_point(aes(shape=tc_code, color=tc_code), size=1.5) +
   geom_line(aes(color=tc_code)) +
   scale_shape_manual(values=c(0, 1, 2, 3, 4, 5)) +
   geom_vline(xintercept=2020, linetype="dashed", color = "grey", size=.5) +
-  annotate("text", x = 2018, y = 5, label = "Historical", angle = 0) +
-  annotate("text", x = 2022, y = 5, label = "Forecast", angle = 0) +
   scale_x_continuous(expand = c(0, 0), limits = c(2010,2030), breaks = seq(2010,2030,2)) +
   scale_y_continuous(expand = c(0, 0), limits = c(0,100)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), plot.title = element_text(size=12),
         legend.position = "bottom", legend.title=element_blank()) +
-  labs(title = "(B) Subscriptions by Telecom Circle - A", 
-       subtitle = "Historical: 2010-2020. Forecast: 2020-2030 ",
+  labs(title = "(C) Subscriptions by Telecom Circle - A", 
        x = NULL, y = "Unique Subscribers (%)") +
-  guides(colour=guide_legend(ncol=5), shape=guide_legend(ncol=5)) +
-  facet_grid(~category)
+  guides(colour=guide_legend(ncol=5), shape=guide_legend(ncol=5)) 
 
-b <- data[(data$category == "B"),]
+b_ph <- data[(data$category == "B"),]
 
-b = ggplot(b, aes(x=year, y=penetration, group=tc_code)) +
-  geom_point(aes(shape=tc_code, color=tc_code), size=2.5) +
+b_ph = ggplot(b_ph, aes(x=year, y=penetration, group=tc_code)) +
+  geom_point(aes(shape=tc_code, color=tc_code), size=1.5) +
   geom_line(aes(color=tc_code)) +
   scale_shape_manual(values=c(0, 1, 2, 3, 4, 5, 6, 7)) +
   geom_vline(xintercept=2020, linetype="dashed", color = "grey", size=.5) +
-  annotate("text", x = 2018, y = 5, label = "Historical", angle = 0) +
-  annotate("text", x = 2022, y = 5, label = "Forecast", angle = 0) +
   scale_x_continuous(expand = c(0, 0), limits = c(2010,2030), breaks = seq(2010,2030,2)) +
   scale_y_continuous(expand = c(0, 0), limits = c(0,100)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), plot.title = element_text(size=12),
         legend.position = "bottom", legend.title=element_blank()) +
-  labs(title = "(C) Subscriptions by Telecom Circle - B", 
-       subtitle = "Historical: 2010-2020. Forecast: 2020-2030 ",
+  labs(title = "(E) Subscriptions by Telecom Circle - B", 
        x = NULL, y = "Unique Subscribers (%)") +
-  guides(colour=guide_legend(ncol=7), shape=guide_legend(ncol=7)) +
-  facet_grid(~category)
+  guides(colour=guide_legend(ncol=7), shape=guide_legend(ncol=7)) 
 
-c <- data[(data$category == "C"),]
+c_ph <- data[(data$category == "C"),]
 
-c = ggplot(c, aes(x=year, y=penetration, group=tc_code)) +
-  geom_point(aes(shape=tc_code, color=tc_code), size=2.5) +
+c_ph = ggplot(c_ph, aes(x=year, y=penetration, group=tc_code)) +
+  geom_point(aes(shape=tc_code, color=tc_code), size=1.5) +
   geom_line(aes(color=tc_code)) +
   scale_shape_manual(values=c(0, 1, 2, 3, 4, 5, 6, 7)) +
   geom_vline(xintercept=2020, linetype="dashed", color = "grey", size=.5) +
-  annotate("text", x = 2018, y = 5, label = "Historical", angle = 0) +
-  annotate("text", x = 2022, y = 5, label = "Forecast", angle = 0) +
   scale_x_continuous(expand = c(0, 0), limits = c(2010,2030), breaks = seq(2010,2030,2)) +
   scale_y_continuous(expand = c(0, 0), limits = c(0,100)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), plot.title = element_text(size=12),
         legend.position = "bottom", legend.title=element_blank()) +
-  labs(title = "(C) Subscriptions by Telecom Circle - C", 
-       subtitle = "Historical: 2010-2020. Forecast: 2020-2030 ",
+  labs(title = "(G) Subscriptions by Telecom Circle - C", 
        x = NULL, y = "Unique Subscribers (%)") +
-  guides(colour=guide_legend(ncol=7), shape=guide_legend(ncol=7)) +
-  facet_grid(~category)
-
-combined <- ggarrange(metro, a, b, c,  
-                      ncol = 2, nrow = 2)
-
-path = file.path(folder, 'figures', 'a_subscriptions.png')
-ggsave(path, units="in", width=10, height=10, dpi=300)
-print(combined)
-dev.off()
+  guides(colour=guide_legend(ncol=7), shape=guide_legend(ncol=7)) 
 
 ####################smartphones
 folder <- dirname(rstudioapi::getSourceEditorContext()$path)
@@ -109,7 +85,7 @@ data <- data[(data$confidence == 50),]
 
 data = data[(
   data$scenario == 'S1_25_10_2' &
-    data$strategy == '4G_epc_microwave_baseline_baseline_baseline_baseline'
+    data$strategy == '4G_epc_wireless_baseline_baseline_baseline_baseline'
 ),]
 
 data <- select(data, tc_code, category, geotype, year, 
@@ -131,75 +107,72 @@ data$geotype = factor(data$geotype,
 data$sp_penetration = round(data$smartphones /
                               data$population * 100, 2) 
 
-metro <- data[(data$category == "Metro"),]
+metro_sp <- data[(data$category == "Metro"),]
 
-metro = ggplot(metro, aes(x=year, y=sp_penetration, group=tc_code)) +
-  geom_point(aes(shape=tc_code, color=tc_code), size=2.5) +
+metro_sp = ggplot(metro_sp, aes(x=year, y=sp_penetration, group=tc_code)) +
+  geom_point(aes(shape=tc_code, color=tc_code), size=1.5) +
   geom_line(aes(color=tc_code)) +
   scale_shape_manual(values=c(0, 1, 2)) +
   scale_x_continuous(expand = c(0, 0.2), limits = c(2020,2030), breaks = seq(2020,2030,2)) +
   scale_y_continuous(expand = c(0, 0), limits = c(0,100)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), plot.title = element_text(size=12),
         legend.position = "bottom", legend.title=element_blank()) +
-  labs(title = "(A) Smartphones by Telecom Circle - Metro", 
-       subtitle = "Forecast: 2020-2030 ",
+  labs(title = "(B) Smartphones by Telecom Circle - Metro", 
        x = NULL, y = "Smartphones (%)") +
-  guides(colour=guide_legend(ncol=3), shape=guide_legend(ncol=3)) +
-  facet_grid(~geotype)
+  guides(colour=guide_legend(ncol=3), shape=guide_legend(ncol=3)) 
 
-a <- data[(data$category == "A"),]
+a_sp <- data[(data$category == "A"),]
 
-a = ggplot(a, aes(x=year, y=sp_penetration, group=tc_code)) +
-  geom_point(aes(shape=tc_code, color=tc_code), size=2.5) +
+a_sp = ggplot(a_sp, aes(x=year, y=sp_penetration, group=tc_code)) +
+  geom_point(aes(shape=tc_code, color=tc_code), size=1.5) +
   geom_line(aes(color=tc_code)) +
   scale_shape_manual(values=c(0, 1, 2, 3, 4, 5)) +
   scale_x_continuous(expand = c(0, 0.2), limits = c(2020,2030), breaks = seq(2020,2030,2)) +
   scale_y_continuous(expand = c(0, 0), limits = c(0,100)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), plot.title = element_text(size=12),
         legend.position = "bottom", legend.title=element_blank()) +
-  labs(title = "(B) Smartphones by Telecom Circle - A", 
-       subtitle = "Forecast: 2020-2030 ",
+  labs(title = "(D) Smartphones by Telecom Circle - A", 
        x = NULL, y = "Smartphones (%)") +
-  guides(colour=guide_legend(ncol=5), shape=guide_legend(ncol=5))+
+  guides(colour=guide_legend(ncol=5), shape=guide_legend(ncol=5)) +
   facet_grid(~geotype)
 
-b <- data[(data$category == "B"),]
+b_sp <- data[(data$category == "B"),]
 
-b = ggplot(b, aes(x=year, y=sp_penetration, group=tc_code)) +
-  geom_point(aes(shape=tc_code, color=tc_code), size=2.5) +
+b_sp = ggplot(b_sp, aes(x=year, y=sp_penetration, group=tc_code)) +
+  geom_point(aes(shape=tc_code, color=tc_code), size=1.5) +
   geom_line(aes(color=tc_code)) +
   scale_shape_manual(values=c(0, 1, 2, 3, 4, 5, 6, 7)) +
   scale_x_continuous(expand = c(0, 0.2), limits = c(2020,2030), breaks = seq(2020,2030,2)) +
   scale_y_continuous(expand = c(0, 0), limits = c(0,100)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), plot.title = element_text(size=12),
         legend.position = "bottom", legend.title=element_blank()) +
-  labs(title = "(C) Smartphones by Telecom Circle - B", 
-       subtitle = "Forecast: 2020-2030 ",
+  labs(title = "(F) Smartphones by Telecom Circle - B", 
        x = NULL, y = "Smartphones (%)") +
   guides(colour=guide_legend(ncol=7), shape=guide_legend(ncol=7)) +
   facet_grid(~geotype)
 
-c <- data[(data$category == "C"),]
+c_sp <- data[(data$category == "C"),]
 
-c = ggplot(c, aes(x=year, y=sp_penetration, group=tc_code)) +
-  geom_point(aes(shape=tc_code, color=tc_code), size=2.5) +
+c_sp = ggplot(c_sp, aes(x=year, y=sp_penetration, group=tc_code)) +
+  geom_point(aes(shape=tc_code, color=tc_code), size=1.5) +
   geom_line(aes(color=tc_code)) +
   scale_shape_manual(values=c(0, 1, 2, 3, 4, 5, 6, 7)) +
   scale_x_continuous(expand = c(0, 0.2), limits = c(2020,2030), breaks = seq(2020,2030,2)) +
   scale_y_continuous(expand = c(0, 0), limits = c(0,100)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), plot.title = element_text(size=12),
         legend.position = "bottom", legend.title=element_blank()) +
-  labs(title = "(C) Smartphones by Telecom Circle - C", 
-       subtitle = "Forecast: 2020-2030 ",
+  labs(title = "(H) Smartphones by Telecom Circle - C", 
        x = NULL, y = "Smartphones (%)") +
   guides(colour=guide_legend(ncol=7), shape=guide_legend(ncol=7)) +
   facet_grid(~geotype)
 
-combined <- ggarrange(metro, a, b, c,  
-                      ncol = 2, nrow = 2)
+####################
 
-path = file.path(folder, 'figures', 'b_smartphones.png')
-ggsave(path, units="in", width=10, height=10, dpi=300)
+combined <- ggarrange(metro_ph, metro_sp, a_ph, a_sp, b_ph, b_sp, c_ph, c_sp,  
+                      ncol = 2, nrow = 4)
+
+path = file.path(folder, 'figures', 'a_forecasts.png')
+ggsave(path, units="in", width=8, height=11, dpi=300)
 print(combined)
 dev.off()
 
@@ -219,14 +192,13 @@ data <- select(data, scenario, strategy, confidence, decile, #population, area_k
                total_phone_density_km2, total_sp_density_km2,
                mno_phone_density_on_network_km2, mno_sp_density_on_network_km2,
                total_revenue, total_cost, cost_per_network_user,
-               # cost_per_sp_user
                )
 
 data <- data[(data$confidence == 50),]
 
 demand = data[(
   data$scenario == 'S1_25_10_2' &
-  data$strategy == '4G_epc_microwave_baseline_baseline_baseline_baseline'
+  data$strategy == '4G_epc_wireless_baseline_baseline_baseline_baseline'
     ),]
 
 demand <- select(demand, decile, population_km2,
@@ -249,24 +221,22 @@ demand$metric = factor(demand$metric,
 
 demand <- demand[complete.cases(demand),]
 
-demand_densities <- ggplot(demand, aes(x=decile, y=value, colour=metric, group=metric)) +
-  geom_line() +
-  scale_fill_brewer(palette="Spectral", name = expression('Cost Type'), direction=1) +
-  theme( legend.position = "bottom") + #axis.text.x = element_text(angle = 45, hjust = 1),
-  labs(colour=NULL,
-       title = "(A) Demand-Side Density Metrics by Population Decile (2020)",
-       # subtitle = "Population and user densities",
-       x = "Population Decile", y = "Density (per km^2)") +
+demand_densities <- ggplot(demand, aes(x=decile, y=value, group=metric)) +
+  geom_point(aes(shape=metric, color=metric), size=1.5) +
+  geom_line(aes(color=metric)) +
+  scale_shape_manual(values=c(0, 1, 2, 3, 4)) +
+  scale_fill_brewer(palette="Spectral", direction=1) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), plot.title = element_text(size=7),
+        legend.position = "bottom", legend.title=element_blank(), text = element_text(size=6)) +
+  labs(title = "(A) Demand-Side Density Metrics by Population Decile (2020)",
+       x = "Population Decile", y = "Density (per km^2)") + expand_limits(y=0) +
+  guides(colour=guide_legend(ncol=5), shape=guide_legend(ncol=5)) +
   scale_x_continuous(expand = c(0, 0.5), breaks = seq(0,100,20)) +
-  scale_y_continuous(expand = c(0, 0)) + #, limits = c(0,20)) +
-  theme(panel.spacing = unit(0.6, "lines"), plot.title = element_text(size=10)) + 
-  expand_limits(y=0) +
-  guides(colour=guide_legend(ncol=5)) #+
-  # facet_wrap(~tc_code, scales = "free", ncol=5)
+  scale_y_continuous(expand = c(0, 0))
 
 supply = data[(
   data$scenario == 'S1_25_10_2' &
-    data$strategy == '4G_epc_microwave_baseline_baseline_baseline_baseline'
+    data$strategy == '4G_epc_wireless_baseline_baseline_baseline_baseline'
 ),]
 
 supply <- select(supply, decile, sites_estimated_total_km2, existing_network_sites_km2)
@@ -281,28 +251,28 @@ supply$metric = factor(supply$metric,
 
 supply <- supply[complete.cases(supply),]
 
-supply_densities <- ggplot(supply, aes(x=decile, y=value, colour=metric, group=metric)) +
-  geom_line() +
-  scale_fill_brewer(palette="Spectral", name = expression('Cost Type'), direction=1) +
-  theme( legend.position = "bottom") + #axis.text.x = element_text(angle = 45, hjust = 1),
-  labs(colour=NULL,
-       title = "(B) Supply-Side Density Metrics by Population Decile (2020)",
-       # subtitle = "Cumulative cost reported by percentage of population covered",
+supply_densities <- ggplot(supply, aes(x=decile, y=value, group=metric)) +
+  geom_point(aes(shape=metric, color=metric), size=1.5) +
+  geom_line(aes(color=metric)) +
+  scale_shape_manual(values=c(0, 1)) +
+  scale_fill_brewer(palette="Spectral", direction=1) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), plot.title = element_text(size=7),
+        legend.position = "bottom", legend.title=element_blank(), text = element_text(size=6)) +
+  labs(title = "(B) Supply-Side Density Metrics by Population Decile (2020)",
        x = "Population decile", y = "Density (per km^2)") +
-  scale_x_continuous(expand = c(0, 0.5), breaks = seq(0,100,20)) +
-  scale_y_continuous(expand = c(0, 0)) + #, limits = c(0,20)) +
-  theme(panel.spacing = unit(0.6, "lines"), plot.title = element_text(size=10)) + expand_limits(y=0) +
-  guides(colour=guide_legend(ncol=2)) #+
-  # facet_wrap(~tc_code, scales = "free", ncol=5)
+  guides(colour=guide_legend(ncol=2), shape=guide_legend(ncol=2)) +
+  scale_x_continuous(expand = c(0, 0.5)) +
+  scale_y_continuous(expand = c(0, 0))
 
 demand_supply <- ggarrange(
   demand_densities, supply_densities, ncol = 1, nrow = 2, align = c("hv"))
 
 #export to folder
-path = file.path(folder, 'figures', 'c_demand_supply_panel.png')
-ggsave(path,  units="in", width=5.4, height=6, dpi=300)
+path = file.path(folder, 'figures', 'b_baseline.png')
+ggsave(path,  units="in", width=4, height=5, dpi=300)
 print(demand_supply)
 dev.off()
+
 
 ####################TECHNOLOGIES BY DECILE
 folder <- dirname(rstudioapi::getSourceEditorContext()$path)
@@ -317,33 +287,33 @@ data <- data[(data$confidence == 50),]
 data <- select(data, scenario, strategy, decile, area_km2, population, total_cost, total_revenue)
 
 data$scenario = factor(data$scenario, levels=c("S1_25_10_2",
-                                               "S2_200_50_5",
-                                               "S3_400_100_10"),
-                       labels=c("S1 (25 Mbps)",
-                                "S2 (200 Mbps)",
-                                "S3 (400 Mbps)"))
+                                               "S2_50_20_5",
+                                               "S3_100_30_10"),
+                       labels=c("S1 (2-25 Mbps)",
+                                "S2 (5-50 Mbps)",
+                                "S3 (10-100 Mbps)"))
 
 data <- data[order(data$scenario, data$strategy, data$decile),]
 
 data1 <- select(data, scenario, strategy, decile, total_revenue)
-data1 <- data1[(data1$strategy == "4G_epc_microwave_baseline_baseline_baseline_baseline"),]
+data1 <- data1[(data1$strategy == "4G_epc_wireless_baseline_baseline_baseline_baseline"),]
 data1$strategy <- "Revenue" 
 names(data1)[names(data1) == 'total_revenue'] <- 'value'
 data2 <- select(data, scenario, strategy, decile, total_cost)
 names(data2)[names(data2) == 'total_cost'] <- 'value'
 data <- rbind(data1, data2)
 remove(data1, data2)
-
+unique(data$strategy)
 data$strategy = factor(data$strategy, levels=c("Revenue",
-                                               "4G_epc_microwave_baseline_baseline_baseline_baseline",
+                                               "4G_epc_wireless_baseline_baseline_baseline_baseline",
                                                "4G_epc_fiber_baseline_baseline_baseline_baseline",
-                                               "5G_nsa_microwave_baseline_baseline_baseline_baseline",
-                                               "5G_sa_fiber_baseline_baseline_baseline_baseline"),
+                                               "5G_nsa_wireless_baseline_baseline_baseline_baseline",
+                                               "5G_nsa_fiber_baseline_baseline_baseline_baseline"),
                        labels=c("Revenue",
                                 "4G (Wireless)",
                                 "4G (Fiber)",
                                 "5G NSA (Wireless)",
-                                "5G SA (Fiber)"))
+                                "5G NSA (Fiber)"))
 
 data <- data[order(data$scenario, data$strategy, data$decile),]
 
@@ -351,23 +321,24 @@ data <- data %>%
   group_by(scenario, strategy) %>%
   mutate(cumulative_value_bn = cumsum(round(value / 1e9, 3)))
 
-panel <- ggplot(data, aes(x=decile, y=cumulative_value_bn, colour=strategy, group=strategy)) + 
-  geom_line() +
-  scale_fill_brewer(palette="Spectral", name = expression('Cost Type'), direction=1) +
-  theme(legend.position = "bottom") + #axis.text.x = element_text(angle = 45, hjust = 1), 
-  labs(colour=NULL,
-       title = "Viability of Technology Decisions (4G vs 5G & Fiber vs Microwave)",
-       subtitle = "Cumulative cost reported by percentage of population covered",
-       x = "Population Covered (%)", y = "Cumulative Cost (Billions $USD)") + 
-  scale_x_continuous(expand = c(0, 0.75), breaks = seq(0,100,10)) + 
-  scale_y_continuous(expand = c(0, 0)) + #, limits = c(0,20)) +  
-  theme(panel.spacing = unit(0.6, "lines"), 
+panel <- ggplot(data, aes(x=decile, y=cumulative_value_bn, group=strategy)) + 
+  geom_point(aes(shape=strategy, color=strategy), size=1.5) +
+  geom_line(aes(color=strategy)) +
+  scale_shape_manual(values=c(0, 1, 2, 3, 4)) +
+  scale_fill_brewer(palette="Spectral", direction=1) +
+  theme(legend.position = "bottom") +
+  labs(title = "Viability of Technology Decisions",
+       subtitle = "Cumulative cost and revenue reported by percentage of population covered",
+       x = "Population Covered (%)", y = "Cumulative Cost (Billions $USD)") +
+  scale_x_continuous(expand = c(0, 0.75), breaks = seq(0,100,10)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 60)) +
+  theme(panel.spacing = unit(0.6, "lines"), legend.title=element_blank(),
         axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) + expand_limits(y=0) +
-  guides(colour=guide_legend(ncol=5)) +
+  guides(shape=guide_legend(ncol=5), colour=guide_legend(ncol=5)) +
   facet_wrap(~scenario, scales = "free", ncol=3)
 
-path = file.path(folder, 'figures', 'd_results_technology_options_wrap.png')
-ggsave(path, units="in", width=8, height=6, dpi=300)
+path = file.path(folder, 'figures', 'technology_viability.png')
+ggsave(path, units="in", width=8, height=4, dpi=300)
 print(panel)
 dev.off()
 
@@ -388,25 +359,25 @@ data <- select(data, scenario, strategy, confidence, decile, ran,
 data <- gather(data, asset, value, ran:tax)
 
 data$scenario = factor(data$scenario, levels=c("S1_25_10_2",
-                                               "S2_200_50_5",
-                                               "S3_400_100_10"),
+                                               "S2_50_20_5",
+                                               "S3_100_30_10"),
                        labels=c("S1",
                                 "S2",
                                 "S3"))
 
 data$strategy = factor(data$strategy, levels=c(
-                                               "4G_epc_microwave_baseline_baseline_baseline_baseline",
+                                               "4G_epc_wireless_baseline_baseline_baseline_baseline",
                                                "4G_epc_fiber_baseline_baseline_baseline_baseline",
-                                               "5G_nsa_microwave_baseline_baseline_baseline_baseline",
-                                               "5G_sa_fiber_baseline_baseline_baseline_baseline"),
+                                               "5G_nsa_wireless_baseline_baseline_baseline_baseline",
+                                               "5G_nsa_fiber_baseline_baseline_baseline_baseline"),
                        labels=c(
                                 "4G (Wireless)",
                                 "4G (Fiber)",
                                 "5G NSA (Wireless)",
-                                "5G SA (Fiber)"))
+                                "5G NSA (Fiber)"))
 
 data$combined <- paste(data$scenario, data$strategy, sep=": ")
-unique(data$combined)
+
 data$combined = factor(data$combined, levels=c(
   "S1: 4G (Wireless)",
   "S2: 4G (Wireless)",
@@ -417,9 +388,9 @@ data$combined = factor(data$combined, levels=c(
   "S1: 5G NSA (Wireless)",
   "S2: 5G NSA (Wireless)",
   "S3: 5G NSA (Wireless)",
-  "S1: 5G SA (Fiber)",
-  "S2: 5G SA (Fiber)",
-  "S3: 5G SA (Fiber)"
+  "S1: 5G NSA (Fiber)",
+  "S2: 5G NSA (Fiber)",
+  "S3: 5G NSA (Fiber)"
   ))
 
 data$asset = factor(data$asset, levels=c(
@@ -431,7 +402,7 @@ technology_costs = ggplot(data, aes(x=decile, y=value/1e9, fill=asset)) +
   geom_bar(stat="identity") +
   theme(legend.position = 'right') +
   scale_x_continuous(expand = c(0, 0), breaks = seq(0,100,10)) +
-  scale_y_continuous(expand = c(0, 0)) + #, limits = c(0, 29.9)
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 20)) +
   labs(colour=NULL,
        title = "Cost Performance of Universal Broadband Strategies in India",
        subtitle = "Results reported by scenario, strategy and population decile",
@@ -470,16 +441,16 @@ data <- select(data, scenario, strategy, confidence, decile, ran,
 data <- gather(data, asset, value, ran:tax)
 
 data$scenario = factor(data$scenario, levels=c("S1_25_10_2",
-                                               "S2_200_50_5",
-                                               "S3_400_100_10"),
-                       labels=c("S1",
-                                "S2",
-                                "S3"))
+                                               "S2_50_20_5",
+                                               "S3_100_30_10"),
+                       labels=c("S1 (2-25 Mbps)",
+                                "S2 (5-50 Mbps)",
+                                "S3 (10-100 Mbps)"))
 
 data$strategy = factor(data$strategy, levels=c(
-  "4G_epc_microwave_baseline_baseline_baseline_baseline",
+  "4G_epc_wireless_baseline_baseline_baseline_baseline",
   "4G_epc_fiber_baseline_baseline_baseline_baseline",
-  "5G_nsa_microwave_baseline_baseline_baseline_baseline",
+  "5G_nsa_wireless_baseline_baseline_baseline_baseline",
   "5G_sa_fiber_baseline_baseline_baseline_baseline"),
   labels=c(
     "4G (Wireless)",

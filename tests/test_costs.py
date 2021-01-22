@@ -33,7 +33,7 @@ def test_greenfield_4g(setup_region, setup_option, setup_costs,
 
     #test baseline infra sharing
     cost_structure = greenfield_4g(setup_region[0],
-        '4G_epc_microwave_baseline_baseline_baseline_baseline',
+        '4G_epc_wireless_baseline_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -51,7 +51,7 @@ def test_greenfield_4g(setup_region, setup_option, setup_costs,
 
     #test passive infra sharing
     cost_structure = greenfield_4g(setup_region[0],
-        '4G_epc_microwave_passive_baseline_baseline_baseline',
+        '4G_epc_wireless_passive_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -60,7 +60,7 @@ def test_greenfield_4g(setup_region, setup_option, setup_costs,
 
     #test active infra sharing
     cost_structure = greenfield_4g(setup_region[0],
-        '4G_epc_microwave_active_baseline_baseline_baseline',
+        '4G_epc_wireless_active_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -76,7 +76,7 @@ def test_greenfield_4g(setup_region, setup_option, setup_costs,
 
     #test shared wholesale core network
     cost_structure = greenfield_4g(setup_region[0],
-        '4G_epc_microwave_shared_baseline_baseline_baseline',
+        '4G_epc_wireless_shared_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -99,7 +99,7 @@ def test_upgrade_to_4g(setup_region, setup_option, setup_costs,
     setup_region[0]['site_density'] = 0.5
 
     cost_structure = upgrade_to_4g(setup_region[0],
-        '4G_epc_microwave_baseline_baseline_baseline_baseline',
+        '4G_epc_wireless_baseline_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -111,7 +111,7 @@ def test_upgrade_to_4g(setup_region, setup_option, setup_costs,
 
     #test passive infra sharing
     cost_structure = upgrade_to_4g(setup_region[0],
-        '4G_epc_microwave_passive_baseline_baseline_baseline',
+        '4G_epc_wireless_passive_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -119,7 +119,7 @@ def test_upgrade_to_4g(setup_region, setup_option, setup_costs,
 
     #test active infra sharing
     cost_structure = upgrade_to_4g(setup_region[0],
-        '4G_epc_microwave_active_baseline_baseline_baseline',
+        '4G_epc_wireless_active_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -133,7 +133,7 @@ def test_upgrade_to_4g(setup_region, setup_option, setup_costs,
 
     #test shared wholesale core network
     cost_structure = upgrade_to_4g(setup_region[0],
-        '4G_epc_microwave_shared_baseline_baseline_baseline',
+        '4G_epc_wireless_shared_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -152,7 +152,7 @@ def test_greenfield_5g_nsa(setup_region, setup_option, setup_costs,
 
     #test baseline infra sharing
     cost_structure = greenfield_5g_nsa(setup_region[0],
-        '5G_nsa_microwave_baseline_baseline_baseline_baseline',
+        '5G_nsa_wireless_baseline_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -168,7 +168,7 @@ def test_greenfield_5g_nsa(setup_region, setup_option, setup_costs,
 
     #test passive infra sharing
     cost_structure = greenfield_5g_nsa(setup_region[0],
-        '5G_nsa_microwave_passive_baseline_baseline_baseline',
+        '5G_nsa_wireless_passive_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -177,7 +177,7 @@ def test_greenfield_5g_nsa(setup_region, setup_option, setup_costs,
 
     #test active infra sharing
     cost_structure = greenfield_5g_nsa(setup_region[0],
-        '5G_nsa_microwave_active_baseline_baseline_baseline',
+        '5G_nsa_wireless_active_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -192,7 +192,7 @@ def test_greenfield_5g_nsa(setup_region, setup_option, setup_costs,
 
     #test shared wholesale core network
     cost_structure = greenfield_5g_nsa(setup_region[0],
-        '5G_nsa_microwave_shared_baseline_baseline_baseline',
+        '5G_nsa_wireless_shared_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -215,7 +215,7 @@ def test_upgrade_to_5g_nsa(setup_region, setup_option, setup_costs,
     setup_region[0]['site_density'] = 0.5
 
     cost_structure = upgrade_to_5g_nsa(setup_region[0],
-        '5G_nsa_microwave_baseline_baseline_baseline_baseline',
+        '5G_nsa_wireless_baseline_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -227,7 +227,7 @@ def test_upgrade_to_5g_nsa(setup_region, setup_option, setup_costs,
 
     #test passive infra sharing
     cost_structure = upgrade_to_5g_nsa(setup_region[0],
-        '5G_nsa_microwave_passive_baseline_baseline_baseline',
+        '5G_nsa_wireless_passive_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -235,7 +235,7 @@ def test_upgrade_to_5g_nsa(setup_region, setup_option, setup_costs,
 
     #test active infra sharing
     cost_structure = upgrade_to_5g_nsa(setup_region[0],
-        '5G_nsa_microwave_active_baseline_baseline_baseline',
+        '5G_nsa_wireless_active_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -249,7 +249,7 @@ def test_upgrade_to_5g_nsa(setup_region, setup_option, setup_costs,
 
     #test shared wholesale core network
     cost_structure = upgrade_to_5g_nsa(setup_region[0],
-        '5G_nsa_microwave_shared_baseline_baseline_baseline',
+        '5G_nsa_wireless_shared_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -271,7 +271,7 @@ def test_greenfield_5g_sa(setup_region, setup_option, setup_costs,
     setup_region[0]['site_density'] = 1
 
     cost_structure = greenfield_5g_sa(setup_region[0],
-        '5G_sa_microwave_baseline_baseline_baseline_baseline',
+        '5G_sa_wireless_baseline_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -288,7 +288,7 @@ def test_greenfield_5g_sa(setup_region, setup_option, setup_costs,
 
     #test passive infra sharing
     cost_structure = greenfield_5g_sa(setup_region[0],
-        '5g_sa_microwave_passive_baseline_baseline_baseline',
+        '5g_sa_wireless_passive_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -297,7 +297,7 @@ def test_greenfield_5g_sa(setup_region, setup_option, setup_costs,
 
     #test active infra sharing
     cost_structure = greenfield_5g_sa(setup_region[0],
-        '5g_sa_microwave_active_baseline_baseline_baseline',
+        '5g_sa_wireless_active_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -313,7 +313,7 @@ def test_greenfield_5g_sa(setup_region, setup_option, setup_costs,
 
     #test shared wholesale core network
     cost_structure = greenfield_5g_sa(setup_region[0],
-        '5G_sa_microwave_shared_baseline_baseline_baseline',
+        '5G_sa_wireless_shared_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -336,7 +336,7 @@ def test_upgrade_to_5g_sa(setup_region, setup_option, setup_costs,
     setup_region[0]['site_density'] = 0.5
 
     cost_structure = upgrade_to_5g_sa(setup_region[0],
-        '5G_sa_microwave_baseline_baseline_baseline_baseline',
+        '5G_sa_wireless_baseline_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -350,7 +350,7 @@ def test_upgrade_to_5g_sa(setup_region, setup_option, setup_costs,
 
     #test passive infra sharing
     cost_structure = upgrade_to_5g_sa(setup_region[0],
-        '5g_sa_microwave_passive_baseline_baseline_baseline',
+        '5g_sa_wireless_passive_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -358,7 +358,7 @@ def test_upgrade_to_5g_sa(setup_region, setup_option, setup_costs,
 
     #test active infra sharing
     cost_structure = upgrade_to_5g_sa(setup_region[0],
-        '5g_sa_microwave_active_baseline_baseline_baseline',
+        '5g_sa_wireless_active_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -373,7 +373,7 @@ def test_upgrade_to_5g_sa(setup_region, setup_option, setup_costs,
 
     #test shared wholesale core network
     cost_structure = upgrade_to_5g_sa(setup_region[0],
-        '5G_sa_microwave_shared_baseline_baseline_baseline',
+        '5G_sa_wireless_shared_baseline_baseline_baseline',
         setup_costs, setup_global_parameters,
         setup_core_lut, setup_country_parameters)
 
@@ -408,18 +408,18 @@ def test_get_fronthaul_costs(setup_region, setup_costs):
 
 def test_get_backhaul_costs(setup_region, setup_costs, setup_core_lut):
 
-    assert get_backhaul_costs(setup_region[0], 'microwave',
-        setup_costs, setup_core_lut) == (setup_costs['microwave_small'])
+    assert get_backhaul_costs(setup_region[0], 'wireless',
+        setup_costs, setup_core_lut) == (setup_costs['wireless_small'])
 
     setup_region[0]['area_km2'] = 5000
 
-    assert get_backhaul_costs(setup_region[0], 'microwave',
-        setup_costs, setup_core_lut) == (setup_costs['microwave_small'])
+    assert get_backhaul_costs(setup_region[0], 'wireless',
+        setup_costs, setup_core_lut) == (setup_costs['wireless_small'])
 
     setup_region[0]['area_km2'] = 100000
 
-    assert get_backhaul_costs(setup_region[0], 'microwave',
-        setup_costs, setup_core_lut) == (setup_costs['microwave_large'])
+    assert get_backhaul_costs(setup_region[0], 'wireless',
+        setup_costs, setup_core_lut) == (setup_costs['wireless_large'])
 
     setup_region[0]['area_km2'] = 2
 
@@ -614,7 +614,7 @@ def test_find_single_network_cost(setup_region, setup_costs,
 
     answer = find_single_network_cost(
         setup_region[0],
-        {'strategy': '4G_epc_microwave_baseline_baseline_baseline_baseline'},
+        {'strategy': '4G_epc_wireless_baseline_baseline_baseline_baseline'},
         setup_costs,
         setup_global_parameters,
         setup_country_parameters,
@@ -637,7 +637,7 @@ def test_find_single_network_cost(setup_region, setup_costs,
 
     answer = find_single_network_cost(
         setup_region[0],
-        {'strategy': '5G_nsa_microwave_baseline_baseline_baseline_baseline'},
+        {'strategy': '5G_nsa_wireless_baseline_baseline_baseline_baseline'},
         setup_costs,
         setup_global_parameters,
         setup_country_parameters,
@@ -683,7 +683,7 @@ def test_find_single_network_cost(setup_region, setup_costs,
 
     answer = find_single_network_cost(
         setup_region[0],
-        {'strategy': '4G_epc_microwave_baseline_baseline_baseline_baseline'},
+        {'strategy': '4G_epc_wireless_baseline_baseline_baseline_baseline'},
         setup_costs,
         setup_global_parameters,
         setup_country_parameters,
@@ -707,7 +707,7 @@ def test_find_single_network_cost(setup_region, setup_costs,
 
     answer = find_single_network_cost(
         setup_region[0],
-        {'strategy': '5G_nsa_microwave_baseline_baseline_baseline_baseline'},
+        {'strategy': '5G_nsa_wireless_baseline_baseline_baseline_baseline'},
         setup_costs,
         setup_global_parameters,
         setup_country_parameters,
@@ -730,7 +730,7 @@ def test_find_single_network_cost(setup_region, setup_costs,
 
     answer = find_single_network_cost(
         setup_region[0],
-        {'strategy': '5G_sa_microwave_baseline_baseline_baseline_baseline'},
+        {'strategy': '5G_sa_wireless_baseline_baseline_baseline_baseline'},
         setup_costs,
         setup_global_parameters,
         setup_country_parameters,
@@ -775,7 +775,7 @@ def test_find_single_network_cost(setup_region, setup_costs,
 
     # answer = find_single_network_cost(
     #     setup_region[0],
-    #     {'strategy': '4G_epc_microwave_baseline_baseline_baseline_baseline'},
+    #     {'strategy': '4G_epc_wireless_baseline_baseline_baseline_baseline'},
     #     setup_costs,
     #     setup_global_parameters,
     #     setup_country_parameters,
@@ -792,7 +792,7 @@ def test_find_single_network_cost(setup_region, setup_costs,
 
     # answer = find_single_network_cost(
     #     setup_region[0],
-    #     {'strategy': '4G_epc_microwave_baseline_baseline_baseline_baseline'},
+    #     {'strategy': '4G_epc_wireless_baseline_baseline_baseline_baseline'},
     #     setup_costs,
     #     setup_global_parameters,
     #     setup_country_parameters,
@@ -803,7 +803,7 @@ def test_find_single_network_cost(setup_region, setup_costs,
 
     # answer = find_single_network_cost(
     #     setup_region[0],
-    #     {'strategy': '5G_sa_microwave_baseline_baseline_baseline_baseline'},
+    #     {'strategy': '5G_sa_wireless_baseline_baseline_baseline_baseline'},
     #     setup_costs,
     #     setup_global_parameters,
     #     setup_country_parameters,

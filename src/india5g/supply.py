@@ -46,6 +46,9 @@ def estimate_supply(telecom_circle, regions, lookup, option, global_parameters,
 
     for region in regions:
 
+        if math.isnan(region['demand_mbps_km2']):
+            continue
+
         region['site_density'] = find_site_density(region, option,
             tc_parameters, lookup, ci)
 
@@ -316,9 +319,9 @@ def estimate_backhaul_upgrades(region, strategy):
         else:
             region['backhaul_new'] = 0
 
-    elif backhaul == 'microwave':
+    elif backhaul == 'wireless':
 
-        existing_backhaul = region['backhaul_microwave'] + region['backhaul_fiber']
+        existing_backhaul = region['backhaul_wireless'] + region['backhaul_fiber']
 
         if existing_backhaul < all_sites:
             region['backhaul_new'] = all_sites - existing_backhaul

@@ -125,12 +125,12 @@ def test_get_spectrum_costs(setup_region, setup_option, setup_global_parameters,
     setup_region[0]['new_sites'] = 1
 
     # test high spectrum costs which are 50% higher
-    assert get_spectrum_costs(setup_region[0], '4G_epc_microwave_baseline_baseline_high_baseline',
+    assert get_spectrum_costs(setup_region[0], '4G_epc_wireless_baseline_baseline_high_baseline',
         setup_global_parameters, setup_country_parameters, setup_timesteps, 1000) == (
             324312867.0257621 * (setup_country_parameters['financials']['spectrum_cost_high'] / 100))
 
     # test low spectrum costs which are 50% lower
-    assert get_spectrum_costs(setup_region[0], '4G_epc_microwave_baseline_baseline_low_baseline',
+    assert get_spectrum_costs(setup_region[0], '4G_epc_wireless_baseline_baseline_low_baseline',
         setup_global_parameters, setup_country_parameters, setup_timesteps, 1000) == (
             324312867.0257621 * (setup_country_parameters['financials']['spectrum_cost_low'] / 100))
 
@@ -144,14 +144,14 @@ def test_calculate_tax(setup_region, setup_option, setup_country_parameters):
     assert calculate_tax(setup_region[0], setup_option['strategy'], setup_country_parameters) == 1e6 * (25/100)
 
     setup_region[0]['network_cost'] = 1e6
-    setup_option['strategy'] = '4G_epc_microwave_baseline_baseline_baseline_high'
+    setup_option['strategy'] = '4G_epc_wireless_baseline_baseline_baseline_high'
 
     answer = calculate_tax(setup_region[0], setup_option['strategy'], setup_country_parameters)
 
     assert answer == 1e6 * (40/100)
 
     setup_region[0]['network_cost'] = 1e6
-    setup_option['strategy'] = '4G_epc_microwave_baseline_baseline_baseline_low'
+    setup_option['strategy'] = '4G_epc_wireless_baseline_baseline_baseline_low'
 
     answer = calculate_tax(setup_region[0], setup_option['strategy'], setup_country_parameters)
 

@@ -12,7 +12,7 @@ January 2020
 
 generation: technology generation, so 3G or 4G
 core: type of core data transport network, eg. evolved packet core (4G)
-backhaul: type of backhaul, so fiber or microwave
+backhaul: type of backhaul, so fiber or wireless
 sharing: the type of infrastructure sharing, active, passive etc..
 network: relates to the number of networks, as defined in country parameters
 spectrum: type of spectrum strategy, so baseline, high or low
@@ -23,212 +23,212 @@ OPTIONS = {
     'technology_options': [
         {
             'scenario': 'S1_25_10_2',
-            'strategy': '4G_epc_microwave_baseline_baseline_baseline_baseline',
+            'strategy': '4G_epc_wireless_baseline_baseline_baseline_baseline',
         },
         {
-            'scenario': 'S2_200_50_5',
-            'strategy': '4G_epc_microwave_baseline_baseline_baseline_baseline',
+            'scenario': 'S2_50_20_5',
+            'strategy': '4G_epc_wireless_baseline_baseline_baseline_baseline',
         },
         {
-            'scenario': 'S3_400_100_10',
-            'strategy': '4G_epc_microwave_baseline_baseline_baseline_baseline',
+            'scenario': 'S3_100_30_10',
+            'strategy': '4G_epc_wireless_baseline_baseline_baseline_baseline',
         },
         {
             'scenario': 'S1_25_10_2',
             'strategy': '4G_epc_fiber_baseline_baseline_baseline_baseline',
         },
         {
-            'scenario': 'S2_200_50_5',
+            'scenario': 'S2_50_20_5',
             'strategy': '4G_epc_fiber_baseline_baseline_baseline_baseline',
         },
         {
-            'scenario': 'S3_400_100_10',
+            'scenario': 'S3_100_30_10',
             'strategy': '4G_epc_fiber_baseline_baseline_baseline_baseline',
         },
         {
             'scenario': 'S1_25_10_2',
-            'strategy': '5G_nsa_microwave_baseline_baseline_baseline_baseline',
+            'strategy': '5G_nsa_wireless_baseline_baseline_baseline_baseline',
         },
         {
-            'scenario': 'S2_200_50_5',
-            'strategy': '5G_nsa_microwave_baseline_baseline_baseline_baseline',
+            'scenario': 'S2_50_20_5',
+            'strategy': '5G_nsa_wireless_baseline_baseline_baseline_baseline',
         },
         {
-            'scenario': 'S3_400_100_10',
-            'strategy': '5G_nsa_microwave_baseline_baseline_baseline_baseline',
+            'scenario': 'S3_100_30_10',
+            'strategy': '5G_nsa_wireless_baseline_baseline_baseline_baseline',
         },
         {
             'scenario': 'S1_25_10_2',
-            'strategy': '5G_sa_fiber_baseline_baseline_baseline_baseline',
+            'strategy': '5G_nsa_fiber_baseline_baseline_baseline_baseline',
         },
         {
-            'scenario': 'S2_200_50_5',
-            'strategy': '5G_sa_fiber_baseline_baseline_baseline_baseline',
+            'scenario': 'S2_50_20_5',
+            'strategy': '5G_nsa_fiber_baseline_baseline_baseline_baseline',
         },
         {
-            'scenario': 'S3_400_100_10',
-            'strategy': '5G_sa_fiber_baseline_baseline_baseline_baseline',
+            'scenario': 'S3_100_30_10',
+            'strategy': '5G_nsa_fiber_baseline_baseline_baseline_baseline',
         },
     ],
     'business_model_options': [
         {
             'scenario': 'S1_25_10_2',
-            'strategy': '5G_nsa_microwave_baseline_baseline_baseline_baseline',
+            'strategy': '5G_nsa_wireless_baseline_baseline_baseline_baseline',
         },
         {
-            'scenario': 'S2_200_50_5',
-            'strategy': '5G_nsa_microwave_baseline_baseline_baseline_baseline',
+            'scenario': 'S2_50_20_5',
+            'strategy': '5G_nsa_wireless_baseline_baseline_baseline_baseline',
         },
         {
-            'scenario': 'S3_400_100_10',
-            'strategy': '5G_nsa_microwave_baseline_baseline_baseline_baseline',
-        },
-        {
-            'scenario': 'S1_25_10_2',
-            'strategy': '5G_nsa_microwave_passive_baseline_baseline_baseline',
-        },
-        {
-            'scenario': 'S2_200_50_5',
-            'strategy': '5G_nsa_microwave_passive_baseline_baseline_baseline',
-        },
-        {
-            'scenario': 'S3_400_100_10',
-            'strategy': '5G_nsa_microwave_passive_baseline_baseline_baseline',
+            'scenario': 'S3_100_30_10',
+            'strategy': '5G_nsa_wireless_baseline_baseline_baseline_baseline',
         },
         {
             'scenario': 'S1_25_10_2',
-            'strategy': '5G_nsa_microwave_active_baseline_baseline_baseline',
+            'strategy': '5G_nsa_wireless_passive_baseline_baseline_baseline',
         },
         {
-            'scenario': 'S2_200_50_5',
-            'strategy': '5G_nsa_microwave_active_baseline_baseline_baseline',
+            'scenario': 'S2_50_20_5',
+            'strategy': '5G_nsa_wireless_passive_baseline_baseline_baseline',
         },
         {
-            'scenario': 'S3_400_100_10',
-            'strategy': '5G_nsa_microwave_active_baseline_baseline_baseline',
+            'scenario': 'S3_100_30_10',
+            'strategy': '5G_nsa_wireless_passive_baseline_baseline_baseline',
         },
         {
             'scenario': 'S1_25_10_2',
-            'strategy': '5G_nsa_microwave_shared_baseline_baseline_baseline',
+            'strategy': '5G_nsa_wireless_active_baseline_baseline_baseline',
         },
         {
-            'scenario': 'S2_200_50_5',
-            'strategy': '5G_nsa_microwave_shared_baseline_baseline_baseline',
+            'scenario': 'S2_50_20_5',
+            'strategy': '5G_nsa_wireless_active_baseline_baseline_baseline',
         },
         {
-            'scenario': 'S3_400_100_10',
-            'strategy': '5G_nsa_microwave_shared_baseline_baseline_baseline',
+            'scenario': 'S3_100_30_10',
+            'strategy': '5G_nsa_wireless_active_baseline_baseline_baseline',
+        },
+        {
+            'scenario': 'S1_25_10_2',
+            'strategy': '5G_nsa_wireless_shared_baseline_baseline_baseline',
+        },
+        {
+            'scenario': 'S2_50_20_5',
+            'strategy': '5G_nsa_wireless_shared_baseline_baseline_baseline',
+        },
+        {
+            'scenario': 'S3_100_30_10',
+            'strategy': '5G_nsa_wireless_shared_baseline_baseline_baseline',
         },
     ],
     'policy_options': [
         {
             'scenario': 'S1_25_10_2',
-            'strategy': '5G_nsa_microwave_baseline_baseline_baseline_baseline',
+            'strategy': '5G_nsa_wireless_baseline_baseline_baseline_baseline',
         },
         {
-            'scenario': 'S2_200_50_5',
-            'strategy': '5G_nsa_microwave_baseline_baseline_baseline_baseline',
+            'scenario': 'S2_50_20_5',
+            'strategy': '5G_nsa_wireless_baseline_baseline_baseline_baseline',
         },
         {
-            'scenario': 'S3_400_100_10',
-            'strategy': '5G_nsa_microwave_baseline_baseline_baseline_baseline',
-        },
-        {
-            'scenario': 'S1_25_10_2',
-            'strategy': '5G_nsa_microwave_baseline_baseline_low_baseline',
-        },
-        {
-            'scenario': 'S2_200_50_5',
-            'strategy': '5G_nsa_microwave_baseline_baseline_low_baseline',
-        },
-        {
-            'scenario': 'S3_400_100_10',
-            'strategy': '5G_nsa_microwave_baseline_baseline_low_baseline',
+            'scenario': 'S3_100_30_10',
+            'strategy': '5G_nsa_wireless_baseline_baseline_baseline_baseline',
         },
         {
             'scenario': 'S1_25_10_2',
-            'strategy': '5G_nsa_microwave_baseline_baseline_high_baseline',
+            'strategy': '5G_nsa_wireless_baseline_baseline_low_baseline',
         },
         {
-            'scenario': 'S2_200_50_5',
-            'strategy': '5G_nsa_microwave_baseline_baseline_high_baseline',
+            'scenario': 'S2_50_20_5',
+            'strategy': '5G_nsa_wireless_baseline_baseline_low_baseline',
         },
         {
-            'scenario': 'S3_400_100_10',
-            'strategy': '5G_nsa_microwave_baseline_baseline_high_baseline',
-        },
-        {
-            'scenario': 'S1_25_10_2',
-            'strategy': '5G_nsa_microwave_baseline_baseline_baseline_low',
-        },
-        {
-            'scenario': 'S2_200_50_5',
-            'strategy': '5G_nsa_microwave_baseline_baseline_baseline_low',
-        },
-        {
-            'scenario': 'S3_400_100_10',
-            'strategy': '5G_nsa_microwave_baseline_baseline_baseline_low',
+            'scenario': 'S3_100_30_10',
+            'strategy': '5G_nsa_wireless_baseline_baseline_low_baseline',
         },
         {
             'scenario': 'S1_25_10_2',
-            'strategy': '5G_nsa_microwave_baseline_baseline_baseline_high',
+            'strategy': '5G_nsa_wireless_baseline_baseline_high_baseline',
         },
         {
-            'scenario': 'S2_200_50_5',
-            'strategy': '5G_nsa_microwave_baseline_baseline_baseline_high',
+            'scenario': 'S2_50_20_5',
+            'strategy': '5G_nsa_wireless_baseline_baseline_high_baseline',
         },
         {
-            'scenario': 'S3_400_100_10',
-            'strategy': '5G_nsa_microwave_baseline_baseline_baseline_high',
+            'scenario': 'S3_100_30_10',
+            'strategy': '5G_nsa_wireless_baseline_baseline_high_baseline',
+        },
+        {
+            'scenario': 'S1_25_10_2',
+            'strategy': '5G_nsa_wireless_baseline_baseline_baseline_low',
+        },
+        {
+            'scenario': 'S2_50_20_5',
+            'strategy': '5G_nsa_wireless_baseline_baseline_baseline_low',
+        },
+        {
+            'scenario': 'S3_100_30_10',
+            'strategy': '5G_nsa_wireless_baseline_baseline_baseline_low',
+        },
+        {
+            'scenario': 'S1_25_10_2',
+            'strategy': '5G_nsa_wireless_baseline_baseline_baseline_high',
+        },
+        {
+            'scenario': 'S2_50_20_5',
+            'strategy': '5G_nsa_wireless_baseline_baseline_baseline_high',
+        },
+        {
+            'scenario': 'S3_100_30_10',
+            'strategy': '5G_nsa_wireless_baseline_baseline_baseline_high',
         },
     ],
     'mixed_options': [  #generation_core_backhaul_sharing_subsidy_spectrum_tax
         {
             'scenario': 'S1_25_10_2',
-            'strategy': '4G_epc_microwave_shared_baseline_low_low',
+            'strategy': '4G_epc_wireless_shared_baseline_low_low',
         },
         {
-            'scenario': 'S2_200_50_5',
-            'strategy': '4G_epc_microwave_shared_baseline_low_low',
+            'scenario': 'S2_50_20_5',
+            'strategy': '4G_epc_wireless_shared_baseline_low_low',
         },
         {
-            'scenario': 'S3_400_100_10',
-            'strategy': '4G_epc_microwave_shared_baseline_low_low',
-        },
-        {
-            'scenario': 'S1_25_10_2',
-            'strategy': '4G_epc_fiber_shared_baseline_low_low',
-        },
-        {
-            'scenario': 'S2_200_50_5',
-            'strategy': '4G_epc_fiber_shared_baseline_low_low',
-        },
-        {
-            'scenario': 'S3_400_100_10',
-            'strategy': '4G_epc_fiber_shared_baseline_low_low',
+            'scenario': 'S3_100_30_10',
+            'strategy': '4G_epc_wireless_shared_baseline_low_low',
         },
         {
             'scenario': 'S1_25_10_2',
-            'strategy': '5G_nsa_microwave_shared_baseline_low_low',
+            'strategy': '4G_epc_fiber_shared_baseline_low_low',
         },
         {
-            'scenario': 'S2_200_50_5',
-            'strategy': '5G_nsa_microwave_shared_baseline_low_low',
+            'scenario': 'S2_50_20_5',
+            'strategy': '4G_epc_fiber_shared_baseline_low_low',
         },
         {
-            'scenario': 'S3_400_100_10',
-            'strategy': '5G_nsa_microwave_shared_baseline_low_low',
+            'scenario': 'S3_100_30_10',
+            'strategy': '4G_epc_fiber_shared_baseline_low_low',
+        },
+        {
+            'scenario': 'S1_25_10_2',
+            'strategy': '5G_nsa_wireless_shared_baseline_low_low',
+        },
+        {
+            'scenario': 'S2_50_20_5',
+            'strategy': '5G_nsa_wireless_shared_baseline_low_low',
+        },
+        {
+            'scenario': 'S3_100_30_10',
+            'strategy': '5G_nsa_wireless_shared_baseline_low_low',
         },
         {
             'scenario': 'S1_25_10_2',
             'strategy': '5G_sa_fiber_shared_baseline_low_low',
         },
         {
-            'scenario': 'S2_200_50_5',
+            'scenario': 'S2_50_20_5',
             'strategy': '5G_sa_fiber_shared_baseline_low_low',
         },
         {
-            'scenario': 'S3_400_100_10',
+            'scenario': 'S3_100_30_10',
             'strategy': '5G_sa_fiber_shared_baseline_low_low',
         },
     ]
