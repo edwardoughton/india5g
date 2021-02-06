@@ -64,6 +64,8 @@ def assess(country, regions, option, global_parameters, country_parameters, cost
             region['profit_margin']
         )
 
+        region['total_cost_km2'] = region['total_cost'] / region['area_km2']
+
         #avoid zero division
         if region['total_cost'] > 0 and region['mno_smartphones_on_network'] > 0:
             region['cost_per_sp_user'] = region['total_cost'] / region['mno_smartphones_on_network']
@@ -155,17 +157,13 @@ def get_spectrum_costs(region, strategy, global_parameters, country_parameters,
 
     coverage_spectrum_cost = 'spectrum_baseline_cov_usd_mhz'
     capacity_spectrum_cost = 'spectrum_baseline_cap_usd_mhz'
-    # #0.05
+
     coverage_cost_usd_mhz = country_parameters['financials'][coverage_spectrum_cost]
     capacity_cost_usd_mhz = country_parameters['financials'][capacity_spectrum_cost]
 
-    if spectrum_cost == 'low':
-        coverage_cost_usd_mhz = coverage_cost_usd_mhz * (country_parameters['financials']['spectrum_cost_low'] /100)
-        capacity_cost_usd_mhz = capacity_cost_usd_mhz * (country_parameters['financials']['spectrum_cost_low'] /100)
-
-    if spectrum_cost == 'high':
-        coverage_cost_usd_mhz = coverage_cost_usd_mhz * (country_parameters['financials']['spectrum_cost_high'] / 100)
-        capacity_cost_usd_mhz = capacity_cost_usd_mhz * (country_parameters['financials']['spectrum_cost_high'] / 100)
+    if not spectrum_cost == 'baseline':
+        coverage_cost_usd_mhz = coverage_cost_usd_mhz * ((100 - int(spectrum_cost)) / 100)
+        capacity_cost_usd_mhz = capacity_cost_usd_mhz * ((100 - int(spectrum_cost)) / 100)
 
     annual_cov_cost_usd_mhz = coverage_cost_usd_mhz / global_parameters['return_period_spectrum']
     annual_cap_cost_usd_mhz = capacity_cost_usd_mhz / global_parameters['return_period_spectrum']
