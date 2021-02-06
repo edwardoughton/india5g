@@ -13,7 +13,7 @@ import pandas as pd
 import geopandas
 from collections import OrderedDict
 
-from options import OPTIONS, TELECOM_CIRCLE_PARAMETERS
+from options import OPTIONS, TELECOM_CIRCLE_PARAMETERS, generate_policy_options
 from india5g.demand import estimate_demand
 from india5g.supply import estimate_supply
 from india5g.assess import assess
@@ -37,7 +37,7 @@ def load_regions(path, telecom_circle):
     regions['tc_code'] = telecom_circle['tc_code']
     regions['geotype'] = regions.apply(define_geotype, axis=1)
 
-    regions.rename(columns = {'backhaul_microwave':'backhaul_wireless'}, inplace = True)
+    regions = regions.dropna(subset = ['population'])
 
     return regions
 
@@ -121,34 +121,6 @@ def lookup_cost(lookup, strategy, environment):
     return density_capacities
 
 
-def find_country_list(continent_list):
-    """
-
-    """
-    path_processed = os.path.join(DATA_INTERMEDIATE,'global_countries.shp')
-    countries = geopandas.read_file(path_processed)
-
-    subset = countries.loc[countries['continent'].isin(continent_list)]
-
-    country_list = []
-    country_regional_levels = []
-
-    for name in subset.GID_0.unique():
-
-        country_list.append(name)
-
-        if name in ['ESH', 'LBY', 'LSO'] :
-            regional_level =  1
-        else:
-            regional_level = 2
-
-        country_regional_levels.append({
-            'country': name,
-            'regional_level': regional_level,
-        })
-
-    return country_list, country_regional_levels
-
 def load_penetration(path):
     """
     Load penetration forecast.
@@ -226,27 +198,15 @@ def load_core_lut(path):
 
 def define_deciles(regions):
 
-    mumbai = []
+    # regions = regions.drop(regions[regions['tc_code'] == 'MU'].index)
 
-    if 'MU' in regions['tc_code'].unique():
+    regions = regions.sort_values(by='population_km2', ascending=True)
 
-        mumbai = regions.loc[regions['tc_code'] == 'MU']
-
-        mumbai['decile'] = 0
-
-    else:
-
-        regions = regions.drop(regions[regions['tc_code'] == 'MU'].index)
-
-        regions = regions.sort_values(by='population_km2', ascending=True)
-
-        regions['decile'] = regions.groupby([
-            'GID_0', 'tc_code', 'scenario', 'strategy', 'confidence'], as_index=True).population_km2.apply( #cost_per_sp_user
-                pd.qcut, q=11, precision=0,
-                labels=[100,90,80,70,60,50,40,30,20,10,0], duplicates='drop') #   [0,10,20,30,40,50,60,70,80,90,100]
-
-    if len(mumbai) > 0:
-        regions = regions.append(mumbai)
+    regions['decile'] = regions.groupby([
+        'GID_0', 'scenario', 'strategy', 'confidence'], as_index=True).population_km2.apply(
+            pd.qcut, q=11, precision=0,
+            #[0,10,20,30,40,50,60,70,80,90,100]
+            labels=[100,90,80,70,60,50,40,30,20,10,0], duplicates='drop')
 
     return regions
 
@@ -259,6 +219,7 @@ def write_mno_demand(regional_annual_demand, folder, metric, path):
     """
     print('Writing annual_demand')
     regional_annual_demand = pd.DataFrame(regional_annual_demand)
+    regional_annual_demand = define_deciles(regional_annual_demand)
     regional_annual_demand.to_csv(path, index=False)
 
 
@@ -452,11 +413,6 @@ if __name__ == '__main__':
         'distributed_power_supply_converter': 250,
         'power_generator_battery_system': 10000,
         'bbu_cabinet': 200,
-        'cots_processing': 200,
-        'io_n2_n3': 1000,
-        'low_latency_switch': 200,
-        'rack': 200,
-        'cloud_power_supply_converter': 200,
         'tower': 5000,
         'civil_materials': 5000,
         'transportation': 5000,
@@ -477,11 +433,9 @@ if __name__ == '__main__':
         'core_edge': 4,
         'regional_node_epc': 100000,
         'regional_node_nsa': 100000,
-        'regional_node_sa': 125000,
         'regional_edge': 2,
         'regional_node_lower_epc': 50000,
         'regional_node_lower_nsa': 50000,
-        'regional_node_lower_sa': 60000,
     }
 
     GLOBAL_PARAMETERS = {
@@ -491,18 +445,7 @@ if __name__ == '__main__':
         'discount_rate': 5,
         'opex_percentage_of_capex': 10,
         'sectorization': 3,
-        'confidence': [50],#[2.5, 50, 97.5], #
-        # 'networks': 3,
-        'local_node_spacing_km2': 40,
-        'io_n2_n3': 1,
-        'cots_processing_split_urban': 2,
-        'cots_processing_split_suburban': 16,
-        'cots_processing_split_rural': 32,
-        'io_n2_n3_split': 7,
-        'low_latency_switch_split': 7,
-        'rack_split': 7,
-        'cloud_power_supply_converter_split': 7,
-        'cloud_backhaul_split': 7,
+        'confidence': [50], #[2.5, 50, 97.5],
         }
 
     path = os.path.join(DATA_RAW, 'pysim5g', 'capacity_lut_by_frequency.csv')
@@ -538,14 +481,12 @@ if __name__ == '__main__':
     for tc_code, category in tc_codes.items():
         telecom_circles.append({
             'iso3': 'IND', 'iso2': 'IN', 'tc_code': tc_code, 'category': category,
-            'regional_level': 2, 'regional_nodes_level': 2
+            'regional_level': 3, 'regional_nodes_level': 2
         })
 
     decision_options = [
         'technology_options',
-        # 'business_model_options',
-        # 'policy_options',
-        # 'mixed_options',
+        'policy_options',
     ]
 
     for decision_option in decision_options:#[:1]:
@@ -558,7 +499,7 @@ if __name__ == '__main__':
 
         frequencies = set()
 
-        for telecom_circle in telecom_circles: #[:1]:
+        for telecom_circle in telecom_circles:#[:1]:
 
             iso3 = telecom_circle['iso3']
             tc_code = telecom_circle['tc_code']
@@ -629,7 +570,7 @@ if __name__ == '__main__':
                         TIMESTEPS
                     )
 
-                    final_results = allocate_deciles(data_assess)
+                    final_results = data_assess
 
                     regional_annual_demand = regional_annual_demand + annual_demand
                     regional_results = regional_results + final_results
