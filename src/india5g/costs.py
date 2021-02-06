@@ -44,6 +44,14 @@ def find_single_network_cost(region, option, costs, global_parameters,
     upgraded_sites = region['upgraded_sites']
     all_sites = new_sites + upgraded_sites
 
+    if all_sites == 0:
+        region['ran'] = 0
+        region['backhaul_fronthaul'] = 0
+        region['civils'] = 0
+        region['core_network'] = 0
+        region['network_cost'] = 0
+        return region
+
     new_backhaul = region['backhaul_new']
 
     regional_cost = []
@@ -362,128 +370,6 @@ def upgrade_to_5g_nsa(region, strategy, costs,
     return cost_structure
 
 
-def greenfield_5g_sa(region, strategy, costs,
-    global_parameters, core_lut, tc_parameters):
-    """
-    No sharing takes place.
-    Reflects the baseline scenario of needing to build a single dedicated
-    network.
-
-    """
-    backhaul = '{}_backhaul'.format(strategy.split('_')[2])
-    sharing = strategy.split('_')[3]
-    geotype = region['geotype'].split(' ')[0]
-
-    # generation_core_backhaul_sharing_networks_spectrum_tax
-    network_strategy = strategy.split('_')[4]
-    net_handle = network_strategy + '_' + geotype
-    networks = tc_parameters['networks'][net_handle]
-
-    shared_assets = INFRA_SHARING_ASSETS[sharing]
-
-    assets = {
-        'single_sector_antenna': costs['single_sector_antenna'],
-        'single_remote_radio_unit': costs['single_remote_radio_unit'],
-        'io_fronthaul': costs['io_fronthaul'],
-        'cots_processing': costs['cots_processing'],
-        'io_n2_n3': costs['io_n2_n3'],
-        'low_latency_switch': costs['low_latency_switch'],
-        'rack': costs['rack'],
-        'cloud_power_supply_converter': costs['cloud_power_supply_converter'],
-        'power_generator_battery_system': costs['power_generator_battery_system'],
-        'fronthaul': get_fronthaul_costs(region, costs),
-        'cloud_backhaul': get_backhaul_costs(region, backhaul, costs, core_lut),
-        'tower': costs['tower'],
-        'civil_materials': costs['civil_materials'],
-        'transportation': costs['transportation'],
-        'installation': costs['installation'],
-        'site_rental': costs['site_rental_{}'.format(geotype)],
-        'router': costs['router'],
-        'local_node': local_net_costs(region, costs, strategy, tc_parameters, global_parameters),
-        'regional_edge': regional_net_costs(region, 'regional_edge', costs, core_lut, strategy, tc_parameters),
-        'regional_node': regional_net_costs(region, 'regional_node', costs, core_lut, strategy, tc_parameters),
-        'core_edge': core_costs(region, 'core_edge', costs, core_lut, strategy, tc_parameters),
-        'core_node': core_costs(region, 'core_node', costs, core_lut, strategy, tc_parameters),
-    }
-
-    cost_structure = {}
-
-    for key, value in assets.items():
-        if not key in shared_assets:
-            cost_structure[key] = value
-        else:
-            value = value / networks
-            cost_structure[key] = value
-
-    return cost_structure
-
-
-def upgrade_to_5g_sa(region, strategy, costs,
-    global_parameters, core_lut, tc_parameters):
-    """
-    Reflects the baseline scenario of needing to build a single dedicated
-    network.
-
-    """
-    backhaul = '{}_backhaul'.format(strategy.split('_')[2])
-    sharing = strategy.split('_')[3]
-    geotype = region['geotype'].split(' ')[0]
-
-    # generation_core_backhaul_sharing_networks_spectrum_tax
-    network_strategy = strategy.split('_')[4]
-    net_handle = network_strategy + '_' + geotype
-    networks = tc_parameters['networks'][net_handle]
-
-    shared_assets = INFRA_SHARING_ASSETS[sharing]
-
-    assets = {
-        'single_sector_antenna': costs['single_sector_antenna'],
-        'single_remote_radio_unit': costs['single_remote_radio_unit'],
-        'io_fronthaul': costs['io_fronthaul'],
-        'cots_processing': costs['cots_processing'],
-        'io_n2_n3': costs['io_n2_n3'],
-        'low_latency_switch': costs['low_latency_switch'],
-        'rack': costs['rack'],
-        'cloud_power_supply_converter': costs['cloud_power_supply_converter'],
-        'fronthaul': get_fronthaul_costs(region, costs),
-        'cloud_backhaul': get_backhaul_costs(region, backhaul, costs, core_lut),
-        'installation': costs['installation'],
-        'site_rental': costs['site_rental_{}'.format(geotype)],
-        'router': costs['router'],
-        'local_node': local_net_costs(region, costs, strategy, tc_parameters, global_parameters),
-        'regional_edge': regional_net_costs(region, 'regional_edge', costs, core_lut, strategy, tc_parameters),
-        'regional_node': regional_net_costs(region, 'regional_node', costs, core_lut, strategy, tc_parameters),
-        'core_edge': core_costs(region, 'core_edge', costs, core_lut, strategy, tc_parameters),
-        'core_node': core_costs(region, 'core_node', costs, core_lut, strategy, tc_parameters),
-    }
-
-    cost_structure = {}
-
-    for key, value in assets.items():
-        if not key in shared_assets:
-            cost_structure[key] = value
-        else:
-            value = value / networks
-            cost_structure[key] = value
-
-    return cost_structure
-
-
-def get_fronthaul_costs(region, costs):
-    """
-    Calculate fronthaul costs.
-
-    """
-    average_cell_spacing_km = math.sqrt(1/region['site_density'])
-    average_cell_spacing_m = average_cell_spacing_km * 1000 #convert km to m
-
-    tech = 'fiber_{}_m'.format(region['geotype'].split(' ')[0])
-    cost_per_meter = costs[tech]
-    cost = cost_per_meter * average_cell_spacing_m
-
-    return cost
-
-
 def get_backhaul_costs(region, backhaul, costs, core_lut):
     """
     Calculate backhaul costs.
@@ -527,36 +413,6 @@ def get_backhaul_costs(region, backhaul, costs, core_lut):
         cost = 0
 
     return cost
-
-
-def local_net_costs(region, costs, strategy, tc_parameters, global_parameters):
-    """
-    Get the cost of the local node at the centre of each 7 hexagonal
-    cell site areas.
-
-    """
-    core = strategy.split('_')[1]
-    # generation_core_backhaul_sharing_networks_spectrum_tax
-    network_strategy = strategy.split('_')[4]
-    geotype = region['geotype'].split(' ')[0]
-
-    net_handle = network_strategy + '_' + geotype
-    networks = tc_parameters['networks'][net_handle]
-
-    cost_each = costs['regional_node_lower_{}'.format(core)]
-
-    #have 1 local node n km^2
-    local_nodes_proportion = (
-        region['area_km2'] / global_parameters['local_node_spacing_km2'])
-
-    local_node_cost = int(local_nodes_proportion * cost_each)
-
-    existing_sites = (region['sites_estimated_total'] / networks)
-
-    if existing_sites == 0:
-        return 0
-
-    return (local_node_cost / existing_sites)
 
 
 def regional_net_costs(region, asset_type, costs, core_lut, strategy, tc_parameters):
@@ -806,28 +662,6 @@ def calc_costs(region, cost_structure, backhaul, backhaul_quantity,
                     if asset_name1 == 'single_sector_antenna':
                         cost = cost * global_parameters['sectorization']
 
-                    if asset_name1 == 'cots_processing':
-
-                        split = 'cots_processing_split_{}'.format(geotype)
-                        quantity = int(math.ceil(all_sites / global_parameters[split]))
-                        cost = cost * quantity
-
-                    if asset_name1 == 'low_latency_switch':
-                        quantity = int(math.ceil(all_sites / global_parameters['low_latency_switch_split']))
-                        cost = cost * quantity
-
-                    if asset_name1 == 'rack':
-                        quantity = int(math.ceil(all_sites / global_parameters['rack_split']))
-                        cost = cost * quantity
-
-                    if asset_name1 == 'cloud_power_supply_converter':
-                        quantity = int(math.ceil(all_sites / global_parameters['cloud_power_supply_converter_split']))
-                        cost = cost * quantity
-
-                    if asset_name1 == 'cloud_backhaul':
-                        quantity = int(math.ceil(all_sites / global_parameters['cloud_backhaul_split']))
-                        cost = (cost * quantity) / all_sites
-
                 elif type_of_cost == 'capex':
                     cost = cost * (1 + (tc_parameters['financials']['wacc'] / 100))
 
@@ -856,11 +690,6 @@ def calc_costs(region, cost_structure, backhaul, backhaul_quantity,
         'cooling_fans',
         'distributed_power_supply_converter',
         'bbu_cabinet',
-        'cots_processing',
-        'io_n2_n3',
-        'low_latency_switch',
-        'rack',
-        'cloud_power_supply_converter',
     ]
 
     backhaul_fronthaul = [
@@ -878,7 +707,6 @@ def calc_costs(region, cost_structure, backhaul, backhaul_quantity,
     ]
 
     core = [
-        'cloud_backhaul',
         'regional_node',
         'regional_edge',
         'core_node',
@@ -930,12 +758,7 @@ INFRA_SHARING_ASSETS = {
         'cooling_fans',
         'distributed_power_supply_converter',
         'bbu_cabinet',
-        'fronthaul',
-        'cots_processing',
-        'io_n2_n3',
-        'low_latency_switch',
-        'rack',
-        'cloud_power_supply_converter',
+        # 'fronthaul',
         'tower',
         'civil_materials',
         'transportation',
@@ -943,7 +766,6 @@ INFRA_SHARING_ASSETS = {
         'site_rental',
         'power_generator_battery_system',
         'backhaul',
-        'cloud_backhaul',
     ],
     'mocn': [
         'single_sector_antenna',  ##these items need renaming
@@ -956,11 +778,6 @@ INFRA_SHARING_ASSETS = {
         'distributed_power_supply_converter',
         'bbu_cabinet',
         'fronthaul',
-        'cots_processing',
-        'io_n2_n3',
-        'low_latency_switch',
-        'rack',
-        'cloud_power_supply_converter',
         'tower',
         'civil_materials',
         'transportation',
@@ -968,7 +785,6 @@ INFRA_SHARING_ASSETS = {
         'site_rental',
         'power_generator_battery_system',
         'backhaul',
-        'cloud_backhaul',
     ],
     'shared': [
         'single_sector_antenna',  ##these items need renaming
@@ -981,11 +797,6 @@ INFRA_SHARING_ASSETS = {
         'distributed_power_supply_converter',
         'bbu_cabinet',
         'fronthaul',
-        'cots_processing',
-        'io_n2_n3',
-        'low_latency_switch',
-        'rack',
-        'cloud_power_supply_converter',
         'tower',
         'civil_materials',
         'transportation',
@@ -993,7 +804,6 @@ INFRA_SHARING_ASSETS = {
         'site_rental',
         'power_generator_battery_system',
         'backhaul',
-        'cloud_backhaul',
         'local_node',
         'regional_edge',
         'regional_node',
@@ -1015,11 +825,7 @@ COST_TYPE = {
     'distributed_power_supply_converter': 'capex_and_opex',
     'bbu_cabinet': 'capex',
     'fronthaul': 'capex_and_opex',
-    'cots_processing': 'capex_and_opex',
-    'io_n2_n3': 'capex_and_opex',
-    'low_latency_switch': 'capex_and_opex',
     'rack': 'capex',
-    'cloud_power_supply_converter': 'capex_and_opex',
     'tower': 'capex',
     'civil_materials': 'capex',
     'transportation': 'capex',
@@ -1027,8 +833,6 @@ COST_TYPE = {
     'site_rental': 'opex',
     'power_generator_battery_system': 'capex_and_opex',
     'backhaul': 'capex_and_opex',
-    'cloud_backhaul': 'capex_and_opex',
-    'local_node': 'capex_and_opex',
     'regional_node': 'capex_and_opex',
     'regional_edge': 'capex_and_opex',
     'core_node': 'capex_and_opex',
