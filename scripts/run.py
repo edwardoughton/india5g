@@ -198,7 +198,6 @@ def load_core_lut(path):
 
 def define_deciles(regions):
 
-    # regions = regions.drop(regions[regions['tc_code'] == 'MU'].index)
 
     regions = regions.sort_values(by='population_km2', ascending=True)
 
