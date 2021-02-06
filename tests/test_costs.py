@@ -5,9 +5,7 @@ from india5g.costs import (
     upgrade_to_4g,
     greenfield_5g_nsa,
     upgrade_to_5g_nsa,
-    get_fronthaul_costs,
     get_backhaul_costs,
-    local_net_costs,
     regional_net_costs,
     core_costs,
     discount_opex,
@@ -257,24 +255,6 @@ def test_upgrade_to_5g_nsa(setup_region, setup_option, setup_costs,
         / setup_country_parameters['networks']['baseline_urban'])
 
 
-def test_get_fronthaul_costs(setup_region, setup_costs):
-
-    setup_region[0]['site_density'] = 4
-
-    assert get_fronthaul_costs(setup_region[0], setup_costs) == (
-        setup_costs['fiber_urban_m'] * math.sqrt(1/setup_region[0]['site_density'])) * 1000
-
-    setup_region[0]['site_density'] = 0.5
-
-    assert get_fronthaul_costs(setup_region[0], setup_costs) == (
-        setup_costs['fiber_urban_m'] * math.sqrt(1/setup_region[0]['site_density'])) * 1000
-
-    setup_region[0]['site_density'] = 0.00001
-
-    assert get_fronthaul_costs(setup_region[0], setup_costs) == (
-        setup_costs['fiber_urban_m'] * math.sqrt(1/setup_region[0]['site_density'])) * 1000
-
-
 def test_get_backhaul_costs(setup_region, setup_costs, setup_core_lut):
 
     assert get_backhaul_costs(setup_region[0], 'wireless',
@@ -297,25 +277,6 @@ def test_get_backhaul_costs(setup_region, setup_costs, setup_core_lut):
 
     assert get_backhaul_costs(setup_region[0], 'incorrect_backhaul_tech_name',
         setup_costs, setup_core_lut) == 0
-
-
-def test_local_net_costs(setup_region, setup_option, setup_costs,
-    setup_country_parameters, setup_global_parameters):
-
-    setup_region[0]['sites_estimated_total'] = 2
-    setup_region[0]['area_km2'] = 40
-
-    assert local_net_costs(setup_region[0], setup_costs, setup_option['strategy'],
-        setup_country_parameters, setup_global_parameters) == (
-            (setup_costs['regional_node_lower_epc']) /
-            (setup_region[0]['sites_estimated_total'] /
-            (setup_country_parameters['networks']['baseline_urban'])))
-
-    assert local_net_costs(setup_region[0], setup_costs, setup_option['strategy'],
-        setup_country_parameters, setup_global_parameters) == (
-            (setup_costs['regional_node_lower_epc']) /
-            (setup_region[0]['sites_estimated_total'] /
-            (setup_country_parameters['networks']['baseline_urban'])))
 
 
 def test_regional_net_costs(setup_region, setup_option, setup_costs, setup_core_lut,
@@ -447,13 +408,7 @@ def test_calc_costs(setup_region, setup_global_parameters, setup_country_paramet
         'cloud_power_supply_converter': 6,
         }, 1, 'fiber', setup_global_parameters, setup_country_parameters)
 
-    assert answer == round(sum([
-        8.8, #cots_processing = capex + opex
-        8.8, #io_n2_n3 = capex + opex
-        8.8, #low_latency_switch = capex + opex
-        6.6, #rack = capex
-        8.8, #cloud_power_supply_converter = capex + opex
-    ]))
+    assert answer == 7
 
     answer, structure = calc_costs(setup_region[0], {
         'backhaul': 100,
