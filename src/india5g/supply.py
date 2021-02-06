@@ -53,8 +53,6 @@ def estimate_supply(telecom_circle, regions, lookup, option, global_parameters,
             tc_parameters, lookup, ci)
 
         total_sites_required = math.ceil(region['site_density'] * region['area_km2'])
-        # print('existing site density {}'.format(region['site_density']))
-        # print('total sites required {}'.format(total_sites_required))
 
         region = estimate_site_upgrades(
             region,
