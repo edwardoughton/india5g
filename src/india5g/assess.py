@@ -218,9 +218,6 @@ def calculate_tax(region, strategy, country_parameters):
 
     tax = investment * (tax_rate / 100)
 
-    # else:
-    #     tax = 0
-
     return tax
 
 
