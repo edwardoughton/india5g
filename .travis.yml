@@ -3,9 +3,11 @@ python:
 - "3.7"
 
 before_install:
-- sudo apt-get install -y libspatialindex-dev libgeos-dev gdal-bin
-- "pip install -U pip"
-- "python setup.py install"
+  - "pip install -U pip"
+  - "export PYTHONPATH=$PYTHONPATH:$(pwd)"
+  # - sudo apt-get install -y libspatialindex-dev libgeos-dev gdal-bin
+  # - "pip install -U pip"
+  # - "python setup.py install"
 
 install:
   - pip install 'pytest>=4.6' pytest-cov coveralls
