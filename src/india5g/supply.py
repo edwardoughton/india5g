@@ -89,15 +89,10 @@ def find_site_density(region, option, tc_parameters, lookup, ci):
     demand = region['demand_mbps_km2']
     geotype = region['geotype'].split(' ')[0]
     ant_type = 'macro'
-
     generation = option['strategy'].split('_')[0]
-
     frequencies = tc_parameters['frequencies']
-
     frequencies = frequencies[generation]
-
     ci = str(ci)
-
     unique_densities = set()
 
     capacity = 0
