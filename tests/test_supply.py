@@ -65,6 +65,30 @@ def test_find_site_density(
 
     assert answer == 0.02
 
+    answer = find_site_density(
+        {'demand_mbps_km2': 120,
+        'geotype': 'urban'},
+        setup_option,
+        setup_country_parameters,
+        setup_lookup,
+        setup_ci
+    )
+
+    assert answer == 0.02
+
+    answer = find_site_density(
+        {'demand_mbps_km2': 200000, #OBF is high on this test, hence large demand.
+        'geotype': 'urban'},
+        { #generation_core_backhaul_sharing_networks_spectrum_tax
+        'scenario': 'S1_50_5_1',
+        'strategy': '5G_epc_microwave_baseline_baseline_high_high_high'
+        },
+        setup_country_parameters,
+        setup_lookup,
+        setup_ci
+    )
+
+    assert answer == 2
 
 def test_estimate_site_upgrades(
     setup_region,
