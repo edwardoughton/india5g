@@ -154,7 +154,7 @@ TELECOM_CIRCLE_PARAMETERS = {
             },
             'financials': {
                 'wacc': 10.4, #<- what is the weighted average cost of capital for india? I'm assuming closer to 10% than 15%?
-                'profit_margin': 30, # what is the profit margin for an MNO?
+                'profit_margin': 10, # what is the profit margin for an MNO?
                 'spectrum_coverage_baseline_usd_mhz_pop': 2.22, #what is the cost in USD per MHz per member of the population for coverage spectrum (<1GHz)?
                 'spectrum_capacity_baseline_usd_mhz_pop': 0.54, #what is the cost in USD per MHz per member of the population for capacity spectrum (>1GHz)?
                 'spectrum_baseline_cov_usd_mhz': 110390000,
