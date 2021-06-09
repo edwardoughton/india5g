@@ -447,7 +447,7 @@ if __name__ == '__main__':
         'confidence': [50], #[2.5, 50, 97.5],
         }
 
-    path = os.path.join(DATA_RAW, 'pysim5g', 'capacity_lut_by_frequency.csv')
+    path = os.path.join(DATA_INTERMEDIATE, 'luts', 'capacity_lut_by_frequency.csv')
     lookup = read_capacity_lookup(path)
 
     tc_codes =  {
