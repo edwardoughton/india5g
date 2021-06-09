@@ -7,7 +7,6 @@ Author: Edward Oughton
 Date: Adapted June 2021
 
 """
-from rtree import index
 from shapely.geometry import shape, Point, LineString
 import numpy as np
 from itertools import tee
