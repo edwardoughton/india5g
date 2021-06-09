@@ -2,6 +2,7 @@
 # install.packages("tidyverse")
 library(tidyverse)
 library(ggpubr)
+detach("package:plyr", unload=TRUE)
 
 #get folder directory
 folder <- dirname(rstudioapi::getSourceEditorContext()$path)
@@ -328,7 +329,7 @@ panel <- ggplot(data, aes(x=decile, y=cumulative_value_bn, group=strategy)) +
        subtitle = "Cumulative cost and revenue reported by percentage of population covered",
        x = "Population Covered (%)", y = "Cumulative Cost (Billions $USD)") +
   scale_x_continuous(expand = c(0, 0.75), breaks = seq(0,100,10)) +
-  scale_y_continuous(expand = c(0, 0), limits = c(0, 108), breaks = seq(0,108,20)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 130), breaks = seq(0,128,20)) +
   theme(panel.spacing = unit(0.6, "lines"), legend.title=element_blank(),
         axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) + expand_limits(y=0) +
   guides(shape=guide_legend(ncol=5), colour=guide_legend(ncol=5)) +
@@ -392,7 +393,7 @@ data$combined = factor(data$combined, levels=c(
 data$asset = factor(data$asset, levels=c(
   'tax', 'spectrum_cost', 'ops_and_acquisition', 'core_network',
   'civils', 'backhaul_fronthaul', 'ran'),
-  labels=c('Tax', 'Spectrum', 'Ops', 'Core', 'Civils', 'Backhaul', "RAN"))
+  labels=c('Tax', 'Spectrum', 'Admin', 'Core', 'Civils', 'Backhaul', "RAN"))
 
 totals <- data %>%
   select(combined, decile, value) %>%
@@ -403,7 +404,7 @@ technology_costs = ggplot(data, aes(x=decile, y=value/1e9, fill=asset)) +
   geom_bar(stat="identity") +
   theme(legend.position = 'right') +
   scale_x_continuous(expand = c(0, 0), breaks = seq(0,100,10)) +
-  scale_y_continuous(expand = c(0, 0), breaks = seq(0,30,5), limits = c(0, 30)) +
+  scale_y_continuous(expand = c(0, 0), breaks = seq(0,38,5), limits = c(0, 38)) +
   labs(colour=NULL,
        title = "Cost Performance of Universal Broadband Strategies",
        subtitle = "Results reported by scenario, strategy and population decile",
@@ -482,7 +483,7 @@ data$combined = factor(data$combined, levels=c(
 data$asset = factor(data$asset, levels=c(
   'tax', 'spectrum_cost', 'ops_and_acquisition', 'core_network',
   'civils', 'backhaul_fronthaul', 'ran'),
-  labels=c('Tax', 'Spectrum', 'Ops', 'Core', 'Civils', 'Backhaul', "RAN"))
+  labels=c('Tax', 'Spectrum', 'Admin', 'Core', 'Civils', 'Backhaul', "RAN"))
 
 
 totals <- data %>%
@@ -511,7 +512,6 @@ path = file.path(folder, 'figures', 'e_per_user_technology_cost_composition.png'
 ggsave(path, units="in", width=10, height=10, dpi=300)
 print(technology_costs)
 dev.off()
-
 
 ####################TECHNOLOGIES PER USER COST
 folder <- dirname(rstudioapi::getSourceEditorContext()$path)
