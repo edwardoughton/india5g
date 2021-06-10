@@ -86,21 +86,6 @@ def find_single_network_cost(region, option, costs, global_parameters,
             regional_cost.append(total_cost)
             regional_asset_cost.append(cost_by_asset)
 
-
-        if i <= upgraded_sites and generation == '5G' and core == 'sa':
-
-            cost_structure = upgrade_to_5g_sa(region, strategy, costs,
-                global_parameters, core_lut, tc_parameters)
-
-            backhaul_quant = backhaul_quantity(i, new_backhaul)
-
-            total_cost, cost_by_asset = calc_costs(region, cost_structure, backhaul,
-                backhaul_quant, global_parameters, tc_parameters)
-
-            regional_cost.append(total_cost)
-            regional_asset_cost.append(cost_by_asset)
-
-
         if i > upgraded_sites and generation == '4G':
 
             cost_structure = greenfield_4g(region, strategy, costs,
@@ -118,20 +103,6 @@ def find_single_network_cost(region, option, costs, global_parameters,
         if i > upgraded_sites and generation == '5G' and core == 'nsa':
 
             cost_structure = greenfield_5g_nsa(region, strategy, costs,
-                global_parameters, core_lut, tc_parameters)
-
-            backhaul_quant = backhaul_quantity(i, new_backhaul)
-
-            total_cost, cost_by_asset = calc_costs(region, cost_structure, backhaul,
-                backhaul_quant, global_parameters, tc_parameters)
-
-            regional_cost.append(total_cost)
-            regional_asset_cost.append(cost_by_asset)
-
-
-        if i > upgraded_sites and generation == '5G' and core == 'sa':
-
-            cost_structure = greenfield_5g_sa(region, strategy, costs,
                 global_parameters, core_lut, tc_parameters)
 
             backhaul_quant = backhaul_quantity(i, new_backhaul)
