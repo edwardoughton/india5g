@@ -607,9 +607,6 @@ def calc_costs(region, cost_structure, backhaul, backhaul_quantity,
         All telecom circle specific parameters.
 
     """
-    all_sites = region['upgraded_sites'] + region['new_sites']
-    geotype = region['geotype'].split(' ')[0]
-
     total_cost = 0
     cost_by_asset = []
 
