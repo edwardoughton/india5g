@@ -329,7 +329,7 @@ panel <- ggplot(data, aes(x=decile, y=cumulative_value_bn, group=strategy)) +
        subtitle = "Cumulative cost and revenue reported by percentage of population covered",
        x = "Population Covered (%)", y = "Cumulative Cost (Billions $USD)") +
   scale_x_continuous(expand = c(0, 0.75), breaks = seq(0,100,10)) +
-  scale_y_continuous(expand = c(0, 0), limits = c(0, 130), breaks = seq(0,128,20)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 135), breaks = seq(0,135,20)) +
   theme(panel.spacing = unit(0.6, "lines"), legend.title=element_blank(),
         axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) + expand_limits(y=0) +
   guides(shape=guide_legend(ncol=5), colour=guide_legend(ncol=5)) +
