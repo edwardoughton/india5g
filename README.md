@@ -1,9 +1,11 @@
-5G Assessment for India (India5G)
+Supportive 5G Infrastructure Policies are Essential for Universal 6G (India5G)
 ====
 [![Build Status](https://travis-ci.com/edwardoughton/india5g.svg?branch=master)](https://travis-ci.com/edwardoughton/india5g)
 [![Coverage Status](https://coveralls.io/repos/github/edwardoughton/India5G/badge.svg)](https://coveralls.io/github/edwardoughton/India5G?branch=master)
 
 This codebase enables 4G and 5G universal broadband strategies to be tested with the ultimate aim of helping to connect more people to a faster internet, as applied here for India.
+
+If there are any additional queries or comments about the code, do not hesitate to reach out to me via email at 'eoughton [at] gmu [dot] edu' for further information.
 
 Please cite the published paper associated with this codebase:
 
@@ -13,18 +15,19 @@ Citation
 - Oughton, E.J., and Jha, A.. (2021) Supportive 5G Infrastructure Policies are
 Essential for Universal 6G: Assessment Using an Open-Source Techno-Economic Simulation Model Utilizing Remote Sensing. [Forthcoming in IEEE Access](https://arxiv.org/abs/2102.08086).
 
-Importantly, we provide all code (and required data inputs) so that the results can be reproduced. Both unit tests and integration tests are provided for the codebase to ensure reliability.
+Importantly, I provide all code (and required data inputs) so that the results can be reproduced. Both unit tests and integration tests are provided with the codebase to ensure reliability.
 
 Method
 ======
-An Open-Source Techno-Economic 4G & 5G Simulation Model Utilizing Remote Sensing.
+A box diagram of the method is shown below, illustrating the open-source techno-economic 4G & 5G simulation model which takes advantage of remote sensing.
+
 <p align="center">
   <img src="/figures/method.png" />
 </p>
 
 Example Results
 ===============
-Visualization of the cost per smartphone connected for 4G and 5G universal broadband.
+A visualization of the cost per smartphone connected is shown below for 4G and 5G universal broadband strategies, demonstrating the type of results the codebase can produce.
 <p align="center">
   <img src="/figures/results.png" />
 </p>
@@ -33,10 +36,9 @@ Using conda
 ==========
 
 The recommended installation method is to use conda, which handles packages and virtual
-environments, along with the conda-forge channel which has a host of pre-built libraries and
-packages.
+environments, along with the conda-forge channel which has a host of pre-built libraries and packages.
 
-Create a conda environment called `India5G`:
+Create a conda environment called `india5G`:
 
     conda create --name india5g python=3.6 gdal geopandas
 
@@ -44,7 +46,7 @@ Activate it (run this each time you switch projects):
 
     conda activate india5g
 
-Install `India5G`:
+Install `india5G`:
 
     python setup.py install
 
@@ -57,10 +59,7 @@ Download necessary data
 =======================
 
 You will need numerous input data sets. They are all detailed in the full IEEE paper,
-cited above. If there are any additional queries or comments, don't hesitate to reach out
-to eoughton [at] gmu [dot] edu for further information.
-
-You will first want to download the Global Administrative Database (GADM), following the link below,  making sure you download the "six separate layers":
+cited above. You will first want to download the Global Administrative Database (GADM), following the link below, making sure you download the "six separate layers":
 
 - https://gadm.org/download_world.html
 
@@ -106,7 +105,7 @@ To obtain model results once all inputs have been generated, simply execute the 
 
     python scripts/run.py
 
-Using the R scripts in the india5G/vis folder, the results are able to be visualized,
+Using the R scripts in the india5G/vis folder, the results can be visualized,
 reproducing the graphics included in the IEEE paper.
 
 
