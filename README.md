@@ -3,11 +3,25 @@
 [![Build Status](https://travis-ci.com/edwardoughton/india5g.svg?branch=master)](https://travis-ci.com/edwardoughton/india5g)
 [![Coverage Status](https://coveralls.io/repos/github/edwardoughton/India5G/badge.svg)](https://coveralls.io/github/edwardoughton/India5G?branch=master)
 
-This codebase enables 5G strategies to be tested with the ultimate aim of
-helping to connect more people to a faster internet, as applied here for India.
+This codebase enables 4G and 5G universal broadband strategies to be tested with the ultimate aim of helping to connect more people to a faster internet, as applied here for India.
 
-Importantly, we provide all data inputs and code so that the results can be reproduced. Both
-unit tests and integration tests are provided for the codebase to ensure reliability.
+Please cite the published paper associated with this codebase:
+
+Citation
+---------
+
+- Oughton, E.J., and Jha, A.. (2021) Supportive 5G Infrastructure Policies are
+Essential for Universal 6G: Assessment Using an Open-Source Techno-Economic Simulation Model Utilizing Remote Sensing. [Forethcoming in IEEE Access](https://arxiv.org/abs/2102.08086).
+
+Importantly, we provide all code (and required data inputs) so that the results can be reproduced. Both unit tests and integration tests are provided for the codebase to ensure reliability.
+
+Method
+======
+###An Open-Source Techno-Economic 4G & 5G Simulation Model Utilizing Remote Sensing
+<p align="center">
+  <img src="/figures/method.png" />
+</p>
+
 
 Using conda
 ==========
@@ -36,10 +50,11 @@ Alternatively, for development purposes, clone this repo and run:
 Download necessary data
 =======================
 
-You will need numerous input data sets.
+You will need numerous input data sets. They are all detailed in the full IEEE paper,
+cited above. If there are any additional queries or comments, don't hesitate to reach out
+to eoughton [at] gmu [dot] edu for further information.
 
-First, download the Global Administrative Database (GADM), following the link below and making
-sure you download the "six separate layers.":
+You will first want to download the Global Administrative Database (GADM), following the link below,  making sure you download the "six separate layers":
 
 - https://gadm.org/download_world.html
 
@@ -63,9 +78,19 @@ https://www.collinsbartholomew.com/mobile-coverage-maps/mobile-coverage-explorer
 
 Place the data into `data/raw/Mobile Coverage Explorer`.
 
-Once complete, run the following to preprocess all data:
+Preprocess necessary model inputs
+=================================
+
+You will need to run various scripts before using the model.
+
+Firstly, run the following to preprocess all the supply and demand data:
 
     python scripts/preprocess.py
+
+Then you will need to generate the necessary lookup tables, using the provided
+cellular system simulation:
+
+    python scripts/sim.py
 
 
 Using the model
@@ -74,6 +99,9 @@ Using the model
 To obtain model results once all inputs have been generated, simply execute the runner script:
 
     python scripts/run.py
+
+Using the R scripts in the india5G/vis folder, the results are able to be visualized,
+reproducing the graphics included in the IEEE paper.
 
 
 Thanks for the support
