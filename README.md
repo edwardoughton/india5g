@@ -11,17 +11,23 @@ Citation
 ---------
 
 - Oughton, E.J., and Jha, A.. (2021) Supportive 5G Infrastructure Policies are
-Essential for Universal 6G: Assessment Using an Open-Source Techno-Economic Simulation Model Utilizing Remote Sensing. [Forethcoming in IEEE Access](https://arxiv.org/abs/2102.08086).
+Essential for Universal 6G: Assessment Using an Open-Source Techno-Economic Simulation Model Utilizing Remote Sensing. [Forthcoming in IEEE Access](https://arxiv.org/abs/2102.08086).
 
 Importantly, we provide all code (and required data inputs) so that the results can be reproduced. Both unit tests and integration tests are provided for the codebase to ensure reliability.
 
 Method
 ======
-###An Open-Source Techno-Economic 4G & 5G Simulation Model Utilizing Remote Sensing
+An Open-Source Techno-Economic 4G & 5G Simulation Model Utilizing Remote Sensing.
 <p align="center">
   <img src="/figures/method.png" />
 </p>
 
+Example Results
+===============
+Visualization of the cost per smartphone connected for 4G and 5G universal broadband.
+<p align="center">
+  <img src="/figures/results.png" />
+</p>
 
 Using conda
 ==========
