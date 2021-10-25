@@ -12,9 +12,13 @@ Please cite the published paper associated with this codebase:
 Citation
 ---------
 
-- Oughton, E.J., Jha, A., 2021. Supportive 5G Infrastructure Policies are Essential for Universal 6G: Assessment Using an Open-Source Techno-Economic Simulation Model Utilizing Remote Sensing. IEEE Access 9, 101924–101945. [https://doi.org/10.1109/ACCESS.2021.3097627](https://doi.org/10.1109/ACCESS.2021.3097627).
+- Oughton, E.J., and Jha, A.. (2021) Supportive 5G Infrastructure Policies are
+Essential for Universal 6G: Assessment Using an Open-Source Techno-Economic Simulation Model
+Utilizing Remote Sensing. IEEE Access 9, 101924–101945.
+[https://doi.org/10.1109/ACCESS.2021.3097627](https://doi.org/10.1109/ACCESS.2021.3097627).
 
-Importantly, I provide all code (and required data inputs) so that the results can be reproduced. Both unit tests and integration tests are provided with the codebase to ensure reliability.
+Importantly, I provide all code (and required data inputs) so that the results can be reproduced.
+Both unit tests and integration tests are provided with the codebase to ensure reliability.
 
 Method
 ======

@@ -104,7 +104,8 @@ venv.bak/
 .mypy_cache/
 
 # specific folders
-data/*
+data/intermediate/*
+data/raw/*
 vis/figures/*
 results/*
 vis/spectrum/figures/*
